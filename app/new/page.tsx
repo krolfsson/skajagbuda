@@ -6,10 +6,15 @@ import { useRouter } from "next/navigation";
 // ─── Analyzing screen ──────────────────────────────────────────────────────────
 
 const ANALYSIS_STEPS = [
-  { ms: 0,     label: "Sparar objektdata",              sub: "Strukturerar det du matat in" },
-  { ms: 1200,  label: "Hämtar marknadsdata",           sub: "Jämförpriser och områdesstatistik" },
-  { ms: 3500,  label: "Analyserar förening och pris",  sub: "Ekonomi, underhåll och marknad" },
-  { ms: 6000,  label: "Beräknar score och risknivå",   sub: "Samma analys som i hela rapporten" },
+  { ms: 0,     label: "Sparar objektdata",                 sub: "Strukturerar det du matat in" },
+  { ms: 1500,  label: "Läser annons och budhistorik",      sub: "Tolkar text, pris och nyckeltal" },
+  { ms: 3800,  label: "Hämtar jämförbara försäljningar",   sub: "Slutpriser i området" },
+  { ms: 6200,  label: "Hämtar prisindex (SCB)",            sub: "Prisutveckling för kommunen" },
+  { ms: 9000,  label: "Läser årsredovisning",              sub: "Föreningens ekonomi och skulder" },
+  { ms: 12500, label: "Analyserar förening och pris",      sub: "Ekonomi, underhåll och marknad" },
+  { ms: 16500, label: "Identifierar risker och röda flaggor", sub: "Stambyte, tomträtt, lån m.m." },
+  { ms: 20500, label: "Tar fram budstrategi",              sub: "Riktbud och maxbud" },
+  { ms: 24500, label: "Beräknar score och risknivå",       sub: "Samma analys som i hela rapporten" },
 ];
 
 function AnalyzingScreen({ title }: { title: string }) {
