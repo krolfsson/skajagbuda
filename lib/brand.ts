@@ -10,9 +10,24 @@ export const STRIPE_PRODUCT_NAME = "Ska jag buda? – full bostadsanalys";
 export const CTA_START_ANALYSIS = "Starta gratis analys";
 
 /** Canonical, absolute site URL used for metadata, sitemap, robots and JSON-LD. */
-export const SITE_URL = (
-  process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, "") || "https://skajagbuda.se"
-);
+export const SITE_URL = (() => {
+  const configured = process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, "");
+  const isProd =
+    process.env.VERCEL_ENV === "production" || process.env.NODE_ENV === "production";
+
+  if (isProd) {
+    if (configured?.includes("skajagbuda.se")) return configured;
+    return "https://skajagbuda.se";
+  }
+
+  return configured || "http://localhost:3000";
+})();
+
+export const OG_TITLE = "Få koll innan du budar | skajagbuda.se";
+export const OG_DESCRIPTION =
+  "Klistra in annons, budhistorik och årsredovisning. Få en preliminär risknivå gratis och lås upp en full analys med prisbedömning, föreningsrisk och budstrategi.";
+export const OG_IMAGE_ALT =
+  "skajagbuda.se – beslutsstöd för bostadsköp med preliminär risknivå gratis";
 
 /** Default keywords reused across pages for SEO. */
 export const SEO_KEYWORDS = [

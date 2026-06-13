@@ -3,7 +3,7 @@ import { Barlow, Instrument_Sans } from "next/font/google";
 import Link from "next/link";
 import "./globals.css";
 import { Logo } from "@/components/Logo";
-import { PRODUCT_DOMAIN, PRODUCT_TAGLINE, SITE_URL, SEO_KEYWORDS, CTA_START_ANALYSIS } from "@/lib/brand";
+import { PRODUCT_DOMAIN, PRODUCT_TAGLINE, SITE_URL, SEO_KEYWORDS, CTA_START_ANALYSIS, OG_TITLE, OG_DESCRIPTION, OG_IMAGE_ALT } from "@/lib/brand";
 
 const barlow = Barlow({
   subsets: ["latin"],
@@ -22,18 +22,17 @@ const wordmark = Instrument_Sans({
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: `${PRODUCT_DOMAIN} – beslutsstöd innan du budar`,
+    default: OG_TITLE,
     template: `%s | ${PRODUCT_DOMAIN}`,
   },
-  description:
-    "Klistra in annons, budhistorik och årsredovisning. Få en preliminär risknivå gratis och lås upp en full analys med prisbedömning, föreningsrisk och budstrategi.",
+  description: OG_DESCRIPTION,
   keywords: SEO_KEYWORDS,
   applicationName: PRODUCT_DOMAIN,
   authors: [{ name: PRODUCT_DOMAIN }],
   creator: PRODUCT_DOMAIN,
   publisher: PRODUCT_DOMAIN,
   category: "finance",
-  alternates: { canonical: "/" },
+  alternates: { canonical: SITE_URL },
   robots: {
     index: true,
     follow: true,
@@ -44,15 +43,22 @@ export const metadata: Metadata = {
     locale: "sv_SE",
     url: SITE_URL,
     siteName: PRODUCT_DOMAIN,
-    title: `${PRODUCT_DOMAIN} – beslutsstöd innan du budar`,
-    description:
-      "Klistra in annons, budhistorik och årsredovisning. Få en preliminär risknivå gratis och lås upp prisbedömning, föreningsrisk och budstrategi.",
+    title: OG_TITLE,
+    description: OG_DESCRIPTION,
+    images: [
+      {
+        url: "/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: OG_IMAGE_ALT,
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
-    title: `${PRODUCT_DOMAIN} – Ska jag buda?`,
-    description:
-      "Riskanalys och budstrategi inför budgivningen. Preliminär risknivå gratis.",
+    title: OG_TITLE,
+    description: OG_DESCRIPTION,
+    images: ["/twitter-image"],
   },
 };
 
