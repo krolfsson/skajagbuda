@@ -36,7 +36,8 @@ export async function POST(
 
   const session = await stripe.checkout.sessions.create({
     mode: "payment",
-    payment_method_types: ["card"],
+    // Payment methods (card, Swish, …) are controlled from the Stripe Dashboard
+    // under Settings → Payment methods. Whatever is enabled there shows in checkout.
     line_items: [
       {
         quantity: 1,
