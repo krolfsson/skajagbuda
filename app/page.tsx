@@ -184,7 +184,6 @@ export default function HomePage() {
         >
           <Link href="/guider" className="nav-link">Guider</Link>
           <Link href="/verktyg" className="nav-link">Verktyg</Link>
-          <Link href="/omraden" className="nav-link">Områden</Link>
           <Link href="/ordlista" className="nav-link">Ordlista</Link>
           <Link href="/exempel" className="nav-link">Exempelanalys</Link>
           <Link href="/new" className="nav-link">Starta analys</Link>

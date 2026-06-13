@@ -20,18 +20,6 @@ export type Guide = {
   relatedToolSlugs?: string[];
 };
 
-export type Area = {
-  slug: string;
-  name: string;
-  metaTitle: string;
-  metaDescription: string;
-  intro: string;
-  considerations: string[];
-  risks: string[];
-  questions: string[];
-  relatedGuideSlugs: string[];
-};
-
 export type GlossaryTerm = {
   slug: string;
   term: string;

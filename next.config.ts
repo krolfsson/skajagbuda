@@ -13,6 +13,8 @@ const nextConfig: NextConfig = {
       { source: "/vinna-budgivning", destination: "/guider/budstrategi-bostadsratt", permanent: true },
       { source: "/budgivning-tips", destination: "/guider/checklista-innan-budgivning", permanent: true },
       { source: "/budgivning-bostadsratt", destination: "/guider/budgivning-stockholm", permanent: true },
+      { source: "/omraden", destination: "/guider", permanent: true },
+      { source: "/omraden/:slug", destination: "/guider", permanent: true },
     ];
   },
 };

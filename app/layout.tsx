@@ -101,9 +101,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <Link href="/verktyg" className="nav-link">
                 Verktyg
               </Link>
-              <Link href="/omraden" className="nav-link">
-                Områden
-              </Link>
               <a href="/#exempelrapport" className="nav-link">
                 Exempelanalys
               </a>
