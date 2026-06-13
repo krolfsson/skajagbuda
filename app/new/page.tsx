@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
+import { trackEvent } from "@/lib/analytics";
 
 // ─── Analyzing screen ──────────────────────────────────────────────────────────
 
@@ -932,6 +933,7 @@ export default function NewAnalysisPage() {
   async function handleAnalyze() {
     setError(null);
     setLoading(true);
+    trackEvent("analysis_started");
 
     const title = buildTitle();
     setAnalyzeTitle(title);
@@ -983,6 +985,7 @@ export default function NewAnalysisPage() {
         throw new Error(runJson?.error ?? `Analysen misslyckades (fel ${runRes.status}).`);
       }
 
+      trackEvent("free_risk_completed", { analysisId: id });
       router.push(`/result/${id}`);
     } catch (err) {
       setAnalyzing(false);

@@ -9,6 +9,7 @@ import { FreeResultShell } from "@/components/FreeResultView";
 import { PaymentVerifier, AnalysisLoader } from "@/components/PaymentFlow";
 import { FullScorecard } from "@/components/FullScorecard";
 import { DevBypassBanner } from "@/components/DevBypassBanner";
+import { ResultAnalytics } from "@/components/ResultAnalytics";
 
 export default async function ResultPage({
   params,
@@ -90,6 +91,7 @@ export default async function ResultPage({
     return (
       <>
         {paymentVerifier}
+        <ResultAnalytics event="full_analysis_completed" analysisId={id} />
         <FullScorecard analysis={analysis} scorecard={scorecard!} devBypass={devBypass} />
       </>
     );

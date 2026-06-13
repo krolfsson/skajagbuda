@@ -22,11 +22,11 @@ const wordmark = Instrument_Sans({
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: `${PRODUCT_DOMAIN} – Ska jag buda? Riskanalys inför budgivning`,
+    default: `${PRODUCT_DOMAIN} – beslutsstöd innan du budar`,
     template: `%s | ${PRODUCT_DOMAIN}`,
   },
   description:
-    "Ska du buda eller avstå? Få en preliminär risknivå gratis och lås upp en komplett analys med maxbud, budstrategi, föreningsrisk, årsredovisning och röda flaggor innan budgivningen.",
+    "Klistra in annons, budhistorik och årsredovisning. Få en preliminär risknivå gratis och lås upp en full analys med prisbedömning, föreningsrisk och budstrategi.",
   keywords: SEO_KEYWORDS,
   applicationName: PRODUCT_DOMAIN,
   authors: [{ name: PRODUCT_DOMAIN }],
@@ -44,9 +44,9 @@ export const metadata: Metadata = {
     locale: "sv_SE",
     url: SITE_URL,
     siteName: PRODUCT_DOMAIN,
-    title: `${PRODUCT_DOMAIN} – Ska jag buda? Riskanalys inför budgivning`,
+    title: `${PRODUCT_DOMAIN} – beslutsstöd innan du budar`,
     description:
-      "Få en preliminär risknivå gratis och lås upp maxbud, budstrategi, föreningsrisk och röda flaggor innan du budar.",
+      "Klistra in annons, budhistorik och årsredovisning. Få en preliminär risknivå gratis och lås upp prisbedömning, föreningsrisk och budstrategi.",
   },
   twitter: {
     card: "summary_large_image",
@@ -95,8 +95,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <Logo />
             </a>
             <nav className="site-nav">
-              <Link href="/att-tanka-pa" className="nav-link">
-                Att tänka på
+              <Link href="/guider" className="nav-link">
+                Guider
+              </Link>
+              <Link href="/verktyg" className="nav-link">
+                Verktyg
+              </Link>
+              <Link href="/omraden" className="nav-link">
+                Områden
               </Link>
               <a href="/#exempelrapport" className="nav-link">
                 Exempelanalys

@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { RISK_DOT } from "@/lib/ui-colors";
+import { trackEvent } from "@/lib/analytics";
+import { ResultAnalytics } from "@/components/ResultAnalytics";
 
 function LockIcon() {
   return (
@@ -54,6 +56,7 @@ export function UnlockAnalysisCard({
   async function handleUnlock() {
     setLoading(true);
     setError(null);
+    trackEvent("checkout_clicked", { analysisId });
     try {
       const res = await fetch(`/api/analyses/${analysisId}/checkout`, { method: "POST" });
       const data = await res.json();
@@ -115,6 +118,7 @@ export function FreeResultShell({
 
   return (
     <div style={{ background: "var(--bg)", minHeight: "calc(100vh - 116px)", padding: "32px 16px 80px" }}>
+      <ResultAnalytics event="paywall_viewed" analysisId={analysisId} />
       <div style={{ maxWidth: "560px", margin: "0 auto" }}>
         <a
           href="/new"

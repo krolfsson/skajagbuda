@@ -1727,6 +1727,235 @@ input[type="number"]::-webkit-outer-spin-button {
   }
 }
 
+/* ─── Content index pages (guider, verktyg, områden, ordlista) ─────────────── */
+
+.content-index {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 40px 24px 80px;
+}
+
+.content-index-grid {
+  list-style: none;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+  margin-bottom: 40px;
+}
+
+.content-index-grid--compact {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.content-index-card {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 18px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.content-index-card:hover {
+  border-color: var(--brand-border);
+  box-shadow: 0 6px 18px rgba(18, 63, 53, 0.05);
+}
+
+.content-index-card-title {
+  display: block;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--fg);
+  letter-spacing: -0.01em;
+  margin-bottom: 4px;
+}
+
+.content-index-card-desc {
+  display: block;
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.content-index-arrow {
+  flex-shrink: 0;
+  margin-top: 4px;
+  color: var(--muted-light);
+}
+
+.guide-breadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 20px;
+}
+
+.guide-breadcrumb a {
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.guide-breadcrumb a:hover {
+  color: var(--brand);
+}
+
+.guide-breadcrumb span:last-child {
+  color: var(--fg);
+}
+
+.guide-disclaimer {
+  font-size: 12px;
+  color: var(--muted-light);
+  line-height: 1.5;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+}
+
+.guide-cta--inline {
+  margin: 28px 0;
+  background: var(--brand-light);
+  border: 1px solid var(--brand-border);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+}
+
+/* ─── Calculator tools ─────────────────────────────────────────────────────── */
+
+.tool-calc {
+  margin-bottom: 32px;
+}
+
+.tool-calc-form {
+  display: grid;
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.tool-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.tool-field span {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.tool-field input {
+  font-size: 15px;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--fg);
+}
+
+.tool-calc-btn {
+  font-size: 14px;
+  font-weight: 600;
+  padding: 12px 24px;
+  background: var(--brand);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  justify-self: start;
+}
+
+.tool-calc-btn:hover {
+  background: var(--brand-hover);
+}
+
+.tool-calc-result {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  margin-bottom: 20px;
+}
+
+.tool-calc-result h2 {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.tool-result-grid {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px 20px;
+  font-size: 14px;
+  margin-bottom: 16px;
+}
+
+.tool-result-grid dt {
+  color: var(--muted);
+}
+
+.tool-result-grid dd {
+  text-align: right;
+  margin: 0;
+  color: var(--fg);
+}
+
+.tool-result-note {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.55;
+  margin-bottom: 8px;
+}
+
+.tool-result-warn {
+  font-size: 13px;
+  color: var(--caution);
+  background: var(--caution-bg);
+  border: 1px solid var(--caution-border);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+
+.tool-mode-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.tool-mode-tabs button {
+  font-size: 13px;
+  padding: 8px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.tool-mode-tabs button.active {
+  border-color: var(--brand-border);
+  background: var(--brand-light);
+  color: var(--brand);
+  font-weight: 600;
+}
+
+@media (max-width: 600px) {
+  .content-index-grid--compact {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* ─── Report PDF / print ───────────────────────────────────────────────────── */
 
 .print-only {

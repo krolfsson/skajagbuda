@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { trackEvent } from "@/lib/analytics";
 
 export function PaymentVerifier({
   analysisId,
@@ -22,6 +23,7 @@ export function PaymentVerifier({
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ sessionId }),
         });
+        trackEvent("purchase_completed", { analysisId });
       } catch {
         // Webhook may have already processed payment
       } finally {

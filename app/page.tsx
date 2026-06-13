@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { LandingExampleReport } from "@/components/LandingExampleReport";
+import { HomeAnalytics, HomeAnchorCta, HomeCtaLink } from "@/components/HomeAnalytics";
 import { PRODUCT_DOMAIN } from "@/lib/brand";
 
 const REPORT_ITEMS = [
@@ -58,17 +59,18 @@ const REPORT_ITEMS = [
 ];
 
 const TOPICS = [
-  { title: "Budstrategi", desc: "7 taktiker som används i praktiken.", href: "/budstrategi" },
-  { title: "Vinna budgivning", desc: "Öka chansen utan att betala för mycket.", href: "/vinna-budgivning" },
-  { title: "Budgivning tips", desc: "Praktiska råd innan första budet.", href: "/budgivning-tips" },
-  { title: "Granska årsredovisningen", desc: "Skuld/kvm, kassa och sparande.", href: "/att-tanka-pa#forening" },
-  { title: "Stambyte", desc: "Kostnad, finansiering och tidplan.", href: "/att-tanka-pa#stambyte" },
-  { title: "Budgivning bostadsrätt", desc: "Så fungerar processen steg för steg.", href: "/budgivning-bostadsratt" },
+  { title: "Budstrategi", desc: "Öppningsbud, nästa steg och walk-away.", href: "/guider/budstrategi-bostadsratt" },
+  { title: "Rimligt maxbud", desc: "Så sätter du en gräns innan budgivning.", href: "/guider/vad-ar-rimligt-maxbud" },
+  { title: "BRF-årsredovisning", desc: "Vad du ska granska innan köp.", href: "/guider/analysera-brf-arsredovisning" },
+  { title: "Stambyte", desc: "Risk eller möjlighet i föreningen.", href: "/guider/stambyte-bostadsratt-risk" },
+  { title: "Boendekostnad", desc: "Räkna månadskostnad gratis.", href: "/verktyg/boendekostnad" },
+  { title: "Checklista", desc: "Detta bör du kontrollera före bud.", href: "/guider/checklista-innan-budgivning" },
 ];
 
 export default function HomePage() {
   return (
     <div style={{ background: "var(--bg)", minHeight: "calc(100vh - 116px)" }}>
+      <HomeAnalytics />
       {/* Hero */}
       <section className="home-hero home-hero--solo">
         <div className="home-hero-copy">
@@ -80,12 +82,12 @@ export default function HomePage() {
             hela analysen när du vill gå vidare.
           </p>
           <div className="home-hero-ctas">
-            <Link href="/new" className="home-btn-primary">
+            <HomeCtaLink href="/new" event="click_start_analysis" className="home-btn-primary">
               Starta analys
-            </Link>
-            <a href="#exempelrapport" className="home-btn-secondary">
+            </HomeCtaLink>
+            <HomeAnchorCta href="#exempelrapport" event="click_example_analysis" className="home-btn-secondary">
               Se exempelanalys
-            </a>
+            </HomeAnchorCta>
           </div>
           <p className="home-hero-disclaimer">
             <InfoIcon />
@@ -130,8 +132,8 @@ export default function HomePage() {
           ))}
         </div>
         <div style={{ textAlign: "center" }}>
-          <Link href="/att-tanka-pa" className="home-topics-link">
-            Läs hela guiden: Att tänka på →
+          <Link href="/guider" className="home-topics-link">
+            Se alla guider →
           </Link>
         </div>
       </section>
@@ -169,9 +171,9 @@ export default function HomePage() {
               </p>
             </div>
           </div>
-          <Link href="/new" className="home-btn-primary home-cta-btn">
+          <HomeCtaLink href="/new" event="click_start_analysis" className="home-btn-primary home-cta-btn">
             Starta analys
-          </Link>
+          </HomeCtaLink>
         </div>
       </section>
 
@@ -180,7 +182,10 @@ export default function HomePage() {
           aria-label="Sidlänkar"
           style={{ display: "flex", flexWrap: "wrap", gap: "16px", marginBottom: "12px" }}
         >
-          <Link href="/att-tanka-pa" className="nav-link">Att tänka på</Link>
+          <Link href="/guider" className="nav-link">Guider</Link>
+          <Link href="/verktyg" className="nav-link">Verktyg</Link>
+          <Link href="/omraden" className="nav-link">Områden</Link>
+          <Link href="/ordlista" className="nav-link">Ordlista</Link>
           <Link href="/exempel" className="nav-link">Exempelanalys</Link>
           <Link href="/new" className="nav-link">Starta analys</Link>
           <Link href="/om" className="nav-link">Om tjänsten</Link>
