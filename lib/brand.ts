@@ -6,6 +6,9 @@ export const WORDMARK_TLD = ".se";
 export const BRAND_GREEN = "#123F35";
 export const STRIPE_PRODUCT_NAME = "Ska jag buda? – full bostadsanalys";
 
+/** Price for unlocking the full analysis (SEK). Used in UI and Stripe Checkout. */
+export const FULL_ANALYSIS_PRICE_SEK = 29;
+
 /** Primary CTA label linking to /new across the site. */
 export const CTA_START_ANALYSIS = "Starta gratis analys";
 

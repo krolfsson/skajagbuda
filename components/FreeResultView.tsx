@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { RISK_DOT } from "@/lib/ui-colors";
+import { FULL_ANALYSIS_PRICE_SEK } from "@/lib/brand";
 import { trackEvent } from "@/lib/analytics";
 import { ResultAnalytics } from "@/components/ResultAnalytics";
 
@@ -78,7 +79,7 @@ export function UnlockAnalysisCard({
     <div className="unlock-card">
       <h2 className="unlock-card-title">{getUnlockTitle(riskLevel)}</h2>
       <p className="unlock-card-text">
-        Få komplett scorecard för 99 kr med rekommenderat maxbud, budstrategi, föreningsrisk,
+        Få komplett scorecard för {FULL_ANALYSIS_PRICE_SEK} kr med rekommenderat maxbud, budstrategi, föreningsrisk,
         prisbedömning, röda flaggor och frågor att ställa innan du budar vidare.
       </p>
 
@@ -94,7 +95,7 @@ export function UnlockAnalysisCard({
       </ul>
 
       <button type="button" className="unlock-cta" onClick={handleUnlock} disabled={loading}>
-        {loading ? "Öppnar betalning..." : "Se hela analysen för 99 kr"}
+        {loading ? "Öppnar betalning..." : `Se hela analysen för ${FULL_ANALYSIS_PRICE_SEK} kr`}
       </button>
       <p className="unlock-subtext">
         Hela rapporten låses upp direkt efter betalning. Engångsbetalning. Ingen prenumeration.
