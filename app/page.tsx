@@ -58,12 +58,12 @@ const REPORT_ITEMS = [
 ];
 
 const TOPICS = [
-  { title: "Budstrategier", desc: "Maxbud, trötta ut, psykologiska gränser.", href: "/att-tanka-pa#budstrategi" },
+  { title: "Budstrategi", desc: "7 taktiker som används i praktiken.", href: "/budstrategi" },
+  { title: "Vinna budgivning", desc: "Öka chansen utan att betala för mycket.", href: "/vinna-budgivning" },
+  { title: "Budgivning tips", desc: "Praktiska råd innan första budet.", href: "/budgivning-tips" },
   { title: "Granska årsredovisningen", desc: "Skuld/kvm, kassa och sparande.", href: "/att-tanka-pa#forening" },
   { title: "Stambyte", desc: "Kostnad, finansiering och tidplan.", href: "/att-tanka-pa#stambyte" },
-  { title: "Tomträtt", desc: "Avgäld som omförhandlas och höjs.", href: "/att-tanka-pa#tomtratt" },
-  { title: "Omförhandling av lån", desc: "Räntebindning och ränterisk.", href: "/att-tanka-pa#lan" },
-  { title: "Röda flaggor", desc: "Varningstecken innan du budar.", href: "/att-tanka-pa#rodaflaggor" },
+  { title: "Budgivning bostadsrätt", desc: "Så fungerar processen steg för steg.", href: "/budgivning-bostadsratt" },
 ];
 
 export default function HomePage() {

@@ -1661,6 +1661,66 @@ input[type="number"]::-webkit-outer-spin-button {
   margin-bottom: 18px;
 }
 
+.guide-cta-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.guide-cta-primary,
+.guide-cta-secondary {
+  display: inline-block;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 11px 26px;
+  border-radius: 6px;
+  text-decoration: none;
+}
+
+.guide-cta-primary {
+  background: var(--brand);
+  color: #fff;
+}
+
+.guide-cta-primary:hover {
+  background: var(--brand-hover);
+}
+
+.guide-cta-secondary {
+  background: var(--surface);
+  color: var(--fg);
+  border: 1px solid var(--border);
+}
+
+.guide-cta-secondary:hover {
+  border-color: var(--brand-border);
+}
+
+.guide-related {
+  margin-top: 40px;
+  padding-top: 32px;
+  border-top: 1px solid var(--border);
+}
+
+.guide-related-list {
+  list-style: none;
+  display: grid;
+  gap: 8px;
+}
+
+.guide-related-list .guide-toc-link span {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.guide-related-desc {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--muted);
+  line-height: 1.45;
+}
+
 @media (max-width: 600px) {
   .guide-toc-list {
     grid-template-columns: 1fr;
