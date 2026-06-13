@@ -116,6 +116,10 @@ button, input, select, textarea {
   .site-logo {
     height: 68px;
   }
+
+  .site-logo-link {
+    margin-left: calc(-68px * 89 / 341);
+  }
 }
 
 ::selection {
@@ -177,6 +181,8 @@ input[type="number"]::-webkit-outer-spin-button {
   text-decoration: none;
   display: inline-flex;
   align-items: center;
+  /* Logo PNG has ~89px left inset at source height 341px — pull flush to content margin */
+  margin-left: calc(-90px * 89 / 341);
 }
 
 .site-nav {
@@ -209,7 +215,11 @@ input[type="number"]::-webkit-outer-spin-button {
   .site-header-inner {
     height: 96px;
     padding: 0 24px;
-    justify-content: center;
+    justify-content: flex-start;
+  }
+
+  .site-logo-link {
+    margin-left: calc(-76px * 89 / 341);
   }
 
   .site-logo {
