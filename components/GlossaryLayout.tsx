@@ -3,6 +3,7 @@ import { PRODUCT_DOMAIN, SITE_URL } from "@/lib/brand";
 import { getGuidesBySlugs } from "@/lib/content/guides";
 import { getToolBySlug } from "@/lib/content/tools";
 import type { GlossaryTerm } from "@/lib/content/types";
+import { CTA_START_ANALYSIS } from "@/lib/brand";
 import { GuideCtaButton } from "@/components/GuideCtaButton";
 
 export function GlossaryLayout({ term }: { term: GlossaryTerm }) {
@@ -61,7 +62,7 @@ export function GlossaryLayout({ term }: { term: GlossaryTerm }) {
 
       <div className="guide-cta guide-cta--inline">
         <h2>Vill du se hur det påverkar ett konkret objekt?</h2>
-        <GuideCtaButton href="/new" event="guide_cta_click" label="Starta analys" primary />
+        <GuideCtaButton href="/new" event="guide_cta_click" label={CTA_START_ANALYSIS} primary />
       </div>
 
       {(relatedGuides.length > 0 || relatedTools.length > 0) && (

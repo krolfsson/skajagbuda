@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { PRODUCT_DOMAIN, SITE_URL } from "@/lib/brand";
+import { PRODUCT_DOMAIN, SITE_URL, CTA_START_ANALYSIS } from "@/lib/brand";
 
 const TITLE = "Att tänka på vid budgivning och köp av bostadsrätt";
 const DESCRIPTION =
@@ -566,7 +566,7 @@ export default function AttTankaPaPage() {
             textDecoration: "none",
           }}
         >
-          Starta analys
+          {CTA_START_ANALYSIS}
         </Link>
       </div>
     </div>

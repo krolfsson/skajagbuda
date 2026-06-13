@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { trackEvent } from "@/lib/analytics";
+import { CTA_START_ANALYSIS } from "@/lib/brand";
 
 // ─── Analyzing screen ──────────────────────────────────────────────────────────
 
@@ -1096,7 +1097,7 @@ export default function NewAnalysisPage() {
                   minWidth: "140px", whiteSpace: "nowrap",
                 }}
               >
-                {loading ? "Bedömer risk..." : "Få preliminär risknivå →"}
+                {loading ? "Bedömer risk..." : CTA_START_ANALYSIS}
               </button>
             )}
           </div>

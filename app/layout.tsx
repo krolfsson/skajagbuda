@@ -3,7 +3,7 @@ import { Barlow, Instrument_Sans } from "next/font/google";
 import Link from "next/link";
 import "./globals.css";
 import { Logo } from "@/components/Logo";
-import { PRODUCT_DOMAIN, PRODUCT_TAGLINE, SITE_URL, SEO_KEYWORDS } from "@/lib/brand";
+import { PRODUCT_DOMAIN, PRODUCT_TAGLINE, SITE_URL, SEO_KEYWORDS, CTA_START_ANALYSIS } from "@/lib/brand";
 
 const barlow = Barlow({
   subsets: ["latin"],
@@ -105,7 +105,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 Exempelanalys
               </a>
               <Link href="/new" className="nav-cta">
-                Starta analys
+                {CTA_START_ANALYSIS}
               </Link>
             </nav>
           </div>

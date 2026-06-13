@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { trackEvent } from "@/lib/analytics";
+import { CTA_START_ANALYSIS } from "@/lib/brand";
 import { GuideCtaButton } from "@/components/GuideCtaButton";
 
 function parseNum(v: string): number {
@@ -95,7 +96,7 @@ export function BoendekostnadCalculator() {
           <div className="guide-cta guide-cta--inline">
             <h2>Vill du analysera hela objektet?</h2>
             <p>Jämför kostnaden mot förening, pris och risk i en full analys.</p>
-            <GuideCtaButton href="/new" event="tool_cta_click" label="Få preliminär risknivå gratis" primary />
+            <GuideCtaButton href="/new" event="tool_cta_click" label={CTA_START_ANALYSIS} primary />
           </div>
         </div>
       )}

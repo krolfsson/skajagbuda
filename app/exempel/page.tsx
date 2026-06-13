@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ExampleReport } from "@/components/ExampleReport";
-import { SITE_URL } from "@/lib/brand";
+import { SITE_URL, CTA_START_ANALYSIS } from "@/lib/brand";
 
 const TITLE = "Exempelanalys – så ser en full bostadsanalys ut";
 const DESCRIPTION =
@@ -50,7 +50,7 @@ export default function ExempelPage() {
             padding: "10px 24px", background: "var(--brand)", color: "#fff",
             borderRadius: "6px", textDecoration: "none",
           }}>
-            Starta analys
+            {CTA_START_ANALYSIS}
           </Link>
         </div>
       </div>

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { SITE_URL } from "@/lib/brand";
+import { SITE_URL, CTA_START_ANALYSIS } from "@/lib/brand";
 import { TOOLS } from "@/lib/content/tools";
 import { AnalyticsPageView } from "@/components/AnalyticsPageView";
 
@@ -41,7 +41,7 @@ export default function VerktygIndexPage() {
       </ul>
       <div className="guide-cta">
         <h2>Nästa steg: analysera objektet</h2>
-        <Link href="/new" className="guide-cta-primary">Starta analys</Link>
+        <Link href="/new" className="guide-cta-primary">{CTA_START_ANALYSIS}</Link>
       </div>
     </div>
   );

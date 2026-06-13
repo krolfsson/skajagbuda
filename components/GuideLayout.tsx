@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { PRODUCT_DOMAIN, SITE_URL } from "@/lib/brand";
+import { PRODUCT_DOMAIN, SITE_URL, CTA_START_ANALYSIS } from "@/lib/brand";
 import { getGuideBySlug, getGuidesBySlugs } from "@/lib/content/guides";
 import { getToolBySlug } from "@/lib/content/tools";
 import type { Guide } from "@/lib/content/types";
@@ -117,7 +117,7 @@ export function GuideLayout({ guide }: { guide: Guide }) {
                 Klistra in annons, budhistorik och årsredovisning. Få en preliminär risknivå gratis.
               </p>
               <div className="guide-cta-actions">
-                <GuideCtaButton href="/new" event="guide_cta_click" label="Starta analys" primary />
+                <GuideCtaButton href="/new" event="guide_cta_click" label={CTA_START_ANALYSIS} primary />
                 <GuideCtaButton href="/exempel" event="guide_cta_click" label="Se exempelanalys" />
               </div>
             </div>
@@ -174,7 +174,7 @@ export function GuideLayout({ guide }: { guide: Guide }) {
         <h2>Osäker inför nästa bud?</h2>
         <p>Få ett nyktert beslutsunderlag innan du går vidare i budgivningen.</p>
         <div className="guide-cta-actions">
-          <GuideCtaButton href="/new" event="guide_cta_click" label="Få preliminär risknivå gratis" primary />
+          <GuideCtaButton href="/new" event="guide_cta_click" label={CTA_START_ANALYSIS} primary />
           <GuideCtaButton href="/exempel" event="guide_cta_click" label="Se exempelanalys" />
         </div>
       </div>

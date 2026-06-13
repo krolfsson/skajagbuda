@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { LandingExampleReport } from "@/components/LandingExampleReport";
 import { HomeAnalytics, HomeAnchorCta, HomeCtaLink } from "@/components/HomeAnalytics";
-import { PRODUCT_DOMAIN } from "@/lib/brand";
+import { PRODUCT_DOMAIN, CTA_START_ANALYSIS } from "@/lib/brand";
 
 const REPORT_ITEMS = [
   {
@@ -83,7 +83,7 @@ export default function HomePage() {
           </p>
           <div className="home-hero-ctas">
             <HomeCtaLink href="/new" event="click_start_analysis" className="home-btn-primary">
-              Starta analys
+              {CTA_START_ANALYSIS}
             </HomeCtaLink>
             <HomeAnchorCta href="#exempelrapport" event="click_example_analysis" className="home-btn-secondary">
               Se exempelanalys
@@ -172,7 +172,7 @@ export default function HomePage() {
             </div>
           </div>
           <HomeCtaLink href="/new" event="click_start_analysis" className="home-btn-primary home-cta-btn">
-            Starta analys
+            {CTA_START_ANALYSIS}
           </HomeCtaLink>
         </div>
       </section>
@@ -186,7 +186,7 @@ export default function HomePage() {
           <Link href="/verktyg" className="nav-link">Verktyg</Link>
           <Link href="/ordlista" className="nav-link">Ordlista</Link>
           <Link href="/exempel" className="nav-link">Exempelanalys</Link>
-          <Link href="/new" className="nav-link">Starta analys</Link>
+          <Link href="/new" className="nav-link">{CTA_START_ANALYSIS}</Link>
           <Link href="/om" className="nav-link">Om tjänsten</Link>
         </nav>
         <p>

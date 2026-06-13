@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { trackEvent } from "@/lib/analytics";
+import { CTA_START_ANALYSIS } from "@/lib/brand";
 import { GuideCtaButton } from "@/components/GuideCtaButton";
 
 function parseNum(v: string): number {
@@ -96,7 +97,7 @@ export function MaxbudCalculator() {
           )}
           <div className="guide-cta guide-cta--inline">
             <h2>Vill du jämföra maxbudet mot objektets risk?</h2>
-            <GuideCtaButton href="/new" event="tool_cta_click" label="Analysera objekt" primary />
+            <GuideCtaButton href="/new" event="tool_cta_click" label={CTA_START_ANALYSIS} primary />
           </div>
         </div>
       )}

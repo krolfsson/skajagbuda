@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { SITE_URL } from "@/lib/brand";
+import { SITE_URL, CTA_START_ANALYSIS } from "@/lib/brand";
 import { GUIDES } from "@/lib/content/guides";
 import { AnalyticsPageView } from "@/components/AnalyticsPageView";
 
@@ -44,7 +44,7 @@ export default function GuiderIndexPage() {
         <h2>Redan hittat ett objekt?</h2>
         <p>Klistra in annons och årsredovisning – få en preliminär risknivå gratis.</p>
         <div className="guide-cta-actions">
-          <Link href="/new" className="guide-cta-primary">Starta analys</Link>
+          <Link href="/new" className="guide-cta-primary">{CTA_START_ANALYSIS}</Link>
           <Link href="/verktyg" className="guide-cta-secondary">Gratisverktyg</Link>
         </div>
       </div>

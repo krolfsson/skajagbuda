@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { trackEvent } from "@/lib/analytics";
+import { CTA_START_ANALYSIS } from "@/lib/brand";
 import { GuideCtaButton } from "@/components/GuideCtaButton";
 
 function parseNum(v: string): number {
@@ -105,7 +106,7 @@ export function BrfSkuldCalculator() {
           </p>
           <div className="guide-cta guide-cta--inline">
             <h2>Vill du väga in avgift, underhåll och pris också?</h2>
-            <GuideCtaButton href="/new" event="tool_cta_click" label="Starta analys" primary />
+            <GuideCtaButton href="/new" event="tool_cta_click" label={CTA_START_ANALYSIS} primary />
           </div>
         </div>
       )}

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { PRODUCT_DOMAIN, SITE_URL } from "@/lib/brand";
+import { PRODUCT_DOMAIN, SITE_URL, CTA_START_ANALYSIS } from "@/lib/brand";
 import { SEO_GUIDE_PAGES } from "@/lib/seo-guide-links";
 
 export type GuideFaqItem = { q: string; a: string };
@@ -161,7 +161,7 @@ export function SeoGuideLayout({
         </p>
         <div className="guide-cta-actions">
           <Link href="/new" className="guide-cta-primary">
-            Starta analys
+            {CTA_START_ANALYSIS}
           </Link>
           <Link href="/exempel" className="guide-cta-secondary">
             Se exempelanalys
