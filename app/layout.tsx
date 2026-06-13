@@ -102,8 +102,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 Exempelanalys
               </a>
               <Link href="/new" className="nav-cta">
-                <span className="nav-cta-full">Starta analys</span>
-                <span className="nav-cta-short">Starta</span>
+                Starta analys
               </Link>
             </nav>
           </div>

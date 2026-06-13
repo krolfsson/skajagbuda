@@ -21,7 +21,7 @@ export const metadata: Metadata = {
 
 export default function ExempelPage() {
   return (
-    <div style={{ background: "var(--bg)", minHeight: "calc(100vh - 100px)", padding: "24px 16px 80px" }}>
+    <div style={{ background: "var(--bg)", minHeight: "calc(100vh - 116px)", padding: "24px 16px 80px" }}>
       <div style={{ maxWidth: "960px", margin: "0 auto" }}>
 
         {/* Top bar */}

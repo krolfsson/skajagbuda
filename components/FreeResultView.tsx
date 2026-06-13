@@ -114,7 +114,7 @@ export function FreeResultShell({
   const riskColor = RISK_DOT[riskLevel] ?? "var(--muted)";
 
   return (
-    <div style={{ background: "var(--bg)", minHeight: "calc(100vh - 100px)", padding: "32px 16px 80px" }}>
+    <div style={{ background: "var(--bg)", minHeight: "calc(100vh - 116px)", padding: "32px 16px 80px" }}>
       <div style={{ maxWidth: "560px", margin: "0 auto" }}>
         <a
           href="/new"

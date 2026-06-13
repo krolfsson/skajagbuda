@@ -98,7 +98,7 @@ export function AnalysisLoader({
   }
 
   return (
-    <div style={{ background: "var(--bg)", minHeight: "calc(100vh - 100px)", padding: "80px 24px", textAlign: "center" }}>
+    <div style={{ background: "var(--bg)", minHeight: "calc(100vh - 116px)", padding: "80px 24px", textAlign: "center" }}>
       <p style={{ fontSize: "11px", textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--muted)", marginBottom: "12px" }}>
         Analys
       </p>

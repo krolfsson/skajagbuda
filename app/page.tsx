@@ -68,19 +68,16 @@ const TOPICS = [
 
 export default function HomePage() {
   return (
-    <div style={{ background: "var(--bg)", minHeight: "calc(100vh - 100px)" }}>
+    <div style={{ background: "var(--bg)", minHeight: "calc(100vh - 116px)" }}>
       {/* Hero */}
       <section className="home-hero home-hero--solo">
         <div className="home-hero-copy">
           <p className="home-eyebrow">Beslutsstöd för bostadsköp</p>
           <h1 className="home-h1">Få koll innan du budar.</h1>
-          <p className="home-lead home-lead--desktop">
-            Klistra in annons, budhistorik och årsredovisning så får du en preliminär risknivå
-            – helt gratis. Lås upp hela analysen med prisbedömning, föreningsrisk och budstrategi.
-          </p>
-          <p className="home-lead home-lead--mobile">
-            Klistra in annons, budhistorik och årsredovisning. Få en preliminär risknivå gratis
-            och lås upp hela analysen när du vill gå vidare.
+          <p className="home-lead">
+            Klistra in annons, budhistorik och årsredovisning. Vi strukturerar underlaget och
+            väger pris, förening och risk — så att du får en preliminär risknivå gratis. Lås upp
+            hela analysen när du vill gå vidare.
           </p>
           <div className="home-hero-ctas">
             <Link href="/new" className="home-btn-primary">
