@@ -28,6 +28,8 @@ export const OG_DESCRIPTION =
   "Klistra in annons, budhistorik och årsredovisning. Få en preliminär risknivå gratis och lås upp en full analys med prisbedömning, föreningsrisk och budstrategi.";
 export const OG_IMAGE_ALT =
   "skajagbuda.se – beslutsstöd för bostadsköp med preliminär risknivå gratis";
+export const OG_IMAGE_PATH = "/og-preview.jpg";
+export const OG_IMAGE_SIZE = { width: 1200, height: 630 } as const;
 
 /** Default keywords reused across pages for SEO. */
 export const SEO_KEYWORDS = [

@@ -3,7 +3,7 @@ import { Barlow, Instrument_Sans } from "next/font/google";
 import Link from "next/link";
 import "./globals.css";
 import { Logo } from "@/components/Logo";
-import { PRODUCT_DOMAIN, PRODUCT_TAGLINE, SITE_URL, SEO_KEYWORDS, CTA_START_ANALYSIS, OG_TITLE, OG_DESCRIPTION, OG_IMAGE_ALT } from "@/lib/brand";
+import { PRODUCT_DOMAIN, PRODUCT_TAGLINE, SITE_URL, SEO_KEYWORDS, CTA_START_ANALYSIS, OG_TITLE, OG_DESCRIPTION, OG_IMAGE_ALT, OG_IMAGE_PATH, OG_IMAGE_SIZE } from "@/lib/brand";
 
 const barlow = Barlow({
   subsets: ["latin"],
@@ -47,10 +47,11 @@ export const metadata: Metadata = {
     description: OG_DESCRIPTION,
     images: [
       {
-        url: "/opengraph-image",
-        width: 1200,
-        height: 630,
+        url: OG_IMAGE_PATH,
+        width: OG_IMAGE_SIZE.width,
+        height: OG_IMAGE_SIZE.height,
         alt: OG_IMAGE_ALT,
+        type: "image/jpeg",
       },
     ],
   },
@@ -58,7 +59,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: OG_TITLE,
     description: OG_DESCRIPTION,
-    images: ["/twitter-image"],
+    images: [OG_IMAGE_PATH],
   },
 };
 
