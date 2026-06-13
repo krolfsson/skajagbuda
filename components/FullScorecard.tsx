@@ -3,6 +3,7 @@ import type { PropertyAnalysis } from "@/app/generated/prisma/client";
 import type { Scorecard } from "@/lib/schemas";
 import { ShareButton } from "@/components/ShareButton";
 import { ExportReportButton } from "@/components/ExportReportButton";
+import { DownloadPdfButton } from "@/components/DownloadPdfButton";
 import { DevBypassBanner } from "@/components/DevBypassBanner";
 import { REC_COLORS, RISK_DOT, BRAND, scoreBarColor } from "@/lib/ui-colors";
 
@@ -76,14 +77,15 @@ export function FullScorecard({
         {devBypass && <DevBypassBanner />}
 
         {/* Top bar */}
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "24px" }}>
+        <div className="no-print" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "24px" }}>
           <Link
             href="/new"
             style={{ fontSize: "13px", color: "var(--muted)", textDecoration: "none", display: "flex", alignItems: "center", gap: "4px" }}
           >
             ← Tillbaka till analyser
           </Link>
-          <div style={{ display: "flex", gap: "8px" }}>
+          <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", justifyContent: "flex-end" }}>
+            <DownloadPdfButton title={analysis.title} />
             <ExportReportButton title={analysis.title} meta={meta || null} scorecard={sc} />
             <ShareButton
               title={analysis.title}
@@ -92,6 +94,11 @@ export function FullScorecard({
           </div>
         </div>
 
+        <p className="no-print" style={{ fontSize: "12px", color: "var(--muted)", lineHeight: 1.5, marginBottom: "20px" }}>
+          Rapporten sparas på denna länk. Bokmärk sidan, dela länken eller spara som PDF.
+        </p>
+
+        <div className="report-print-root">
         {/* Heading */}
         <div style={{ marginBottom: "24px" }}>
           <h1
@@ -186,7 +193,7 @@ export function FullScorecard({
             {sc.maxBidSuggestion && (
               <div>
                 <p style={{ fontSize: "10px", textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--muted)", marginBottom: "6px" }}>
-                  Föreslagat maxbud
+                  Rekommenderat maxbud
                 </p>
                 <span style={{ fontSize: "16px", fontWeight: 600, letterSpacing: "-0.02em" }}>
                   {fmtMoney(normalizeBid(sc.maxBidSuggestion))}
@@ -411,6 +418,11 @@ export function FullScorecard({
           }}
         >
           {sc.disclaimer}
+        </div>
+
+        <p className="print-only report-print-footer">
+          Exporterad från skajagbuda.se · {fmtDate(analysis.createdAt)}
+        </p>
         </div>
       </div>
     </div>

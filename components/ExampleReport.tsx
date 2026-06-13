@@ -95,7 +95,7 @@ export function ExampleReport({ showHeading = true }: { showHeading?: boolean })
 
           <div>
             <p style={{ fontSize: "10px", textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--muted)", marginBottom: "6px" }}>
-              Föreslagat maxbud
+              Rekommenderat maxbud
             </p>
             <span style={{ fontSize: "16px", fontWeight: 600, letterSpacing: "-0.02em" }}>
               {fmtMoney(sc.maxBidSuggestion)}

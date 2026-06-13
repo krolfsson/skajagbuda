@@ -43,6 +43,7 @@ export function ShareButton({
   return (
     <button
       type="button"
+      className="no-print"
       onClick={handleShare}
       style={{
         display: "flex",

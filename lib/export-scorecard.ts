@@ -31,7 +31,7 @@ export function scorecardToMarkdown(
     `**Total score:** ${sc.score}/100`,
     `**Rekommendation:** ${sc.recommendation}`,
     `**Risknivå:** ${sc.riskLevel}`,
-    sc.maxBidSuggestion ? `**Föreslaget maxbud:** ${fmtMoney(sc.maxBidSuggestion)}` : "",
+    sc.maxBidSuggestion ? `**Rekommenderat maxbud:** ${fmtMoney(sc.maxBidSuggestion)}` : "",
     "",
     "## Sammanfattning",
     sc.summary,
@@ -68,12 +68,20 @@ export function scorecardToMarkdown(
   return lines.filter((line, i, arr) => !(line === "" && arr[i - 1] === "")).join("\n");
 }
 
-export function scorecardFilename(title: string): string {
-  const slug = title
+function scorecardSlug(title: string): string {
+  return title
     .toLowerCase()
     .replace(/[^a-z0-9åäö]+/gi, "-")
     .replace(/^-|-$/g, "")
     .slice(0, 40);
+}
+
+export function scorecardFilename(title: string): string {
   const date = new Date().toISOString().slice(0, 10);
-  return `skajagbuda-${slug || "rapport"}-${date}.md`;
+  return `skajagbuda-${scorecardSlug(title) || "rapport"}-${date}.md`;
+}
+
+export function scorecardPdfFilename(title: string): string {
+  const date = new Date().toISOString().slice(0, 10);
+  return `skajagbuda-${scorecardSlug(title) || "rapport"}-${date}.pdf`;
 }

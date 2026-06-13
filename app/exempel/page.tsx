@@ -5,7 +5,7 @@ import { SITE_URL } from "@/lib/brand";
 
 const TITLE = "Exempelanalys – så ser en full bostadsanalys ut";
 const DESCRIPTION =
-  "Se en komplett exempelanalys med score, risknivå, föreslaget maxbud, budstrategi, föreningsrisk, röda flaggor och frågor att ställa – allt annonsen inte berättar.";
+  "Se en komplett exempelanalys med score, risknivå, rekommenderat maxbud, budstrategi, föreningsrisk, röda flaggor och frågor att ställa – allt annonsen inte berättar.";
 
 export const metadata: Metadata = {
   title: TITLE,

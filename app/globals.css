@@ -1666,3 +1666,69 @@ input[type="number"]::-webkit-outer-spin-button {
     grid-template-columns: 1fr;
   }
 }
+
+/* ─── Report PDF / print ───────────────────────────────────────────────────── */
+
+.print-only {
+  display: none;
+}
+
+@media print {
+  @page {
+    margin: 16mm 14mm;
+    size: A4;
+  }
+
+  html,
+  body {
+    background: #fff !important;
+    color: #111 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .site-header,
+  .no-print,
+  .dev-bypass-banner {
+    display: none !important;
+  }
+
+  .print-only {
+    display: block !important;
+  }
+
+  .report-print-root {
+    max-width: 100% !important;
+    padding: 0 !important;
+  }
+
+  .report-print-root > div {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .result-top-grid,
+  .result-summary-grid,
+  .result-3col,
+  .result-bid-grid {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .result-3col {
+    grid-template-columns: 1fr 1fr 1fr !important;
+  }
+
+  .result-top-grid {
+    grid-template-columns: 200px 1fr !important;
+  }
+
+  .report-print-footer {
+    margin-top: 24px;
+    padding-top: 12px;
+    border-top: 1px solid #ddd;
+    font-size: 10px;
+    color: #666;
+    text-align: center;
+  }
+}

@@ -13,7 +13,7 @@ export function ExportReportButton({
   meta: string | null;
   scorecard: Scorecard;
 }) {
-  const [label, setLabel] = useState("Exportera");
+  const [label, setLabel] = useState("Markdown");
 
   function handleExport() {
     const markdown = scorecardToMarkdown(title, meta, scorecard);
@@ -24,13 +24,14 @@ export function ExportReportButton({
     link.download = scorecardFilename(title);
     link.click();
     URL.revokeObjectURL(url);
-    setLabel("Exporterad!");
-    setTimeout(() => setLabel("Exportera"), 2000);
+    setLabel("Nedladdad!");
+    setTimeout(() => setLabel("Markdown"), 2000);
   }
 
   return (
     <button
       type="button"
+      className="no-print"
       onClick={handleExport}
       style={{
         display: "flex",

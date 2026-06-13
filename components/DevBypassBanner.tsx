@@ -1,6 +1,7 @@
 export function DevBypassBanner() {
   return (
     <div
+      className="no-print"
       style={{
         maxWidth: "960px",
         margin: "0 auto 16px",
