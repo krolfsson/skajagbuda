@@ -1,65 +1,209 @@
-import Image from "next/image";
+import Link from "next/link";
+import { LandingExampleReport } from "@/components/LandingExampleReport";
+import { PRODUCT_DOMAIN } from "@/lib/brand";
 
-export default function Home() {
+const REPORT_ITEMS = [
+  {
+    title: "Prisbild",
+    desc: "Rimligt pris jämfört med område, storlek och skick.",
+    icon: (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <path d="M3 10.5 12 4l9 6.5" />
+        <path d="M5 9.5V20h14V9.5" />
+        <path d="M9.5 20v-5h5v5" />
+      </svg>
+    ),
+  },
+  {
+    title: "Föreningsrisk",
+    desc: "Skuld, kassa, avgifter och planerade renoveringar.",
+    icon: (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <path d="M12 3 5 6v5c0 4.4 3 8 7 9 4-1 7-4.6 7-9V6z" />
+        <path d="m9 12 2 2 4-4" />
+      </svg>
+    ),
+  },
+  {
+    title: "Budstrategi",
+    desc: "Öppningsbud, nästa steg och walk-away-nivå.",
+    icon: (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <path d="M3 17l5-5 3 3 7-7" />
+        <path d="M16 8h5v5" />
+      </svg>
+    ),
+  },
+  {
+    title: "Frågor att ställa",
+    desc: "Konkreta frågor till mäklare och förening.",
+    icon: (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <path d="M4 5h16v11H8l-4 4z" />
+        <path d="M9.2 9a2.8 2.8 0 0 1 5.3 1c0 1.5-2 1.8-2 3.2" />
+        <path d="M12 15.5h.01" />
+      </svg>
+    ),
+  },
+  {
+    title: "Röda flaggor",
+    desc: "Risker som kan påverka kostnad och framtida värde.",
+    icon: (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <path d="M5 21V4" />
+        <path d="M5 4h11l-1.5 3.5L16 11H5" />
+      </svg>
+    ),
+  },
+];
+
+const TOPICS = [
+  { title: "Budstrategier", desc: "Maxbud, trötta ut, psykologiska gränser.", href: "/att-tanka-pa#budstrategi" },
+  { title: "Granska årsredovisningen", desc: "Skuld/kvm, kassa och sparande.", href: "/att-tanka-pa#forening" },
+  { title: "Stambyte", desc: "Kostnad, finansiering och tidplan.", href: "/att-tanka-pa#stambyte" },
+  { title: "Tomträtt", desc: "Avgäld som omförhandlas och höjs.", href: "/att-tanka-pa#tomtratt" },
+  { title: "Omförhandling av lån", desc: "Räntebindning och ränterisk.", href: "/att-tanka-pa#lan" },
+  { title: "Röda flaggor", desc: "Varningstecken innan du budar.", href: "/att-tanka-pa#rodaflaggor" },
+];
+
+export default function HomePage() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+    <div style={{ background: "var(--bg)", minHeight: "calc(100vh - 100px)" }}>
+      {/* Hero */}
+      <section className="home-hero home-hero--solo">
+        <div className="home-hero-copy">
+          <p className="home-eyebrow">Beslutsstöd för bostadsköp</p>
+          <h1 className="home-h1">Få koll innan du budar.</h1>
+          <p className="home-lead home-lead--desktop">
+            Klistra in annons, budhistorik och årsredovisning så får du en preliminär risknivå
+            – helt gratis. Lås upp hela analysen med prisbedömning, föreningsrisk och budstrategi.
+          </p>
+          <p className="home-lead home-lead--mobile">
+            Klistra in annons, budhistorik och årsredovisning. Få en preliminär risknivå gratis
+            och lås upp hela analysen när du vill gå vidare.
+          </p>
+          <div className="home-hero-ctas">
+            <Link href="/new" className="home-btn-primary">
+              Starta analys
+            </Link>
+            <a href="#exempelrapport" className="home-btn-secondary">
+              Se exempelanalys
+            </a>
+          </div>
+          <p className="home-hero-disclaimer">
+            <InfoIcon />
+            Inte finansiell rådgivning. Bara bättre underlag inför nästa steg.
           </p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      </section>
+
+      <LandingExampleReport />
+
+      {/* Popular topics → guide (SEO internal linking) */}
+      <section className="home-topics" aria-labelledby="topics-heading">
+        <div className="home-report-section-head home-report-section-head--center">
+          <p className="home-section-eyebrow">Att tänka på inför budgivningen</p>
+          <h2 id="topics-heading" className="home-report-section-title">
+            Det mesta avgörande står inte i annonsen
+          </h2>
         </div>
-      </main>
+        <div className="home-topics-grid">
+          {TOPICS.map((t) => (
+            <Link key={t.href} href={t.href} className="home-topic-chip">
+              <span className="home-topic-chip-head">
+                <span className="home-topic-chip-title">{t.title}</span>
+                <svg
+                  className="home-topic-chip-arrow"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M5 12h14" />
+                  <path d="m13 6 6 6-6 6" />
+                </svg>
+              </span>
+              <span className="home-topic-chip-desc">{t.desc}</span>
+            </Link>
+          ))}
+        </div>
+        <div style={{ textAlign: "center" }}>
+          <Link href="/att-tanka-pa" className="home-topics-link">
+            Läs hela guiden: Att tänka på →
+          </Link>
+        </div>
+      </section>
+
+      {/* What you get */}
+      <section className="home-bottom">
+        <div className="home-report-section-head home-report-section-head--center">
+          <p className="home-section-eyebrow">Vad du får i rapporten</p>
+          <h2 className="home-report-section-title">Tydligt underlag — inte gissningar</h2>
+        </div>
+
+        <div className="home-report-grid">
+          {REPORT_ITEMS.map((item) => (
+            <div key={item.title} className="home-report-card">
+              <span className="home-report-icon">{item.icon}</span>
+              <h3 className="home-report-card-title">{item.title}</h3>
+              <p className="home-report-card-desc">{item.desc}</p>
+            </div>
+          ))}
+        </div>
+
+        <div className="home-cta">
+          <div className="home-cta-main">
+            <span className="home-cta-icon" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M3 10.5 12 4l9 6.5" />
+                <path d="M5 9.5V20h14V9.5" />
+                <path d="M9.5 20v-5h5v5" />
+              </svg>
+            </span>
+            <div className="home-cta-copy">
+              <h2 className="home-cta-title">Redo att gå igenom objektet?</h2>
+              <p className="home-cta-text">
+                Få en preliminär risknivå gratis. Lås upp hela rapporten när du vill gå vidare.
+              </p>
+            </div>
+          </div>
+          <Link href="/new" className="home-btn-primary home-cta-btn">
+            Starta analys
+          </Link>
+        </div>
+      </section>
+
+      <footer className="home-footer">
+        <nav
+          aria-label="Sidlänkar"
+          style={{ display: "flex", flexWrap: "wrap", gap: "16px", marginBottom: "12px" }}
+        >
+          <Link href="/att-tanka-pa" className="nav-link">Att tänka på</Link>
+          <Link href="/exempel" className="nav-link">Exempelanalys</Link>
+          <Link href="/new" className="nav-link">Starta analys</Link>
+          <Link href="/om" className="nav-link">Om tjänsten</Link>
+        </nav>
+        <p>
+          {PRODUCT_DOMAIN} är ett beslutsstöd och ersätter inte juridisk, ekonomisk eller finansiell
+          rådgivning. Kontrollera alltid uppgifter med mäklare, förening, bank eller relevant
+          expert.
+        </p>
+      </footer>
     </div>
+  );
+}
+
+function InfoIcon() {
+  return (
+    <svg className="home-disclaimer-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <circle cx="12" cy="12" r="9" />
+      <path d="M12 11v5" />
+      <path d="M12 8h.01" />
+    </svg>
   );
 }

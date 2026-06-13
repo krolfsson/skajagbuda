@@ -1,36 +1,127 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Ska jag buda?
 
-## Getting Started
+AI-baserad budgivningscoach för bostadsköp i Sverige. Mata in fakta om en bostad och få ett nyktert scorecard innan du går vidare i budgivningen.
 
-First, run the development server:
+## Tech stack
+
+- **Next.js 15** med App Router
+- **TypeScript**
+- **Tailwind CSS**
+- **Prisma** med PostgreSQL
+- **OpenAI-kompatibelt API** (konfigurerbart via env-variabler)
+- **Zod** för validering
+
+## Kom igång
+
+### 1. Klona och installera
+
+```bash
+git clone <repo>
+cd bidder
+npm install
+```
+
+### 2. Miljövariabler
+
+Kopiera `.env.example` till `.env` och fyll i värdena:
+
+```bash
+cp .env.example .env
+```
+
+| Variabel       | Beskrivning                                             |
+|----------------|---------------------------------------------------------|
+| `DATABASE_URL` | PostgreSQL connection string                            |
+| `AI_API_KEY`   | API-nyckel till din AI-provider                         |
+| `AI_BASE_URL`  | Base URL (default: `https://api.openai.com/v1`)         |
+| `AI_MODEL`     | Modell att använda (default: `gpt-4o`)                  |
+
+#### Byta AI-provider
+
+`AI_BASE_URL` och `AI_MODEL` gör det enkelt att byta:
+
+- **OpenAI**: `AI_BASE_URL=https://api.openai.com/v1`, `AI_MODEL=gpt-4o`
+- **OpenRouter**: `AI_BASE_URL=https://openrouter.ai/api/v1`, `AI_MODEL=anthropic/claude-3.5-sonnet`
+- **Anthropic via proxy**: Konfigurera en proxy som exponerar OpenAI-kompatibelt API
+- **Lokal modell (Ollama)**: `AI_BASE_URL=http://localhost:11434/v1`, `AI_MODEL=llama3.1`
+
+### 3. Databas
+
+Starta PostgreSQL lokalt (t.ex. via Docker):
+
+```bash
+docker run -d \
+  --name bidder-db \
+  -e POSTGRES_PASSWORD=postgres \
+  -e POSTGRES_DB=bidder \
+  -p 5432:5432 \
+  postgres:16
+```
+
+Kör Prisma-migrationer:
+
+```bash
+npx prisma migrate dev --name init
+npx prisma generate
+```
+
+### 4. Starta dev-servern
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Öppna [http://localhost:3000](http://localhost:3000)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Projektstruktur
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+app/
+  api/
+    analyses/
+      route.ts              # POST /api/analyses
+      [id]/
+        route.ts            # GET /api/analyses/:id
+        run/
+          route.ts          # POST /api/analyses/:id/run
+  new/
+    page.tsx                # Formulär för ny analys
+  result/
+    [id]/
+      page.tsx              # Scorecard-visning
+  layout.tsx
+  page.tsx                  # Landing page
 
-## Learn More
+lib/
+  ai.ts                     # AI-wrapper (byt provider här)
+  prisma.ts                 # Prisma-klient singleton
+  prompt.ts                 # Systemprompt + prompt-builder
+  rateLimit.ts              # Enkel in-memory rate limiter
+  schemas.ts                # Zod-scheman
 
-To learn more about Next.js, take a look at the following resources:
+prisma/
+  schema.prisma             # Datamodell
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## API
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### `POST /api/analyses`
 
-## Deploy on Vercel
+Skapar en ny analys. Body: se `CreateAnalysisSchema` i `lib/schemas.ts`.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Returnerar `{ id: string }`.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### `GET /api/analyses/:id`
+
+Hämtar en analys med alla fält inklusive AI-resultat.
+
+### `POST /api/analyses/:id/run`
+
+Kör AI-analysen för en sparad analys. Returnerar `{ analysis, scorecard }`.
+
+## Vidareutveckling
+
+- **Auth**: Datamodellen är förberedd med `userId`-kommentarer i schemat
+- **Rate limiting**: Byt ut `lib/rateLimit.ts` mot Redis/Upstash i produktion
+- **AI-provider**: Byt `AI_BASE_URL` + `AI_MODEL` i `.env`, ingen kodändring krävs
+- **Fler analysfält**: Utöka `PropertyAnalysis` i `prisma/schema.prisma` + `CreateAnalysisSchema`

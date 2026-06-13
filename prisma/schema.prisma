@@ -1,0 +1,118 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model PropertyAnalysis {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Object info
+  title   String
+  address String?
+  area    String?
+  city    String?
+
+  // Pricing
+  askingPrice Int?
+  currentBid  Int?
+  monthlyFee  Int?
+
+  // Physical attributes
+  livingAreaSqm    Decimal? @db.Decimal(6, 2)
+  rooms            Decimal? @db.Decimal(4, 1)
+  floor            Int?
+  totalFloors      Int?
+  hasBalcony       Boolean  @default(false)
+  balconyDirection String?
+  hasElevator      Boolean  @default(false)
+  hasFireplace     Boolean  @default(false)
+
+  // Association (BRF)
+  associationName                   String?
+  associationDebtPerSqm             Int?
+  associationCash                   Int?
+  associationAnnualFeeChangePercent Decimal? @db.Decimal(5, 2)
+  ownershipShare                    Decimal? @db.Decimal(8, 6)
+
+  // Renovations & condition
+  plannedRenovations      String?
+  upcomingPipeReplacement Boolean @default(false)
+  pipeReplacementDetails  String?
+
+  // User finances & preferences
+  userMaxBudget           Int?
+  userDownPayment         Int?
+  userMonthlyComfortLimit Int?
+  userNotes               String?
+
+  // Free-text inputs
+  listingUrl       String?
+  listingText      String?
+  annualReportText String?
+  biddingText      String?
+  agentInfoText    String?
+
+  // Analysis status (full / legacy)
+  analysisStatus AnalysisStatus @default(PENDING)
+
+  // Free tier
+  freeAnalysisStatus FreeAnalysisStatus @default(NOT_STARTED)
+  freeRiskLevel      String?
+  freeRawJson        Json?
+
+  // Paid tier
+  fullAnalysisStatus FullAnalysisStatus @default(LOCKED)
+  paymentStatus      PaymentStatus      @default(UNPAID)
+  analysisUnlocked   Boolean            @default(false)
+  stripeCheckoutSessionId String?
+  stripePaymentIntentId   String?
+
+  // AI results (full analysis)
+  aiScore            Int?
+  aiRecommendation   String?
+  aiRiskLevel        String?
+  aiMaxBidSuggestion Int?
+  aiSummary          String?
+  aiRawJson          Json?
+
+  // Future: userId String?
+
+  @@index([analysisStatus])
+  @@index([paymentStatus])
+  @@index([createdAt])
+}
+
+enum FreeAnalysisStatus {
+  NOT_STARTED
+  RUNNING
+  COMPLETED
+  FAILED
+}
+
+enum FullAnalysisStatus {
+  LOCKED
+  RUNNING
+  COMPLETED
+  FAILED
+}
+
+enum PaymentStatus {
+  UNPAID
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
+}
+
+enum AnalysisStatus {
+  PENDING
+  RUNNING
+  COMPLETED
+  FAILED
+}
