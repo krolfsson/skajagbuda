@@ -582,7 +582,7 @@ input[type="number"]::-webkit-outer-spin-button {
 
 .home-example-section-title {
   font-size: clamp(1.75rem, 3.2vw, 2.375rem);
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: -0.045em;
   line-height: 1.1;
   color: var(--fg);
@@ -614,7 +614,7 @@ input[type="number"]::-webkit-outer-spin-button {
 
 .home-example-object-title {
   font-size: clamp(1.4375rem, 2.6vw, 1.875rem);
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: -0.04em;
   line-height: 1.1;
   color: var(--fg);
