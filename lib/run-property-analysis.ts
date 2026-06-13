@@ -1,10 +1,12 @@
 import type { PropertyAnalysis } from "@/app/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { createCompletion } from "@/lib/ai";
+import { coerceScorecardInput } from "@/lib/coerce-scorecard";
 import { buildUserPrompt, SYSTEM_PROMPT } from "@/lib/prompt";
 import { ScorecardSchema, type Scorecard } from "@/lib/schemas";
 import { fetchEnrichmentForAnalysis } from "@/lib/fetch-enrichment";
 import { normalizeScorecardRisk } from "@/lib/risk-level";
+import type { AiMessage } from "@/lib/ai";
 
 function tryParseJson(raw: string): unknown {
   try {
@@ -32,6 +34,36 @@ export class AnalysisRunError extends Error {
   }
 }
 
+async function requestScorecard(messages: AiMessage[]): Promise<Scorecard> {
+  let rawResponse: string;
+  try {
+    rawResponse = await createCompletion({
+      messages,
+      temperature: 0.2,
+      maxTokens: 6000,
+      jsonMode: true,
+    });
+  } catch (err) {
+    console.error("[analysis] createCompletion failed:", err);
+    throw new AnalysisRunError("AI-anropet misslyckades. Försök igen.", "AI_FAILED");
+  }
+
+  const parsed = tryParseJson(rawResponse);
+  if (!parsed) {
+    console.error("[analysis] Invalid JSON from AI:", rawResponse.slice(0, 500));
+    throw new AnalysisRunError("AI returnerade ogiltig JSON. Försök igen.", "INVALID_JSON");
+  }
+
+  const coerced = coerceScorecardInput(parsed);
+  const validated = ScorecardSchema.safeParse(coerced);
+  if (!validated.success) {
+    console.error("[analysis] Scorecard validation failed:", validated.error.flatten());
+    throw new AnalysisRunError("AI-svaret hade fel format.", "VALIDATION_FAILED", validated.error.flatten());
+  }
+
+  return validated.data;
+}
+
 /** Kör en enda fullständig analys — samma resultat används i gratis- och betalvy. */
 export async function runPropertyAnalysis(
   analysis: PropertyAnalysis
@@ -56,58 +88,57 @@ export async function runPropertyAnalysis(
     hasAnnualReport: !!analysis.annualReportText,
   });
 
-  let rawResponse: string;
+  const userPrompt = buildUserPrompt(analysis, enrichment);
+  const baseMessages: AiMessage[] = [
+    { role: "system", content: SYSTEM_PROMPT },
+    { role: "user", content: userPrompt },
+  ];
+
+  let scorecard: Scorecard;
   try {
-    rawResponse = await createCompletion({
-      messages: [
-        { role: "system", content: SYSTEM_PROMPT },
-        { role: "user", content: buildUserPrompt(analysis, enrichment) },
-      ],
-      temperature: 0.2,
-      maxTokens: 6000,
-      jsonMode: true,
+    scorecard = await requestScorecard(baseMessages);
+  } catch (firstErr) {
+    if (!(firstErr instanceof AnalysisRunError) || firstErr.code === "AI_FAILED") {
+      await prisma.propertyAnalysis.update({
+        where: { id: analysis.id },
+        data: {
+          fullAnalysisStatus: "FAILED",
+          freeAnalysisStatus: "FAILED",
+          analysisStatus: "FAILED",
+        },
+      });
+      throw firstErr;
+    }
+
+    console.warn("[analysis] First attempt failed, retrying with correction prompt", {
+      id: analysis.id,
+      code: firstErr.code,
+      details: firstErr.details,
     });
-  } catch (err) {
-    await prisma.propertyAnalysis.update({
-      where: { id: analysis.id },
-      data: {
-        fullAnalysisStatus: "FAILED",
-        freeAnalysisStatus: "FAILED",
-        analysisStatus: "FAILED",
-      },
-    });
-    console.error("[analysis] createCompletion failed:", err);
-    throw new AnalysisRunError("AI-anropet misslyckades. Försök igen.", "AI_FAILED");
+
+    try {
+      scorecard = await requestScorecard([
+        ...baseMessages,
+        {
+          role: "user",
+          content:
+            "Ditt förra svar kunde inte valideras. Returnera ENDAST ett komplett JSON-objekt med exakt den schema-struktur som beskrivs i systemprompten. Alla fält måste finnas. score och categoryScores ska vara heltal 0–100. recommendation måste vara exakt en av: Buda inte, Buda försiktigt, Buda, Starkt case. riskLevel måste vara exakt en av: Låg, Medel, Hög, Mycket hög. strengths måste ha minst ett element.",
+        },
+      ]);
+    } catch (retryErr) {
+      await prisma.propertyAnalysis.update({
+        where: { id: analysis.id },
+        data: {
+          fullAnalysisStatus: "FAILED",
+          freeAnalysisStatus: "FAILED",
+          analysisStatus: "FAILED",
+        },
+      });
+      throw retryErr;
+    }
   }
 
-  const parsed = tryParseJson(rawResponse);
-  if (!parsed) {
-    await prisma.propertyAnalysis.update({
-      where: { id: analysis.id },
-      data: {
-        fullAnalysisStatus: "FAILED",
-        freeAnalysisStatus: "FAILED",
-        analysisStatus: "FAILED",
-      },
-    });
-    throw new AnalysisRunError("AI returnerade ogiltig JSON. Försök igen.", "INVALID_JSON");
-  }
-
-  const validated = ScorecardSchema.safeParse(parsed);
-  if (!validated.success) {
-    await prisma.propertyAnalysis.update({
-      where: { id: analysis.id },
-      data: {
-        fullAnalysisStatus: "FAILED",
-        freeAnalysisStatus: "FAILED",
-        analysisStatus: "FAILED",
-      },
-    });
-    console.error("[analysis] Scorecard validation failed:", validated.error.flatten());
-    throw new AnalysisRunError("AI-svaret hade fel format.", "VALIDATION_FAILED", validated.error.flatten());
-  }
-
-  const scorecard = normalizeScorecardRisk(validated.data);
+  scorecard = normalizeScorecardRisk(scorecard);
 
   const updated = await prisma.propertyAnalysis.update({
     where: { id: analysis.id },
