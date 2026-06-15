@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { CreateAnalysisSchema } from "@/lib/schemas";
 import { checkRateLimit } from "@/lib/rateLimit";
+import { sanitizeAnalysisInput } from "@/lib/sanitize-db-text";
 
 export async function POST(req: NextRequest) {
   try {
@@ -29,7 +30,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const d = parsed.data;
+    const d = sanitizeAnalysisInput(parsed.data);
 
     const analysis = await prisma.propertyAnalysis.create({
       data: {

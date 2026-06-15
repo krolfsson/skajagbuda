@@ -1,10 +1,30 @@
 /**
  * Fetches a listing URL (Hemnet, Booli, broker site) and extracts useful text.
- * Uses schema.org JSON-LD when available, falls back to meta tags + body text.
- * Returns null on failure — never throws.
  */
+import {
+  isAggregatorUrl,
+  resolveAggregatorListing,
+} from "@/lib/aggregator-listing";
+
 export async function scrapeListingUrl(url: string): Promise<string | null> {
   try {
+    if (isAggregatorUrl(url)) {
+      const agg = await resolveAggregatorListing(url);
+      const parts: string[] = [`Källa: ${url}`, "", ...agg.logs];
+      if (agg.warnings.length) parts.push("", ...agg.warnings.map((w) => `Varning: ${w}`));
+
+      for (const [key, value] of Object.entries(agg.fields)) {
+        if (value) parts.push(`${key}: ${value}`);
+      }
+
+      if (agg.brokerUrl) {
+        const brokerText = await scrapeListingUrl(agg.brokerUrl);
+        if (brokerText) parts.push("", brokerText);
+      }
+
+      return parts.length > 2 ? parts.join("\n") : null;
+    }
+
     const res = await fetch(url, {
       headers: {
         "User-Agent":

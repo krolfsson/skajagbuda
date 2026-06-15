@@ -7,6 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "test:brokers": "npx tsx scripts/test-broker-scrape.ts",
+    "test:aggregator": "npx tsx --env-file=.env scripts/test-aggregator-scrape.ts",
+    "test:full-analysis": "npx tsx --env-file=.env scripts/test-full-analysis.ts",
     "postinstall": "prisma generate"
   },
   "dependencies": {

@@ -1,10 +1,7 @@
 /**
- * Fetches recently sold apartments near a given city/area using Booli's search.
- * Returns a text summary for the AI prompt, or null if unavailable.
- *
- * Booli's API v3 requires registration. We fall back to a best-effort HTML scrape
- * of their sold listing search page, which is publicly accessible.
+ * Fetches recently sold apartments near a given city/area using Booli's API or search page.
  */
+import { getBooliCredentials, searchBooliSold } from "@/lib/booli-api";
 
 export interface ComparableSale {
   address: string;
@@ -27,7 +24,17 @@ export async function fetchComparables(
   if (!query) return null;
 
   try {
-    // Booli sold search — public, no key required for basic search
+    if (getBooliCredentials()) {
+      const sold = await searchBooliSold(query, 20);
+      if (sold.length > 0) {
+        const sales = sold
+          .map((l) => parseBooliListing(l))
+          .filter((s): s is ComparableSale => s !== null);
+        if (sales.length > 0) return formatComparables(sales, query);
+      }
+    }
+
+    // Fallback: Booli HTML (often blocked by Cloudflare)
     const searchUrl = `https://www.booli.se/sok/slutpriser?q=${encodeURIComponent(query)}&objectType=Lägenhet&rooms=${rooms ?? ""}&minLivingArea=${sqm ? Math.max(1, sqm - 20) : ""}&maxLivingArea=${sqm ? sqm + 20 : ""}`;
 
     const res = await fetch(searchUrl, {
@@ -75,6 +82,8 @@ export async function fetchComparables(
 function parseBooliListing(listing: unknown): ComparableSale | null {
   if (!listing || typeof listing !== "object") return null;
   const l = listing as Record<string, unknown>;
+  const location = l.location as Record<string, unknown> | undefined;
+  const addressObj = location?.address as Record<string, unknown> | undefined;
 
   const soldPrice =
     (l.soldPrice as number) ?? (l.price as number) ?? (l.finalPrice as number);
@@ -86,16 +95,25 @@ function parseBooliListing(listing: unknown): ComparableSale | null {
     (l.size as number) ??
     null;
 
+  const soldDateRaw = l.soldDate as string | Record<string, unknown> | undefined;
+  const soldDate =
+    typeof soldDateRaw === "string"
+      ? soldDateRaw
+      : soldDateRaw
+        ? String(soldDateRaw)
+        : "–";
+
   return {
-    address: String(l.streetAddress ?? l.address ?? l.location ?? "–"),
+    address: String(
+      addressObj?.streetAddress ?? l.streetAddress ?? l.address ?? l.location ?? "–"
+    ),
     soldPrice,
-    askingPrice: (l.listPrice as number) ?? (l.askingPrice as number) ?? null,
+    askingPrice: (l.listPrice as number) ?? (l.firstPrice as number) ?? (l.askingPrice as number) ?? null,
     sqm,
-    pricePerSqm:
-      sqm && sqm > 0 ? Math.round(soldPrice / sqm) : null,
+    pricePerSqm: sqm && sqm > 0 ? Math.round(soldPrice / sqm) : null,
     rooms: (l.rooms as number) ?? null,
-    soldDate: String(l.soldDate ?? l.saleDate ?? l.date ?? "–"),
-    floor: l.floor ? String(l.floor) : null,
+    soldDate,
+    floor: l.floor != null ? String(l.floor) : null,
   };
 }
 
