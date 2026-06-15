@@ -2,10 +2,14 @@ import path from "node:path";
 import { pathToFileURL } from "node:url";
 import { sanitizeDbText } from "@/lib/sanitize-db-text";
 
+// Polyfills DOMMatrix etc. required by pdfjs-dist in serverless Node.
+import "pdf-parse/worker";
+
 let workerConfigured = false;
 
 async function getPdfParser() {
   const { PDFParse } = await import("pdf-parse");
+  const { CanvasFactory } = await import("pdf-parse/worker");
 
   if (!workerConfigured && PDFParse.isNodeJS) {
     const workerPath = path.join(
@@ -16,7 +20,7 @@ async function getPdfParser() {
     workerConfigured = true;
   }
 
-  return PDFParse;
+  return { PDFParse, CanvasFactory };
 }
 
 export async function extractTextFromUpload(
@@ -37,8 +41,8 @@ export async function extractTextFromUpload(
     file.type === "application/pdf" ||
     file.name.toLowerCase().endsWith(".pdf")
   ) {
-    const PDFParse = await getPdfParser();
-    const parser = new PDFParse({ data: buffer });
+    const { PDFParse, CanvasFactory } = await getPdfParser();
+    const parser = new PDFParse({ data: buffer, CanvasFactory });
     try {
       const result = await parser.getText();
       const text = sanitizeDbText(result.text?.trim() ?? "");
@@ -70,8 +74,8 @@ export async function extractTextFromBuffer(
     return { text: sanitizeDbText(buffer.toString("utf-8")), kind: "text" };
   }
 
-  const PDFParse = await getPdfParser();
-  const parser = new PDFParse({ data: buffer });
+  const { PDFParse, CanvasFactory } = await getPdfParser();
+  const parser = new PDFParse({ data: buffer, CanvasFactory });
   try {
     const result = await parser.getText();
     const text = sanitizeDbText(result.text?.trim() ?? "");
