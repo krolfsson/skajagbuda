@@ -16,7 +16,7 @@ const ANALYSIS_STEPS = [
   { ms: 12500, label: "Analyserar förening och pris",      sub: "Ekonomi, underhåll och marknad" },
   { ms: 16500, label: "Identifierar risker och röda flaggor", sub: "Stambyte, tomträtt, lån m.m." },
   { ms: 20500, label: "Tar fram budstrategi",              sub: "Riktbud och maxbud" },
-  { ms: 24500, label: "Beräknar score och risknivå",       sub: "Samma analys som i hela rapporten" },
+  { ms: 24500, label: "Beräknar score och risknivå",       sub: "Samma analys som i den fulla analysen" },
 ];
 
 function AnalyzingScreen({ title }: { title: string }) {
@@ -195,6 +195,35 @@ const STEPS = [
   { id: 5, label: "Din ekonomi",     short: "5" },
   { id: 6, label: "Övrigt",          short: "6" },
 ];
+
+const RISK_OPTIONS = [
+  { id: "stambyte", label: "Planerat stambyte" },
+  { id: "tomtratt", label: "Tomträtt" },
+  { id: "avgift", label: "Avgiftshöjning nämnd" },
+  { id: "renovering", label: "Större renovering planerad" },
+  { id: "finansiering", label: "Osäker finansiering" },
+  { id: "belaning", label: "Hög belåning i föreningen" },
+  { id: "ranta", label: "Rörliga lån" },
+  { id: "skick", label: "Oklart skick" },
+] as const;
+
+type RiskCheckId = (typeof RISK_OPTIONS)[number]["id"];
+
+function hasMinimumForAnalysis(f: FormData): boolean {
+  return !!(
+    f.address.trim() ||
+    f.listingText.trim() ||
+    f.askingPrice.trim() ||
+    f.listingUrl.trim()
+  );
+}
+
+function validateForAnalysis(f: FormData): string | null {
+  if (!hasMinimumForAnalysis(f)) {
+    return "Lägg gärna till adress, annons eller pris för att få en rimligare risknivå.";
+  }
+  return null;
+}
 
 // ─── Nominatim address suggestion ─────────────────────────────────────────────
 
@@ -577,12 +606,16 @@ function AnnualReportUpload({ value, onChange }: {
         ) : (
           <>
             <p style={{ fontSize: "13px", color: "var(--fg)", marginBottom: "2px" }}>
-              Klicka eller dra hit en PDF eller textfil
+              Klicka eller dra hit årsredovisning, underhållsplan eller textfil
             </p>
             <p style={{ fontSize: "11px", color: "var(--muted)" }}>PDF eller .txt, max 10 MB</p>
           </>
         )}
       </div>
+
+      <p style={{ fontSize: "11.5px", color: "var(--muted)", lineHeight: 1.45, margin: 0 }}>
+        Du kan också klistra in text manuellt om du inte har filen.
+      </p>
 
       {/* Manual paste fallback */}
       <details style={{ fontSize: "12px" }}>
@@ -601,9 +634,8 @@ function AnnualReportUpload({ value, onChange }: {
 
 function StepIndicator({ current }: { current: number }) {
   return (
-    <div style={{ marginBottom: "28px" }}>
-      {/* Desktop/tablet: full stepper */}
-      <div style={{
+    <div className="analysis-stepper">
+      <div className="analysis-stepper-inner" style={{
         display: "grid",
         gridTemplateColumns: `repeat(${STEPS.length}, 1fr)`,
       }}>
@@ -664,13 +696,11 @@ function StepIndicator({ current }: { current: number }) {
   );
 }
 
-// ─── Step contents ────────────────────────────────────────────────────────────
-
 function Step1({ f, set }: { f: FormData; set: (k: keyof FormData, v: string | boolean) => void }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
       <FieldRow>
-        <Label>Adress</Label>
+        <Label optional>Adress</Label>
         <AddressAutocomplete
           value={f.address}
           onChange={v => set("address", v)}
@@ -680,6 +710,12 @@ function Step1({ f, set }: { f: FormData; set: (k: keyof FormData, v: string | b
             if (area) set("area", area);
           }}
         />
+      </FieldRow>
+
+      <FieldRow>
+        <Label optional>Klistra in annons, budhistorik eller anteckningar</Label>
+        <Hint>Inkludera gärna text från annonsen, budgivning, årsredovisning eller egna anteckningar.</Hint>
+        <Textarea value={f.listingText} onChange={v => set("listingText", v)} placeholder="Klistra in text här…" rows={4} />
       </FieldRow>
 
       <Grid2>
@@ -746,15 +782,9 @@ function Step1({ f, set }: { f: FormData; set: (k: keyof FormData, v: string | b
       )}
 
       <FieldRow>
-        <Label optional>Klistra in annons eller annan info</Label>
-        <Hint>Inkludera gärna annons, budhistorik, årsredovisning och egna anteckningar.</Hint>
-        <Textarea value={f.listingText} onChange={v => set("listingText", v)} placeholder="Klistra in text här..." rows={5} />
-      </FieldRow>
-
-      <FieldRow>
         <Label optional>Egna tankar om objektet</Label>
         <Hint>Vad gillar du? Vad oroar dig? Skriv dina tankar här.</Hint>
-        <Textarea value={f.objectNotes} onChange={v => set("objectNotes", v)} placeholder="Skriv här..." rows={3} />
+        <Textarea value={f.objectNotes} onChange={v => set("objectNotes", v)} placeholder="Skriv här…" rows={3} />
       </FieldRow>
     </div>
   );
@@ -765,16 +795,17 @@ function Step2({ f, set }: { f: FormData; set: (k: keyof FormData, v: string | b
     <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
       <Grid2>
         <FieldRow>
-          <Label>Utgångspris (kr)</Label>
+          <Label optional>Utgångspris (kr)</Label>
           <NumberInput value={f.askingPrice} onChange={v => set("askingPrice", v)} placeholder="7 500 000" />
         </FieldRow>
         <FieldRow>
           <Label optional>Aktuellt bud (kr)</Label>
           <NumberInput value={f.currentBid} onChange={v => set("currentBid", v)} placeholder="8 100 000" />
+          <Hint>Aktuellt bud kan lämnas tomt om budgivningen inte har startat.</Hint>
         </FieldRow>
       </Grid2>
       <FieldRow>
-        <Label>Månadsavgift (kr)</Label>
+        <Label optional>Månadsavgift (kr)</Label>
         <NumberInput value={f.monthlyFee} onChange={v => set("monthlyFee", v)} placeholder="4 200" />
       </FieldRow>
     </div>
@@ -820,13 +851,41 @@ function Step3({ f, set }: { f: FormData; set: (k: keyof FormData, v: string | b
   );
 }
 
-function Step4({ f, set }: { f: FormData; set: (k: keyof FormData, v: string | boolean) => void }) {
+function Step4({
+  f,
+  set,
+  riskChecks,
+  setRiskCheck,
+}: {
+  f: FormData;
+  set: (k: keyof FormData, v: string | boolean) => void;
+  riskChecks: Record<RiskCheckId, boolean>;
+  setRiskCheck: (id: RiskCheckId, v: boolean) => void;
+}) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
       <FieldRow>
+        <Label optional>Kända risker eller saker att kontrollera</Label>
+        <div className="analysis-risk-grid">
+          {RISK_OPTIONS.map((option) => (
+            <Checkbox
+              key={option.id}
+              checked={!!riskChecks[option.id]}
+              onChange={(v) => setRiskCheck(option.id, v)}
+              label={option.label}
+            />
+          ))}
+        </div>
+      </FieldRow>
+
+      <FieldRow>
         <Label optional>Planerade renoveringar och underhåll</Label>
-        <Textarea value={f.plannedRenovations} onChange={v => set("plannedRenovations", v)}
-          placeholder="t.ex. fasadrenovering 2026, stambyte planerat 2027, ny hiss" rows={4} />
+        <Textarea
+          value={f.plannedRenovations}
+          onChange={v => set("plannedRenovations", v)}
+          placeholder="t.ex. fasadrenovering 2026, stambyte planerat 2027, ny hiss…"
+          rows={4}
+        />
       </FieldRow>
     </div>
   );
@@ -846,8 +905,9 @@ function Step5({ f, set }: { f: FormData; set: (k: keyof FormData, v: string | b
         </FieldRow>
       </Grid2>
       <FieldRow>
-        <Label optional>Max månadsutlägg du är bekväm med (kr)</Label>
+        <Label optional>Bekväm maxkostnad / mån (kr)</Label>
         <NumberInput value={f.userMonthlyComfortLimit} onChange={v => set("userMonthlyComfortLimit", v)} placeholder="18 000" />
+        <Hint>Inkludera avgift, ränta, amortering och drift om du vill.</Hint>
       </FieldRow>
       <FieldRow>
         <Label optional>Dina tankar och preferenser</Label>
@@ -861,6 +921,19 @@ function Step5({ f, set }: { f: FormData; set: (k: keyof FormData, v: string | b
 function Step6({ f, set }: { f: FormData; set: (k: keyof FormData, v: string | boolean) => void }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+      <div className="analysis-summary-card">
+        <h3 className="analysis-summary-card-title">Redo för preliminär risknivå</h3>
+        <p className="analysis-summary-card-text">
+          Vi använder det du fyllt i om objektet, priset, föreningen, risker och din ekonomi. Du kan
+          fortfarande lägga till mer information, men det är inte ett krav.
+        </p>
+        <ul className="analysis-summary-card-list">
+          <li>Objekt och pris</li>
+          <li>Förening och årsredovisning</li>
+          <li>Risker och egna preferenser</li>
+        </ul>
+      </div>
+
       {/* Annons-länk */}
       <FieldRow>
         <Label optional>Länk till annons</Label>
@@ -890,6 +963,9 @@ function Step6({ f, set }: { f: FormData; set: (k: keyof FormData, v: string | b
 export default function NewAnalysisPage() {
   const router = useRouter();
   const [form, setForm] = useState<FormData>(INITIAL);
+  const [riskChecks, setRiskChecks] = useState<Record<RiskCheckId, boolean>>(() =>
+    Object.fromEntries(RISK_OPTIONS.map((o) => [o.id, false])) as Record<RiskCheckId, boolean>
+  );
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [analyzing, setAnalyzing] = useState(false);
@@ -900,11 +976,11 @@ export default function NewAnalysisPage() {
     setForm(prev => ({ ...prev, [key]: value }));
   }
 
+  function setRiskCheck(id: RiskCheckId, value: boolean) {
+    setRiskChecks(prev => ({ ...prev, [id]: value }));
+  }
+
   function next() {
-    if (step === 1 && !form.address.trim()) {
-      setError("Ange en adress för att fortsätta.");
-      return;
-    }
     setError(null);
     if (step < 6) setStep(s => s + 1);
   }
@@ -928,17 +1004,28 @@ export default function NewAnalysisPage() {
     if (form.address.trim()) parts.push(form.address.trim());
     if (form.livingAreaSqm) parts.push(`${form.livingAreaSqm} kvm`);
     if (form.rooms) parts.push(`${form.rooms} rok`);
-    return parts.join(", ") || "Ny analys";
+    if (parts.length > 0) return parts.join(", ");
+
+    if (form.listingText.trim()) {
+      const line = form.listingText.trim().split("\n").find((l) => l.trim())?.trim();
+      if (line) return line.slice(0, 80);
+    }
+
+    if (form.askingPrice) {
+      const formatted = new Intl.NumberFormat("sv-SE", { maximumFractionDigits: 0 }).format(
+        Number(form.askingPrice)
+      );
+      return `Objekt, ${formatted} kr`;
+    }
+
+    return "Ny analys";
   }
 
-  async function handleAnalyze() {
-    setError(null);
-    setLoading(true);
-    trackEvent("analysis_started");
-
-    const title = buildTitle();
-    setAnalyzeTitle(title);
-    setAnalyzing(true);
+  function buildPayload(title: string) {
+    const selectedRisks = RISK_OPTIONS.filter((o) => riskChecks[o.id]).map((o) => o.label);
+    const plannedRenovations = [selectedRisks.join(", "), form.plannedRenovations]
+      .filter(Boolean)
+      .join("\n");
 
     const numericFields = [
       "askingPrice","currentBid","monthlyFee","livingAreaSqm","rooms",
@@ -950,6 +1037,8 @@ export default function NewAnalysisPage() {
     const payload: Record<string, unknown> = {
       ...form,
       title,
+      plannedRenovations: plannedRenovations || undefined,
+      upcomingPipeReplacement: form.upcomingPipeReplacement || riskChecks.stambyte,
       userNotes: [form.userNotes, form.objectNotes].filter(Boolean).join("\n\n") || undefined,
     };
 
@@ -960,10 +1049,31 @@ export default function NewAnalysisPage() {
       payload[field] = isNaN(n) ? undefined : n;
     }
 
-    // Clean empty strings
     for (const key of Object.keys(payload)) {
       if (payload[key] === "" || payload[key] === undefined) delete payload[key];
     }
+
+    return payload;
+  }
+
+  async function handleAnalyze() {
+    if (loading) return;
+
+    const validationError = validateForAnalysis(form);
+    if (validationError) {
+      setError(validationError);
+      return;
+    }
+
+    setError(null);
+    setLoading(true);
+    trackEvent("analysis_started");
+
+    const title = buildTitle();
+    setAnalyzeTitle(title);
+    setAnalyzing(true);
+
+    const payload = buildPayload(title);
 
     try {
       const createRes = await fetch("/api/analyses", {
@@ -1000,7 +1110,7 @@ export default function NewAnalysisPage() {
   }
 
   return (
-    <div style={{ background: "var(--bg)", minHeight: "calc(100vh - 52px)", padding: "32px 16px 80px" }}>
+    <div className="analysis-page" style={{ background: "var(--bg)", minHeight: "calc(100vh - 116px)", padding: "32px 16px 80px" }}>
       <div style={{ maxWidth: "580px", margin: "0 auto" }}>
         {/* Back */}
         <a href="/" style={{
@@ -1016,8 +1126,8 @@ export default function NewAnalysisPage() {
             Ny analys
           </h1>
           <p style={{ fontSize: "13px", color: "var(--muted)", lineHeight: 1.55, maxWidth: "460px" }}>
-            Fyll i det du vet om bostaden. Det räcker med några uppgifter för att få en preliminär
-            risknivå. Ju mer du lägger till, desto bättre blir fullrapporten.
+            Fyll i det du vet. Det räcker med adress, pris eller annons för att få en preliminär
+            risknivå — men ju mer du lägger till, desto bättre blir den fulla analysen.
           </p>
         </div>
 
@@ -1036,7 +1146,7 @@ export default function NewAnalysisPage() {
           {step === 1 && <Step1 f={form} set={set} />}
           {step === 2 && <Step2 f={form} set={set} />}
           {step === 3 && <Step3 f={form} set={set} />}
-          {step === 4 && <Step4 f={form} set={set} />}
+          {step === 4 && <Step4 f={form} set={set} riskChecks={riskChecks} setRiskCheck={setRiskCheck} />}
           {step === 5 && <Step5 f={form} set={set} />}
           {step === 6 && <Step6 f={form} set={set} />}
 
@@ -1051,55 +1161,53 @@ export default function NewAnalysisPage() {
           )}
 
           {/* Nav buttons */}
-          <div style={{
-            display: "flex", justifyContent: "space-between", alignItems: "center",
-            marginTop: "24px", paddingTop: "20px", borderTop: "1px solid var(--border)",
-            gap: "12px",
-          }}>
+          <div className="analysis-nav">
             {step > 1 ? (
               <button
                 type="button"
                 onClick={back}
-                style={{
-                  fontSize: "13px", color: "var(--muted)",
-                  background: "none", border: "1px solid var(--border)",
-                  borderRadius: "6px", padding: "9px 16px", cursor: "pointer",
-                  whiteSpace: "nowrap",
-                }}
+                className="analysis-nav-back"
               >
                 ← Tillbaka
               </button>
             ) : <div />}
 
-            {step < 6 ? (
-              <button
-                type="button"
-                onClick={next}
-                style={{
-                  fontSize: "13px", fontWeight: 600, color: "#fff",
-                  background: "var(--brand)", border: "none", borderRadius: "6px",
-                  padding: "9px 24px", cursor: "pointer", whiteSpace: "nowrap",
-                }}
-              >
-                Nästa →
-              </button>
-            ) : (
-              <button
-                type="button"
-                onClick={handleAnalyze}
-                disabled={loading}
-                style={{
-                  fontSize: "13px", fontWeight: 600,
-                  color: loading ? "var(--muted)" : "#fff",
-                  background: loading ? "var(--border)" : "var(--brand)",
-                  border: "none", borderRadius: "6px",
-                  padding: "9px 24px", cursor: loading ? "not-allowed" : "pointer",
-                  minWidth: "140px", whiteSpace: "nowrap",
-                }}
-              >
-                {loading ? "Bedömer risk..." : CTA_START_ANALYSIS}
-              </button>
-            )}
+            <div className="analysis-nav-primary">
+              {step < 6 ? (
+                <button
+                  type="button"
+                  onClick={next}
+                  className="analysis-nav-next"
+                >
+                  Nästa →
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={handleAnalyze}
+                  disabled={loading}
+                  className="analysis-nav-submit"
+                  style={{
+                    color: loading ? "var(--muted)" : "#fff",
+                    background: loading ? "var(--border)" : "var(--brand)",
+                    cursor: loading ? "not-allowed" : "pointer",
+                  }}
+                >
+                  {loading ? "Bedömer risk..." : CTA_START_ANALYSIS}
+                </button>
+              )}
+
+              {step >= 2 && step < 6 && (
+                <button
+                  type="button"
+                  onClick={handleAnalyze}
+                  disabled={loading}
+                  className="analysis-shortcut"
+                >
+                  Analysera med det jag fyllt i
+                </button>
+              )}
+            </div>
           </div>
         </div>
 
