@@ -78,7 +78,7 @@ async function main() {
         scrapeFields: `${found.length}/${SCRAPE_FIELD_KEYS.length}`,
         riskLevel: scorecard.riskLevel,
         recommendation: scorecard.recommendation,
-        totalScore: scorecard.totalScore,
+        score: scorecard.score,
         ms: Date.now() - scrapeStarted,
       });
     } catch (err) {
