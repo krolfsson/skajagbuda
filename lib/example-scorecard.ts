@@ -3,7 +3,7 @@ import type { Scorecard } from "@/lib/schemas";
 export const EXAMPLE_PROPERTY = {
   title: "Sveavägen 123, Vasastan",
   meta: "2 rok · 62 kvm · BRF Vasastan · Utgångspris 7 950 000 kr",
-  metaShort: "2 rok · 62 kvm · BRF Vasastan · Exempelanalys",
+  metaShort: "2 rok · 62 kvm · BRF Vasastan · Utgångspris 7 950 000 kr",
 };
 
 export const EXAMPLE_PRICE_VS_MARKET =

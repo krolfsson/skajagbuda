@@ -5,19 +5,19 @@ export function LandingExampleReport() {
   return (
     <section id="exempelanalys" className="home-example-proof-section" aria-labelledby="example-analysis-heading">
       <div className="home-example-proof-inner">
-        <div className="home-example-section-head">
+        <header className="home-example-section-head">
           <p className="home-section-eyebrow">Exempelanalys</p>
           <h2 id="example-analysis-heading" className="home-example-section-title">
             Så ser en full analys ut
           </h2>
           <p className="home-example-section-lead">
-            Så här kan en full analys se ut efter upplåsning — med score, risknivå, budstrategi och
-            viktiga risker bakom objektet.
+            Det här är ett exempel på vad du får efter upplåsning — en full analys med score,
+            risknivå, budstrategi och viktiga risker bakom objektet.
           </p>
-        </div>
+        </header>
 
-        <div className="home-example-object">
-          <p className="home-example-object-label">Exempelobjekt</p>
+        <div className="home-example-preview">
+          <p className="home-example-preview-label">Preview av upplåst analys</p>
           <h3 className="home-example-object-title">{EXAMPLE_PROPERTY.title}</h3>
           <p className="home-example-object-meta">{EXAMPLE_PROPERTY.metaShort}</p>
         </div>
