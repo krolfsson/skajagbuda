@@ -11,8 +11,8 @@ export function LandingExampleReport() {
             Så ser en full analys ut
           </h2>
           <p className="home-example-section-lead">
-            Det här är ett exempel på vad du får efter upplåsning — en full analys med score,
-            risknivå, budstrategi och viktiga risker bakom objektet.
+            Det här är ett exempel på vad du får efter upplåsning — en full analys där AI hjälper till
+            att väga pris, förening, risk och budstrategi.
           </p>
         </header>
 

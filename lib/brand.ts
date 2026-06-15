@@ -41,7 +41,7 @@ export const SITE_URL = (() => {
 
 export const OG_TITLE = "Få koll innan du budar | skajagbuda.se";
 export const OG_DESCRIPTION =
-  "Klistra in annons, budhistorik och årsredovisning. Få en preliminär risknivå gratis och lås upp en full analys med prisbedömning, föreningsrisk och budstrategi.";
+  "Klistra in objektlänken. Vi hämtar underlaget där det går och låter AI strukturera pris, förening och risk — preliminär risknivå gratis.";
 export const OG_IMAGE_ALT =
   "skajagbuda.se – beslutsstöd för bostadsköp med preliminär risknivå gratis";
 export const OG_IMAGE_PATH = "/og-preview.jpg";

@@ -7,7 +7,7 @@ import { CTA_START_ANALYSIS } from "@/lib/brand";
 const REPORT_ITEMS = [
   {
     title: "Prisbild",
-    desc: "Rimligt pris jämfört med område, storlek och skick.",
+    desc: "AI väger pris, avgift och budläge mot objektets förutsättningar.",
     icon: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
         <path d="M3 10.5 12 4l9 6.5" />
@@ -18,7 +18,7 @@ const REPORT_ITEMS = [
   },
   {
     title: "Föreningsrisk",
-    desc: "Skuld, kassa, avgifter och planerade renoveringar.",
+    desc: "Förening, årsredovisning och kända risker analyseras där underlag finns.",
     icon: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
         <path d="M12 3 5 6v5c0 4.4 3 8 7 9 4-1 7-4.6 7-9V6z" />
@@ -77,9 +77,14 @@ export default function HomePage() {
         <div className="home-hero-copy">
           <p className="home-eyebrow">Beslutsstöd för bostadsköp</p>
           <h1 className="home-h1">Få koll innan du budar.</h1>
-          <p className="home-lead">
-            Klistra in annons, budhistorik och årsredovisning. Vi väger pris, förening och risk — så
-            att du får en preliminär risknivå gratis.
+          <p className="home-lead home-lead--desktop">
+            Klistra in objektlänken. Vi hämtar underlaget där det går och låter AI strukturera och
+            analysera pris, förening och risk — så att du får en preliminär risknivå gratis innan du
+            budar.
+          </p>
+          <p className="home-lead home-lead--mobile">
+            Klistra in objektlänken. AI hjälper dig väga pris, förening och risk — så att du får en
+            preliminär risknivå gratis innan du budar.
           </p>
           <div className="home-hero-ctas">
             <HomeCtaLink href="/new" event="click_start_analysis" className="home-btn-primary">
@@ -143,6 +148,11 @@ export default function HomePage() {
         <div className="home-report-section-head home-report-section-head--center">
           <p className="home-section-eyebrow">Vad du får i analysen</p>
           <h2 className="home-report-section-title">Tydligt underlag — inte gissningar</h2>
+          <p className="home-report-section-lead">
+            Klistra in objektlänken. Vi hämtar annons, pris, avgift, förening och årsredovisning där
+            det går — du kontrollerar och kompletterar det som saknas. AI strukturerar underlaget och
+            hjälper till att identifiera prisbild, föreningsrisk, röda flaggor och frågor att ställa.
+          </p>
         </div>
 
         <div className="home-report-grid">
@@ -168,6 +178,9 @@ export default function HomePage() {
               <h2 className="home-cta-title">Redo att gå igenom objektet?</h2>
               <p className="home-cta-text">
                 Få en preliminär risknivå gratis. Lås upp hela analysen när du vill gå vidare.
+              </p>
+              <p className="home-cta-subtext">
+                AI hjälper dig strukturera underlaget och hitta sådant som annars är lätt att missa.
               </p>
             </div>
           </div>

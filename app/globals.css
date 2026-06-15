@@ -484,6 +484,15 @@ input[type="number"]::-webkit-outer-spin-button {
   margin: 0;
 }
 
+.home-cta-subtext {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.5;
+  max-width: 520px;
+  margin: 8px 0 0;
+  opacity: 0.9;
+}
+
 .home-cta-btn {
   flex-shrink: 0;
   white-space: nowrap;
@@ -1300,6 +1309,22 @@ input[type="number"]::-webkit-outer-spin-button {
   margin-bottom: 22px;
 }
 
+.home-lead--mobile {
+  display: none;
+}
+
+.home-report-section-lead {
+  max-width: 640px;
+  margin: 12px auto 0;
+  font-size: clamp(0.9375rem, 1.2vw, 1.0625rem);
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.home-report-section-head--center .home-report-section-lead {
+  text-align: center;
+}
+
 .home-hero-ctas {
   display: flex;
   gap: 14px;
@@ -1770,6 +1795,14 @@ input[type="number"]::-webkit-outer-spin-button {
     line-height: 1.48;
     max-width: 100%;
     margin-bottom: 20px;
+  }
+
+  .home-lead--desktop {
+    display: none;
+  }
+
+  .home-lead--mobile {
+    display: block;
   }
 
   .home-hero-ctas {
