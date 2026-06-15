@@ -9,6 +9,9 @@ export const EXAMPLE_PROPERTY = {
 export const EXAMPLE_PRICE_VS_MARKET =
   "Jämför med faktiska slutpriser, inte utgångspriser: tre 2:or i kvarteret gick för 128 000–134 000 kr/kvm det senaste året. Utgångspriset (128 000 kr/kvm) är satt lågt för att dra upp budgivningen — den verkliga marknadsnivån ligger snarare runt 8,1–8,3 Mkr.";
 
+export const EXAMPLE_CONCLUSION =
+  "Buda försiktigt och kräv svar om stambyte, tomträtt och räntebindning innan slutbud.";
+
 export const EXAMPLE_SCORECARD: Scorecard = {
   score: 68,
   recommendation: "Buda försiktigt",

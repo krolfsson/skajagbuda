@@ -5,6 +5,7 @@ import { RISK_DOT } from "@/lib/ui-colors";
 import { FULL_ANALYSIS_PRICE_SEK } from "@/lib/brand";
 import { trackEvent } from "@/lib/analytics";
 import { ResultAnalytics } from "@/components/ResultAnalytics";
+import { TrustSignals } from "@/components/TrustSignals";
 
 function LockIcon() {
   return (
@@ -97,9 +98,7 @@ export function UnlockAnalysisCard({
       <button type="button" className="unlock-cta" onClick={handleUnlock} disabled={loading}>
         {loading ? "Öppnar betalning..." : `Se hela analysen för ${FULL_ANALYSIS_PRICE_SEK} kr`}
       </button>
-      <p className="unlock-subtext">
-        Hela rapporten låses upp direkt efter betalning. Engångsbetalning. Ingen prenumeration.
-      </p>
+      <TrustSignals variant="paywall" />
 
       {error && <p className="unlock-error">{error}</p>}
     </div>
@@ -141,7 +140,7 @@ export function FreeResultShell({
             {riskLevel}
           </p>
           <p className="free-risk-card-body">
-            Det finns mer att granska innan du går vidare i budgivningen. I hela rapporten ser du
+            Det finns mer att granska innan du går vidare i budgivningen. I hela analysen ser du
             var risken kommer ifrån — rekommenderat maxbud, föreningsrisk och röda flaggor som
             sällan syns tydligt i annonsen. Bättre att veta innan du binder dig, inte efter.
           </p>

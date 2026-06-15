@@ -3,6 +3,7 @@ import { Barlow, Instrument_Sans } from "next/font/google";
 import Link from "next/link";
 import "./globals.css";
 import { Logo } from "@/components/Logo";
+import { SiteFooter } from "@/components/SiteFooter";
 import { PRODUCT_DOMAIN, PRODUCT_TAGLINE, SITE_URL, SEO_KEYWORDS, CTA_START_ANALYSIS, OG_TITLE, OG_DESCRIPTION, OG_IMAGE_ALT, OG_IMAGE_PATH, OG_IMAGE_SIZE } from "@/lib/brand";
 
 const barlow = Barlow({
@@ -118,6 +119,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </div>
         </header>
         <main>{children}</main>
+        <SiteFooter />
       </body>
     </html>
   );

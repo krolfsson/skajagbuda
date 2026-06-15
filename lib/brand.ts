@@ -12,6 +12,19 @@ export const FULL_ANALYSIS_PRICE_SEK = 29;
 /** Primary CTA label linking to /new across the site. */
 export const CTA_START_ANALYSIS = "Starta gratis analys";
 
+/** Public contact email (NEXT_PUBLIC_CONTACT_EMAIL). */
+export const CONTACT_EMAIL =
+  process.env.NEXT_PUBLIC_CONTACT_EMAIL?.trim() || "kontakt@skajagbuda.se";
+
+/** Trust copy — price and payment (Stripe Checkout: card, Apple Pay, Google Pay where supported). */
+export const TRUST_PRICE_LINE = `Full analys ${FULL_ANALYSIS_PRICE_SEK} kr · Engångsbetalning · Ingen prenumeration`;
+export const TRUST_PRICE_LINE_FOOTER = `Full analys ${FULL_ANALYSIS_PRICE_SEK} kr. Engångsbetalning. Ingen prenumeration.`;
+export const TRUST_PAYMENT_LINE =
+  "Säker betalning via Stripe med kort, Apple Pay eller Google Pay där det stöds.";
+export const TRUST_PAYMENT_LINE_PAYWALL =
+  "Säker betalning med kort, Apple Pay eller Google Pay via Stripe.";
+export const FOOTER_DISCLAIMER = `${PRODUCT_DOMAIN} är ett beslutsstöd och ersätter inte juridisk, ekonomisk eller finansiell rådgivning. Kontrollera alltid uppgifter med mäklare, bostadsrättsförening, bank eller relevant expert.`;
+
 /** Canonical, absolute site URL used for metadata, sitemap, robots and JSON-LD. */
 export const SITE_URL = (() => {
   const configured = process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, "");

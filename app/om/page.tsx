@@ -1,33 +1,37 @@
 import type { Metadata } from "next";
+import { InfoPageLayout, InfoSection } from "@/components/InfoPageLayout";
 import { PRODUCT_DOMAIN } from "@/lib/brand";
 
 export const metadata: Metadata = {
   title: "Om tjänsten",
-  description: `${PRODUCT_DOMAIN} är ett beslutsstöd för bostadsköpare i Sverige som strukturerar information om bostaden och belyser risker och möjligheter inför budgivningen.`,
+  description: `${PRODUCT_DOMAIN} är ett beslutsstöd för bostadsköpare. Strukturera underlag från annons, budhistorik och årsredovisning innan du går vidare i budgivningen.`,
   alternates: { canonical: "/om" },
 };
 
 export default function OmPage() {
   return (
-    <div style={{ maxWidth: "640px", margin: "0 auto", padding: "60px 24px" }}>
-      <p style={{ fontSize: "11px", textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--muted)", marginBottom: "20px" }}>
-        Om tjänsten
-      </p>
-      <h1 style={{ fontSize: "24px", fontWeight: 700, letterSpacing: "-0.03em", marginBottom: "20px" }}>
-        Ska jag buda?
-      </h1>
-      <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-        {[
-          "Ska jag buda? är ett beslutsstöd för bostadsköpare i Sverige.",
-          "Du matar in fakta om bostaden — pris, avgift, föreningens ekonomi, planerade renoveringar och din egen budget — och systemet returnerar ett strukturerat scorecard.",
-          "Tjänsten är inte finansiell rådgivning. Den är ett verktyg för att strukturera information och belysa risker och möjligheter innan du fattar ett av de största ekonomiska besluten i ditt liv.",
-          "Gör alltid din egen bedömning och rådgör med bank och eventuellt en oberoende mäklare eller jurist.",
-        ].map((p, i) => (
-          <p key={i} style={{ fontSize: "14px", color: i === 0 ? "var(--fg)" : "var(--muted)", lineHeight: 1.75 }}>
-            {p}
-          </p>
-        ))}
-      </div>
-    </div>
+    <InfoPageLayout
+      title={`Om ${PRODUCT_DOMAIN}`}
+      lead={`${PRODUCT_DOMAIN} är ett beslutsstöd för bostadsköpare. Tjänsten hjälper dig strukturera underlag från annons, budhistorik och årsredovisning och väga pris, förening och risk innan du går vidare i budgivningen.`}
+      showCta
+    >
+      <InfoSection title="Så fungerar det">
+        <ol className="info-page-list info-page-list--ordered">
+          <li>Klistra in det du vet om bostaden.</li>
+          <li>Få en preliminär risknivå gratis.</li>
+          <li>
+            Lås upp full analys om du vill se maxbud, budstrategi, röda flaggor och frågor att
+            ställa.
+          </li>
+        </ol>
+      </InfoSection>
+
+      <InfoSection title="Viktigt att veta">
+        <p>
+          Analysen är ett beslutsstöd och ersätter inte rådgivning från bank, jurist, mäklare eller
+          annan expert. Kontrollera alltid uppgifter själv.
+        </p>
+      </InfoSection>
+    </InfoPageLayout>
   );
 }

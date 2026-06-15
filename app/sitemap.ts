@@ -16,6 +16,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${SITE_URL}/exempel`, lastModified: now, changeFrequency: "monthly", priority: 0.8 },
     { url: `${SITE_URL}/new`, lastModified: now, changeFrequency: "monthly", priority: 0.75 },
     { url: `${SITE_URL}/om`, lastModified: now, changeFrequency: "yearly", priority: 0.4 },
+    { url: `${SITE_URL}/kontakt`, lastModified: now, changeFrequency: "yearly", priority: 0.35 },
+    { url: `${SITE_URL}/integritet`, lastModified: now, changeFrequency: "yearly", priority: 0.3 },
+    { url: `${SITE_URL}/villkor`, lastModified: now, changeFrequency: "yearly", priority: 0.3 },
   ];
 
   const guides = getAllGuideSlugs().map((slug) => ({

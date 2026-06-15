@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { LandingExampleReport } from "@/components/LandingExampleReport";
 import { HomeAnalytics, HomeAnchorCta, HomeCtaLink } from "@/components/HomeAnalytics";
-import { PRODUCT_DOMAIN, CTA_START_ANALYSIS } from "@/lib/brand";
+import { TrustSignals } from "@/components/TrustSignals";
+import { CTA_START_ANALYSIS } from "@/lib/brand";
 
 const REPORT_ITEMS = [
   {
@@ -59,17 +60,17 @@ const REPORT_ITEMS = [
 ];
 
 const TOPICS = [
-  { title: "Budstrategi", desc: "Öppningsbud, nästa steg och walk-away.", href: "/guider/budstrategi-bostadsratt" },
-  { title: "Rimligt maxbud", desc: "Så sätter du en gräns innan budgivning.", href: "/guider/vad-ar-rimligt-maxbud" },
-  { title: "BRF-årsredovisning", desc: "Vad du ska granska innan köp.", href: "/guider/analysera-brf-arsredovisning" },
-  { title: "Stambyte", desc: "Risk eller möjlighet i föreningen.", href: "/guider/stambyte-bostadsratt-risk" },
-  { title: "Boendekostnad", desc: "Räkna månadskostnad gratis.", href: "/verktyg/boendekostnad" },
-  { title: "Checklista", desc: "Detta bör du kontrollera före bud.", href: "/guider/checklista-innan-budgivning" },
+  { title: "Sätt en budstrategi", desc: "Öppningsbud, nästa steg och walk-away.", href: "/guider/budstrategi-bostadsratt" },
+  { title: "Räkna rimligt maxbud", desc: "Sätt en gräns innan budgivningen.", href: "/guider/vad-ar-rimligt-maxbud" },
+  { title: "Granska BRF-årsredovisning", desc: "Se vad du ska kontrollera innan köp.", href: "/guider/analysera-brf-arsredovisning" },
+  { title: "Förstå stambyte", desc: "Risk, kostnad eller möjlighet i föreningen.", href: "/guider/stambyte-bostadsratt-risk" },
+  { title: "Räkna boendekostnad", desc: "Se ungefärlig månadskostnad.", href: "/verktyg/boendekostnad" },
+  { title: "Gå igenom checklistan", desc: "Detta bör du kontrollera före bud.", href: "/guider/checklista-innan-budgivning" },
 ];
 
 export default function HomePage() {
   return (
-    <div style={{ background: "var(--bg)", minHeight: "calc(100vh - 116px)" }}>
+    <div style={{ background: "var(--bg)" }} className="home-page">
       <HomeAnalytics />
       {/* Hero */}
       <section className="home-hero home-hero--solo">
@@ -77,9 +78,8 @@ export default function HomePage() {
           <p className="home-eyebrow">Beslutsstöd för bostadsköp</p>
           <h1 className="home-h1">Få koll innan du budar.</h1>
           <p className="home-lead">
-            Klistra in annons, budhistorik och årsredovisning. Vi strukturerar underlaget och
-            väger pris, förening och risk — så att du får en preliminär risknivå gratis. Lås upp
-            hela analysen när du vill gå vidare.
+            Klistra in annons, budhistorik och årsredovisning. Vi väger pris, förening och risk — så
+            att du får en preliminär risknivå gratis.
           </p>
           <div className="home-hero-ctas">
             <HomeCtaLink href="/new" event="click_start_analysis" className="home-btn-primary">
@@ -141,7 +141,7 @@ export default function HomePage() {
       {/* What you get */}
       <section className="home-bottom">
         <div className="home-report-section-head home-report-section-head--center">
-          <p className="home-section-eyebrow">Vad du får i rapporten</p>
+          <p className="home-section-eyebrow">Vad du får i analysen</p>
           <h2 className="home-report-section-title">Tydligt underlag — inte gissningar</h2>
         </div>
 
@@ -167,34 +167,18 @@ export default function HomePage() {
             <div className="home-cta-copy">
               <h2 className="home-cta-title">Redo att gå igenom objektet?</h2>
               <p className="home-cta-text">
-                Få en preliminär risknivå gratis. Lås upp hela rapporten när du vill gå vidare.
+                Få en preliminär risknivå gratis. Lås upp hela analysen när du vill gå vidare.
               </p>
             </div>
           </div>
-          <HomeCtaLink href="/new" event="click_start_analysis" className="home-btn-primary home-cta-btn">
-            {CTA_START_ANALYSIS}
-          </HomeCtaLink>
+          <div className="home-cta-actions">
+            <HomeCtaLink href="/new" event="click_start_analysis" className="home-btn-primary home-cta-btn">
+              {CTA_START_ANALYSIS}
+            </HomeCtaLink>
+            <TrustSignals variant="cta" />
+          </div>
         </div>
       </section>
-
-      <footer className="home-footer">
-        <nav
-          aria-label="Sidlänkar"
-          style={{ display: "flex", flexWrap: "wrap", gap: "16px", marginBottom: "12px" }}
-        >
-          <Link href="/guider" className="nav-link">Guider</Link>
-          <Link href="/verktyg" className="nav-link">Verktyg</Link>
-          <Link href="/ordlista" className="nav-link">Ordlista</Link>
-          <Link href="/exempel" className="nav-link">Exempelanalys</Link>
-          <Link href="/new" className="nav-link">{CTA_START_ANALYSIS}</Link>
-          <Link href="/om" className="nav-link">Om tjänsten</Link>
-        </nav>
-        <p>
-          {PRODUCT_DOMAIN} är ett beslutsstöd och ersätter inte juridisk, ekonomisk eller finansiell
-          rådgivning. Kontrollera alltid uppgifter med mäklare, förening, bank eller relevant
-          expert.
-        </p>
-      </footer>
     </div>
   );
 }
