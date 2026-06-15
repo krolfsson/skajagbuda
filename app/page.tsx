@@ -85,7 +85,7 @@ export default function HomePage() {
             <HomeCtaLink href="/new" event="click_start_analysis" className="home-btn-primary">
               {CTA_START_ANALYSIS}
             </HomeCtaLink>
-            <HomeAnchorCta href="#exempelrapport" event="click_example_analysis" className="home-btn-secondary">
+            <HomeAnchorCta href="#exempelanalys" event="click_example_analysis" className="home-btn-secondary">
               Se exempelanalys
             </HomeAnchorCta>
           </div>

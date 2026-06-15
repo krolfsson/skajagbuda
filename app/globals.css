@@ -7,6 +7,7 @@
 
 :root {
   --bg: #f5f5f3;
+  --bg-proof: #f3f1ec;
   --surface: #ffffff;
   --fg: #111111;
   --muted: #505050;
@@ -500,11 +501,12 @@ input[type="number"]::-webkit-outer-spin-button {
 .home-hero {
   max-width: 1180px;
   margin: 0 auto;
-  padding: clamp(56px, 5vw, 64px) 24px clamp(36px, 3vw, 48px);
+  padding: clamp(56px, 5vw, 64px) 24px clamp(40px, 4vw, 48px);
   display: grid;
   grid-template-columns: 1fr 340px;
   gap: 32px;
   align-items: start;
+  background: var(--bg);
 }
 
 .home-hero--solo {
@@ -515,7 +517,28 @@ input[type="number"]::-webkit-outer-spin-button {
   max-width: 760px;
 }
 
-/* Example report section */
+/* Example analysis — proof section (distinct from hero) */
+.home-example-proof-section {
+  background: var(--bg-proof);
+  scroll-margin-top: 80px;
+  padding: clamp(56px, 6vw, 72px) 0 clamp(72px, 8vw, 96px);
+}
+
+.home-example-proof-inner {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.home-example-report-wrap {
+  margin-top: clamp(24px, 3vw, 32px);
+  padding: clamp(18px, 2.2vw, 28px);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+}
+
+/* Legacy alias — keep shared head/object/report styles */
 .home-example-section {
   max-width: 1180px;
   margin: 0 auto;
@@ -610,12 +633,12 @@ input[type="number"]::-webkit-outer-spin-button {
 }
 
 .home-example-section-title {
-  font-size: clamp(1.75rem, 3.2vw, 2.375rem);
+  font-size: clamp(1.625rem, 2.8vw, 2.125rem);
   font-weight: 700;
-  letter-spacing: -0.045em;
-  line-height: 1.1;
+  letter-spacing: -0.04em;
+  line-height: 1.12;
   color: var(--fg);
-  margin-bottom: 16px;
+  margin-bottom: 14px;
 }
 
 .home-example-section-lead {
@@ -629,7 +652,7 @@ input[type="number"]::-webkit-outer-spin-button {
 /* Example object — a label for the report, not a new section */
 .home-example-object {
   max-width: 760px;
-  margin-top: 28px;
+  margin-top: clamp(24px, 3vw, 32px);
   margin-bottom: 0;
 }
 
@@ -944,6 +967,20 @@ input[type="number"]::-webkit-outer-spin-button {
   .ex-bid-grid {
     grid-template-columns: 1fr;
     gap: 14px;
+  }
+
+  .home-example-proof-section {
+    padding: clamp(44px, 8vw, 56px) 0 clamp(56px, 8vw, 72px);
+    scroll-margin-top: 68px;
+  }
+
+  .home-example-proof-inner {
+    padding: 0 20px;
+  }
+
+  .home-example-report-wrap {
+    padding: 16px;
+    margin-top: 20px;
   }
 
   .home-example-section {
