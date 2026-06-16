@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { PropertyAnalysis } from "@/app/generated/prisma/client";
+import { summaryToBullets } from "@/lib/format-summary";
 import type { Scorecard } from "@/lib/schemas";
 import { ShareButton } from "@/components/ShareButton";
 import { ExportReportButton } from "@/components/ExportReportButton";
@@ -223,9 +224,32 @@ export function FullScorecard({
               <p style={{ fontSize: "10px", textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--muted)", marginBottom: "10px" }}>
                 Kort sammanfattning
               </p>
-              <p style={{ fontSize: "13px", lineHeight: "1.75", color: "var(--fg)" }}>
-                {sc.summary}
-              </p>
+              <ul
+                style={{
+                  listStyle: "none",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "8px",
+                  margin: 0,
+                  padding: 0,
+                }}
+              >
+                {summaryToBullets(sc.summary).map((point, i) => (
+                  <li
+                    key={i}
+                    style={{
+                      display: "flex",
+                      gap: "8px",
+                      fontSize: "13px",
+                      lineHeight: "1.55",
+                      color: "var(--fg)",
+                    }}
+                  >
+                    <span style={{ color: "var(--muted)", flexShrink: 0 }}>•</span>
+                    <span>{point}</span>
+                  </li>
+                ))}
+              </ul>
             </div>
 
             {/* Category scores */}

@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { summaryToBullets } from "@/lib/format-summary";
 import { REC_COLORS, RISK_DOT, BRAND, scoreBarColor } from "@/lib/ui-colors";
 import { EXAMPLE_PROPERTY, EXAMPLE_SCORECARD, EXAMPLE_CONCLUSION } from "@/lib/example-scorecard";
 
@@ -152,11 +153,13 @@ export function ExampleReport({ showHeading = true }: { showHeading?: boolean })
         <p className="ex-conclusion">
           <strong>Kort slutsats:</strong> {EXAMPLE_CONCLUSION}
         </p>
-        {sc.summary.split("\n\n").map((para) => (
-          <p key={para.slice(0, 40)} className="ex-body-text ex-body-text--long">
-            {para}
-          </p>
-        ))}
+        <ul className="ex-summary-bullets">
+          {summaryToBullets(sc.summary).map((point, i) => (
+            <li key={i} className="ex-body-text">
+              {point}
+            </li>
+          ))}
+        </ul>
       </div>
 
       <div className="example-report__disclaimer ex-disclaimer">{sc.disclaimer}</div>

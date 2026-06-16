@@ -853,6 +853,28 @@ input[type="number"]::-webkit-outer-spin-button {
   margin-top: 12px;
 }
 
+.ex-summary-bullets {
+  list-style: none;
+  margin: 12px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ex-summary-bullets li {
+  position: relative;
+  padding-left: 14px;
+  margin: 0;
+}
+
+.ex-summary-bullets li::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  color: var(--muted);
+}
+
 .ex-conclusion {
   font-size: 13px;
   line-height: 1.65;
