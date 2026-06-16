@@ -246,16 +246,22 @@ export function parseFastighetsbyranMeta(html: string, fields: MutableFields) {
 
 export function parseFloorExpression(text: string, fields: MutableFields) {
   const t = decodeHtmlEntities(text).trim();
-  const avM = t.match(/(\d+)\s*av\s*(\d+)/i);
+  const slashM = t.match(/(\d+(?:[.,]\d+)?)\s*\/\s*(\d+)/);
+  if (slashM) {
+    setField(fields, "floor", slashM[1].replace(",", "."), { overwrite: true });
+    setField(fields, "totalFloors", slashM[2], { overwrite: true });
+    return;
+  }
+  const avM = t.match(/(\d+(?:[.,]\d+)?)\s*av\s*(\d+)/i);
   if (avM) {
-    setField(fields, "floor", avM[1], { overwrite: true });
+    setField(fields, "floor", avM[1].replace(",", "."), { overwrite: true });
     setField(fields, "totalFloors", avM[2], { overwrite: true });
     return;
   }
   const trM = t.match(/(\d+(?:[.,]\d+)?)\s*tr\b/i);
   if (trM) setField(fields, "floor", trM[1].replace(",", "."), { overwrite: true });
-  const vanM = t.match(/v[aå]n\s*(\d+)/i);
-  if (vanM) setField(fields, "floor", vanM[1], { overwrite: true });
+  const vanM = t.match(/v[aå]n\s*(\d+(?:[.,]\d+)?)/i);
+  if (vanM) setField(fields, "floor", vanM[1].replace(",", "."), { overwrite: true });
 }
 
 function scopedListingHtml(html: string): string {
@@ -928,10 +934,108 @@ export function extractInlineJsonFragments(html: string, fields: MutableFields) 
   }
 }
 
+export function sanitizePdfUrl(raw: string, baseUrl?: string): string | null {
+  const trimmed = decodeHtmlEntities(raw.trim()).replace(/\\+$/, "");
+  if (!trimmed) return null;
+
+  let url = trimmed;
+  if (!url.startsWith("http")) {
+    if (!baseUrl) return null;
+    try {
+      url = new URL(url, baseUrl).toString();
+    } catch {
+      return null;
+    }
+  }
+
+  try {
+    const parsed = new URL(url);
+    if (!["http:", "https:"].includes(parsed.protocol)) return null;
+    return parsed.toString();
+  } catch {
+    return null;
+  }
+}
+
+/** Stadshem (stadshem.se) — Webflow/Next hybrid with obj-infocol facts and pdflink documents. */
+export function parseStadshem(html: string, url: string, fields: MutableFields): PdfCandidate[] {
+  const pdfs: PdfCandidate[] = [];
+  const decoded = decodeHtmlEntities(html);
+
+  const h1 =
+    decoded.match(/<h1[^>]*class="obj-heading-h1"[^>]*>([^<]+)<\/h1>/i)?.[1] ??
+    decoded.match(/<h1[^>]*>([^<]+)<\/h1>/i)?.[1];
+  if (h1) {
+    setField(fields, "address", h1.trim(), { overwrite: true });
+    parseFloorExpression(h1, fields);
+  }
+
+  const subtitle = decoded.match(/<div class="text-block-14">([^<]+)<\/div>/i)?.[1];
+  if (subtitle) {
+    const parts = subtitle.split(",").map((s) => s.trim()).filter(Boolean);
+    if (parts[0]) setField(fields, "area", parts[0], { overwrite: true });
+    if (parts.length > 1) {
+      setField(fields, "city", parts[parts.length - 1], { overwrite: true });
+    }
+  }
+
+  for (const m of decoded.matchAll(
+    /obj-infocol[\s\S]{0,220}?text-block-3">([^<]+)<\/div>\s*<div class="text-block-4">([^<]+)<\/div>/gi
+  )) {
+    const label = m[1].trim().toLowerCase();
+    const value = m[2].trim();
+
+    if (label === "rum") {
+      setField(fields, "rooms", parseRooms(value) ?? parseSwedishInt(value), { overwrite: true });
+    }
+    if (label === "boarea") {
+      setField(fields, "livingAreaSqm", parseSwedishInt(value), { overwrite: true });
+    }
+    if (label === "avgift") {
+      setField(fields, "monthlyFee", parseSwedishInt(value), { overwrite: true });
+    }
+    if (label === "område" || label === "omrade") {
+      setField(fields, "area", value, { overwrite: true });
+    }
+    if (label === "stad" || label === "kommun") {
+      setField(fields, "city", value, { overwrite: true });
+    }
+    if (label === "förening" || label === "forening") {
+      setField(fields, "associationName", value, { overwrite: true });
+    }
+    if (label === "våning" || label === "vaning") {
+      parseFloorExpression(value, fields);
+    }
+    if (/utgångspris|^pris$/.test(label)) {
+      setField(fields, "askingPrice", parseSwedishInt(value), { overwrite: true });
+    }
+  }
+
+  const priceText = decoded.match(/class="pris-wrapper"[\s\S]{0,500}?>([^<]{3,40})</i)?.[1];
+  if (priceText && /\d/.test(priceText)) {
+    setField(fields, "askingPrice", parseSwedishInt(priceText), { overwrite: true });
+  }
+
+  for (const m of decoded.matchAll(
+    /<a[^>]*class="[^"]*pdflink[^"]*"[^>]*href=["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi
+  )) {
+    const pdfUrl = sanitizePdfUrl(m[1], url);
+    if (!pdfUrl?.toLowerCase().includes(".pdf")) continue;
+    const title = m[2].match(/pdflink-title">([^<]+)/i)?.[1]?.trim() ?? "dokument";
+    let score = 3;
+    if (ANNUAL_REPORT_RE.test(title)) score += 8;
+    if (/stadgar|energi/i.test(title)) score += 1;
+    pdfs.push({ url: pdfUrl, label: title, score });
+  }
+
+  return pdfs;
+}
+
 export function findPdfUrlsInText(text: string, baseUrl: string): PdfCandidate[] {
   const found = new Map<string, PdfCandidate>();
   const add = (raw: string, label?: string) => {
-    const abs = raw.startsWith("http") ? raw : new URL(raw, baseUrl).toString();
+    const abs = sanitizePdfUrl(raw, baseUrl);
+    if (!abs) return;
     let score = abs.toLowerCase().includes(".pdf") ? 2 : 1;
     const lbl = decodeHtmlEntities(label ?? abs.split("/").pop() ?? "dokument");
     if (ANNUAL_REPORT_RE.test(abs + lbl)) score += 5;

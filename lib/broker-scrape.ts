@@ -27,6 +27,8 @@ import {
   parseSvenskfast,
   parseSkandiaMaklarna,
   parseSvenskaMaklarhuset,
+  parseStadshem,
+  sanitizePdfUrl,
   parseRooms,
   parseSwedishInt,
   parseTitleForFields,
@@ -282,7 +284,8 @@ function findPdfCandidates(html: string, baseUrl: string): PdfCandidate[] {
   const found = new Map<string, PdfCandidate>();
 
   const add = (url: string, label: string, score: number) => {
-    const cleanUrl = url.trim();
+    const cleanUrl = sanitizePdfUrl(url.trim());
+    if (!cleanUrl) return;
     const existing = found.get(cleanUrl);
     if (!existing || score > existing.score) found.set(cleanUrl, { url: cleanUrl, label, score });
   };
@@ -341,6 +344,8 @@ async function downloadBinary(url: string, referer?: string): Promise<Buffer | n
       headers.Referer = "https://nestorfastighetsmakleri.se/";
     } else if (/connect\.maklare\.vitec\.net|vitec\.net/i.test(cleanUrl)) {
       headers.Referer = referer ?? "https://www.erikolsson.se/";
+    } else if (/api\.stadshem\.se/i.test(cleanUrl)) {
+      headers.Referer = referer ?? "https://stadshem.se/";
     }
     const res = await fetch(cleanUrl, {
       headers,
@@ -356,6 +361,13 @@ async function downloadBinary(url: string, referer?: string): Promise<Buffer | n
   }
 }
 
+function prioritizePdfCandidates(candidates: PdfCandidate[]): PdfCandidate[] {
+  const sorted = [...candidates].sort((a, b) => b.score - a.score);
+  const annual = sorted.filter((c) => ANNUAL_REPORT_RE.test(c.label + c.url));
+  const rest = sorted.filter((c) => !ANNUAL_REPORT_RE.test(c.label + c.url));
+  return [...annual, ...rest];
+}
+
 async function extractPdfTexts(
   candidates: PdfCandidate[],
   logs: string[],
@@ -366,7 +378,7 @@ async function extractPdfTexts(
   const texts: string[] = [];
   const maxDocs = 4;
 
-  for (const cand of candidates.slice(0, maxDocs)) {
+  for (const cand of prioritizePdfCandidates(candidates).slice(0, maxDocs)) {
     logs.push(`Hämtar dokument: ${cand.label}`);
     const buf = await downloadBinary(cand.url, referer);
     if (!buf) {
@@ -507,6 +519,10 @@ async function applyBrokerSpecificParsers(
 
   if (hostMatches(hostname, "svenskamaklarhuset.se")) {
     extraPdfs.push(...parseSvenskaMaklarhuset(html, url, fields));
+  }
+
+  if (hostMatches(hostname, "stadshem.se")) {
+    extraPdfs.push(...parseStadshem(html, url, fields));
   }
 
   return extraPdfs;
@@ -717,7 +733,7 @@ export async function scrapeBrokerListing(url: string): Promise<BrokerScrapeResp
   }
 
   if (fields.associationName) {
-    const brfClean = fields.associationName.match(/(Brf\s+[^\s,.]{2,40})/i);
+    const brfClean = fields.associationName.match(/(Brf\s+\S+(?:\s+\d+)?)/i);
     if (brfClean) fields.associationName = brfClean[1].trim();
   }
 
