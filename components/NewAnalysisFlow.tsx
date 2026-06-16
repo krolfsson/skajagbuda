@@ -6,7 +6,6 @@ import { trackEvent } from "@/lib/analytics";
 import { CTA_START_ANALYSIS } from "@/lib/brand";
 import type { BrokerScrapeResponse, FieldFillStatus, ScrapeFieldKey } from "@/lib/broker-scrape-types";
 import { SCRAPE_FIELD_KEYS } from "@/lib/broker-scrape-types";
-import { buildScrapeSummary } from "@/lib/scrape-progress";
 import { AnalyzingScreen } from "@/components/AnalyzingScreen";
 import { ScrapeProgress } from "@/components/ScrapeProgress";
 
@@ -318,12 +317,13 @@ export default function NewAnalysisFlow() {
       setScrapeResult(result);
       setForm(applyScrape(form, result));
       setFieldStatus(result.fieldStatus);
+      setScraping(false);
+      setTimeout(() => setStep(3), 800);
     } catch (err) {
       if (err instanceof DOMException && err.name === "AbortError") return;
       setError(err instanceof Error ? err.message : "Kunde inte hämta sidan.");
       setStep(1);
-    } finally {
-      if (!abort.signal.aborted) setScraping(false);
+      setScraping(false);
     }
   }
 
@@ -331,10 +331,6 @@ export default function NewAnalysisFlow() {
     scrapeAbortRef.current?.abort();
     scrapeAbortRef.current = null;
     setScraping(false);
-    setStep(3);
-  }
-
-  function continueAfterScrape() {
     setStep(3);
   }
 
@@ -420,7 +416,6 @@ export default function NewAnalysisFlow() {
   if (analyzing) return <AnalyzingScreen title={analyzeTitle} />;
 
   const foundCount = countFound(fieldStatus);
-  const scrapeSummary = scrapeResult ? buildScrapeSummary(scrapeResult) : null;
 
   return (
     <div className="analysis-page" style={{ background: "var(--bg)", padding: "32px 16px 80px" }}>
@@ -601,11 +596,6 @@ export default function NewAnalysisFlow() {
               {step === 1 && (
                 <button type="button" className="analysis-nav-next" onClick={startScrape} disabled={scraping}>
                   Hämta underlag →
-                </button>
-              )}
-              {step === 2 && !scraping && scrapeResult && scrapeSummary && (
-                <button type="button" className="analysis-nav-next" onClick={continueAfterScrape}>
-                  {scrapeSummary.cta} →
                 </button>
               )}
               {step === 3 && (
