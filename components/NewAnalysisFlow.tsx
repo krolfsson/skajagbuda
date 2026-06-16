@@ -1,12 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { trackEvent } from "@/lib/analytics";
 import { CTA_START_ANALYSIS } from "@/lib/brand";
 import type { BrokerScrapeResponse, FieldFillStatus, ScrapeFieldKey } from "@/lib/broker-scrape-types";
 import { SCRAPE_FIELD_KEYS } from "@/lib/broker-scrape-types";
+import { buildScrapeSummary } from "@/lib/scrape-progress";
 import { AnalyzingScreen } from "@/components/AnalyzingScreen";
+import { ScrapeProgress } from "@/components/ScrapeProgress";
 
 type FormData = {
   title: string;
@@ -198,26 +200,6 @@ function StepIndicator({ current }: { current: number }) {
   );
 }
 
-function ScrapeProgress({ logs, warnings }: { logs: string[]; warnings: string[] }) {
-  return (
-    <div className="scrape-progress">
-      <p className="scrape-progress-title">Hämtar underlag från mäklarsidan…</p>
-      <ul className="scrape-progress-list">
-        {logs.map((line) => (
-          <li key={line} className="scrape-progress-item scrape-progress-item--ok">{line}</li>
-        ))}
-      </ul>
-      {warnings.length > 0 && (
-        <ul className="scrape-progress-list scrape-progress-list--warn">
-          {warnings.map((w) => (
-            <li key={w} className="scrape-progress-item scrape-progress-item--warn">{w}</li>
-          ))}
-        </ul>
-      )}
-    </div>
-  );
-}
-
 function applyScrape(form: FormData, result: BrokerScrapeResponse): FormData {
   const next = { ...form, listingUrl: result.url };
   for (const key of SCRAPE_FIELD_KEYS) {
@@ -276,8 +258,8 @@ export default function NewAnalysisFlow() {
   const router = useRouter();
   const [form, setForm] = useState<FormData>(INITIAL);
   const [fieldStatus, setFieldStatus] = useState<Partial<Record<ScrapeFieldKey, FieldFillStatus>>>({});
-  const [scrapeLogs, setScrapeLogs] = useState<string[]>([]);
-  const [scrapeWarnings, setScrapeWarnings] = useState<string[]>([]);
+  const [scrapeResult, setScrapeResult] = useState<BrokerScrapeResponse | null>(null);
+  const scrapeAbortRef = useRef<AbortController | null>(null);
   const [riskChecks, setRiskChecks] = useState<Record<RiskCheckId, boolean>>(() =>
     Object.fromEntries(RISK_OPTIONS.map((o) => [o.id, false])) as Record<RiskCheckId, boolean>
   );
@@ -313,32 +295,47 @@ export default function NewAnalysisFlow() {
 
     setScraping(true);
     setStep(2);
-    setScrapeLogs(["Ansluter till mäklarsidan…"]);
-    setScrapeWarnings([]);
+    setScrapeResult(null);
+
+    scrapeAbortRef.current?.abort();
+    const abort = new AbortController();
+    scrapeAbortRef.current = abort;
 
     try {
       const res = await fetch("/api/scrape-listing", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ url }),
+        signal: abort.signal,
       });
       const data = await res.json();
+      if (abort.signal.aborted) return;
       if (!res.ok) {
         throw new Error(data.error ?? "Kunde inte hämta sidan.");
       }
 
       const result = data as BrokerScrapeResponse;
-      setScrapeLogs(result.logs);
-      setScrapeWarnings(result.warnings);
+      setScrapeResult(result);
       setForm(applyScrape(form, result));
       setFieldStatus(result.fieldStatus);
-      setStep(3);
     } catch (err) {
+      if (err instanceof DOMException && err.name === "AbortError") return;
       setError(err instanceof Error ? err.message : "Kunde inte hämta sidan.");
       setStep(1);
     } finally {
-      setScraping(false);
+      if (!abort.signal.aborted) setScraping(false);
     }
+  }
+
+  function skipScrape() {
+    scrapeAbortRef.current?.abort();
+    scrapeAbortRef.current = null;
+    setScraping(false);
+    setStep(3);
+  }
+
+  function continueAfterScrape() {
+    setStep(3);
   }
 
   function buildTitle() {
@@ -423,6 +420,7 @@ export default function NewAnalysisFlow() {
   if (analyzing) return <AnalyzingScreen title={analyzeTitle} />;
 
   const foundCount = countFound(fieldStatus);
+  const scrapeSummary = scrapeResult ? buildScrapeSummary(scrapeResult) : null;
 
   return (
     <div className="analysis-page" style={{ background: "var(--bg)", padding: "32px 16px 80px" }}>
@@ -442,7 +440,9 @@ export default function NewAnalysisFlow() {
         <StepIndicator current={step} />
 
         <div className="analysis-card">
-          <h2 className="analysis-card-title">{STEPS[step - 1].label}</h2>
+          {step !== 2 && (
+            <h2 className="analysis-card-title">{STEPS[step - 1].label}</h2>
+          )}
 
           {step === 1 && (
             <div className="analysis-step-body">
@@ -464,8 +464,9 @@ export default function NewAnalysisFlow() {
 
           {step === 2 && (
             <ScrapeProgress
-              logs={scraping ? ["Hämtar mäklarsida…", "Letar efter dokument…"] : scrapeLogs}
-              warnings={scrapeWarnings}
+              isLoading={scraping}
+              result={scrapeResult}
+              onSkip={skipScrape}
             />
           )}
 
@@ -600,6 +601,11 @@ export default function NewAnalysisFlow() {
               {step === 1 && (
                 <button type="button" className="analysis-nav-next" onClick={startScrape} disabled={scraping}>
                   Hämta underlag →
+                </button>
+              )}
+              {step === 2 && !scraping && scrapeResult && scrapeSummary && (
+                <button type="button" className="analysis-nav-next" onClick={continueAfterScrape}>
+                  {scrapeSummary.cta} →
                 </button>
               )}
               {step === 3 && (
