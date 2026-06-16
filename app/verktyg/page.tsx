@@ -34,13 +34,15 @@ export default function VerktygIndexPage() {
             <Link href={`/verktyg/${t.slug}`} className="tool-card">
               <div className="tool-card-top">
                 <ToolIcon name={t.icon} />
-                <span className="tool-card-badge">{t.badge}</span>
+                <div className="card-top-meta">
+                  <span className="tool-card-badge">{t.badge}</span>
+                  <svg className="tool-card-chevron" width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                    <path d="M4 2l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </div>
               </div>
               <h2 className="tool-card-title">{t.shortTitle}</h2>
               <p className="tool-card-desc">{t.indexDescription}</p>
-              <svg className="tool-card-chevron" width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
-                <path d="M4 2l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
             </Link>
           </li>
         ))}
