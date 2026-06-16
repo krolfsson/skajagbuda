@@ -2,8 +2,9 @@
 
 import { useMemo, useState } from "react";
 import { trackEvent } from "@/lib/analytics";
-import { CTA_START_ANALYSIS } from "@/lib/brand";
-import { GuideCtaButton } from "@/components/GuideCtaButton";
+import { getToolBySlug } from "@/lib/content/tools";
+import { ToolCalculatorShell } from "@/components/tools/ToolCalculatorShell";
+import { ToolResultHero, ToolRiskBadge } from "@/components/tools/ToolResultParts";
 
 function parseNum(v: string): number {
   const n = Number(v.replace(/\s/g, "").replace(",", "."));
@@ -19,20 +20,25 @@ function riskLevel(skuld: number): { level: string; comment: string } {
   if (skuld < 5000) {
     return {
       level: "Låg",
-      comment: "Relativt låg skuldnivå – men bedöm även räntebindning, underhållsplan och avgift.",
+      comment:
+        "Belåning behöver vägas mot avgift, kassa, ränta och planerat underhåll.",
     };
   }
   if (skuld < 10000) {
     return {
       level: "Medel",
-      comment: "Medelhög skuld – granska räntekänslighet, planerade projekt och avgiftsutveckling.",
+      comment:
+        "Belåning behöver vägas mot avgift, kassa, ränta och planerat underhåll.",
     };
   }
   return {
     level: "Hög",
-    comment: "Hög skuldnivå – kräv tydlig plan för amortering, räntor och kommande underhåll.",
+    comment:
+      "Belåning behöver vägas mot avgift, kassa, ränta och planerat underhåll.",
   };
 }
+
+const tool = getToolBySlug("brf-skuld-per-kvm")!;
 
 export function BrfSkuldCalculator() {
   const [mode, setMode] = useState<"calc" | "direct">("calc");
@@ -57,61 +63,62 @@ export function BrfSkuldCalculator() {
   }
 
   return (
-    <div className="tool-calc">
-      <div className="tool-mode-tabs">
-        <button type="button" className={mode === "calc" ? "active" : ""} onClick={() => setMode("calc")}>
-          Räkna från lån och area
-        </button>
-        <button type="button" className={mode === "direct" ? "active" : ""} onClick={() => setMode("direct")}>
-          Ange skuld/kvm direkt
-        </button>
-      </div>
-
-      <div className="tool-calc-form">
-        {mode === "calc" ? (
+    <ToolCalculatorShell
+      calculated={calculated}
+      preview={tool}
+      cta={tool}
+      disclaimer="Preliminär riskindikation – inte helhetsbedömning av föreningen."
+      form={
+        <>
+          <div className="tool-mode-tabs">
+            <button type="button" className={mode === "calc" ? "active" : ""} onClick={() => setMode("calc")}>
+              Räkna från lån och area
+            </button>
+            <button type="button" className={mode === "direct" ? "active" : ""} onClick={() => setMode("direct")}>
+              Ange skuld/kvm direkt
+            </button>
+          </div>
+          <div className="tool-form-grid tool-form-grid--paired">
+            {mode === "calc" ? (
+              <>
+                <label className="tool-field">
+                  <span>Föreningens totala lån (kr)</span>
+                  <input value={totalLoan} onChange={(e) => setTotalLoan(e.target.value)} inputMode="numeric" />
+                </label>
+                <label className="tool-field">
+                  <span>Total bostadsarea (kvm)</span>
+                  <input value={totalArea} onChange={(e) => setTotalArea(e.target.value)} inputMode="numeric" />
+                </label>
+              </>
+            ) : (
+              <label className="tool-field tool-form-span">
+                <span>Skuld per kvm (kr)</span>
+                <input value={direct} onChange={(e) => setDirect(e.target.value)} inputMode="numeric" />
+              </label>
+            )}
+            <button type="button" className="tool-calc-btn tool-form-span" onClick={handleCalc}>
+              Beräkna
+            </button>
+          </div>
+        </>
+      }
+      result={
+        skuldPerKvm > 0 ? (
           <>
-            <label className="tool-field">
-              <span>Föreningens totala lån (kr)</span>
-              <input value={totalLoan} onChange={(e) => setTotalLoan(e.target.value)} inputMode="numeric" />
-            </label>
-            <label className="tool-field">
-              <span>Total bostadsarea (kvm)</span>
-              <input value={totalArea} onChange={(e) => setTotalArea(e.target.value)} inputMode="numeric" />
-            </label>
+            <ToolResultHero label="Skuld per kvm" value={fmt(skuldPerKvm)} suffix="kr/kvm" />
+            <div className="tool-result-risk-row">
+              <span className="tool-result-risk-label">Riskindikator</span>
+              <ToolRiskBadge level={risk.level} />
+            </div>
+            <p className="tool-result-note">{risk.comment}</p>
           </>
         ) : (
-          <label className="tool-field">
-            <span>Skuld per kvm (kr)</span>
-            <input value={direct} onChange={(e) => setDirect(e.target.value)} inputMode="numeric" />
-          </label>
-        )}
-        <button type="button" className="tool-calc-btn" onClick={handleCalc}>
-          Beräkna
-        </button>
-      </div>
-
-      {calculated && skuldPerKvm > 0 && (
-        <div className="tool-calc-result">
-          <h2>Resultat</h2>
-          <dl className="tool-result-grid">
-            <dt>Skuld per kvm</dt>
-            <dd><strong>{fmt(skuldPerKvm)} kr/kvm</strong></dd>
-            <dt>Preliminär risknivå</dt>
-            <dd><strong>{risk.level}</strong></dd>
-          </dl>
-          <p className="tool-result-note">{risk.comment}</p>
-          <p className="tool-result-note">
-            Indikationen är förenklad. Ränta, avgift, underhållsbehov, nyproduktion och lokalintäkter
-            påverkar den faktiska risken.
-          </p>
-          <div className="guide-cta guide-cta--inline">
-            <h2>Vill du väga in avgift, underhåll och pris också?</h2>
-            <GuideCtaButton href="/new" event="tool_cta_click" label={CTA_START_ANALYSIS} primary />
-          </div>
-        </div>
-      )}
-
-      <p className="guide-disclaimer">Förenklad indikation – inte helhetsbedömning av föreningen.</p>
-    </div>
+          <>
+            <ToolResultHero label="Skuld per kvm" value="–" />
+            <p className="tool-result-note">Ange lån och area, eller skuld per kvm direkt.</p>
+          </>
+        )
+      }
+    />
   );
 }

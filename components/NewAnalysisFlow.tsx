@@ -64,6 +64,32 @@ const STEPS = [
   { id: 4, label: "Ekonomi" },
 ];
 
+const VALIDATION_FIELD_LABELS: Record<string, string> = {
+  floor: "Våning",
+  totalFloors: "Antal våningar",
+  rooms: "Antal rum",
+  livingAreaSqm: "Boyta",
+  askingPrice: "Utgångspris",
+  monthlyFee: "Månadsavgift",
+  listingUrl: "Länk",
+  title: "Titel",
+};
+
+function formatValidationError(data: {
+  error?: string;
+  details?: Record<string, string[] | undefined>;
+}): string {
+  if (!data.details) return data.error ?? "Valideringsfel.";
+  const parts = Object.entries(data.details)
+    .flatMap(([field, msgs]) =>
+      (msgs ?? []).map((msg) => {
+        const label = VALIDATION_FIELD_LABELS[field] ?? field;
+        return `${label}: ${msg}`;
+      })
+    );
+  return parts.length > 0 ? parts.join(" ") : (data.error ?? "Valideringsfel.");
+}
+
 const RISK_OPTIONS = [
   { id: "stambyte", label: "Planerat stambyte" },
   { id: "tomtratt", label: "Tomträtt" },
@@ -398,7 +424,13 @@ export default function NewAnalysisFlow() {
         body: JSON.stringify(buildPayload(title)),
       });
       const createJson = await createRes.json();
-      if (!createRes.ok) throw new Error(createJson.error ?? "Kunde inte spara analysen.");
+      if (!createRes.ok) {
+        throw new Error(
+          createRes.status === 422
+            ? formatValidationError(createJson)
+            : (createJson.error ?? "Kunde inte spara analysen.")
+        );
+      }
 
       const runRes = await fetch(`/api/analyses/${createJson.id}/run`, { method: "POST" });
       const runJson = await runRes.json();

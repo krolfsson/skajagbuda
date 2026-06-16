@@ -2,8 +2,9 @@
 
 import { useMemo, useState } from "react";
 import { trackEvent } from "@/lib/analytics";
-import { CTA_START_ANALYSIS } from "@/lib/brand";
-import { GuideCtaButton } from "@/components/GuideCtaButton";
+import { getToolBySlug } from "@/lib/content/tools";
+import { ToolCalculatorShell } from "@/components/tools/ToolCalculatorShell";
+import { ToolResultHero, ToolResultStats } from "@/components/tools/ToolResultParts";
 
 function parseNum(v: string): number {
   const n = Number(v.replace(/\s/g, "").replace(",", "."));
@@ -13,6 +14,8 @@ function parseNum(v: string): number {
 function fmt(n: number) {
   return new Intl.NumberFormat("sv-SE", { maximumFractionDigits: 0 }).format(Math.round(n));
 }
+
+const tool = getToolBySlug("maxbud")!;
 
 export function MaxbudCalculator() {
   const [down, setDown] = useState("600000");
@@ -32,13 +35,14 @@ export function MaxbudCalculator() {
     const o = parseNum(other);
     const availableForLoan = Math.max(0, maxM - f - o);
     const annualCostRate = (r + a) / 100;
-    const loan =
-      annualCostRate > 0 ? (availableForLoan * 12) / annualCostRate : 0;
+    const loan = annualCostRate > 0 ? (availableForLoan * 12) / annualCostRate : 0;
     const maxPrice = loan + d;
-    const monthlyAtMax =
-      f + o + (loan * (r / 100)) / 12 + (loan * (a / 100)) / 12;
-    const sensitive = r >= 4 || f > 5000;
-    return { loan, maxPrice, monthlyAtMax, sensitive, availableForLoan };
+    const interestMonthly = (loan * (r / 100)) / 12;
+    const amortMonthly = (loan * (a / 100)) / 12;
+    const monthlyAtMax = f + o + interestMonthly + amortMonthly;
+    const comment =
+      "Maxbudet är en förenklad kalkyl. Väg alltid in föreningens ekonomi, underhåll och objektets skick.";
+    return { loan, maxPrice, monthlyAtMax, interestMonthly, amortMonthly, f, o, maxM, comment };
   }, [down, maxMonthly, rate, fee, amort, other]);
 
   function handleCalc() {
@@ -47,64 +51,66 @@ export function MaxbudCalculator() {
   }
 
   return (
-    <div className="tool-calc">
-      <div className="tool-calc-form">
-        <label className="tool-field">
-          <span>Kontantinsats (kr)</span>
-          <input value={down} onChange={(e) => setDown(e.target.value)} inputMode="numeric" />
-        </label>
-        <label className="tool-field">
-          <span>Max månadskostnad du är bekväm med (kr)</span>
-          <input value={maxMonthly} onChange={(e) => setMaxMonthly(e.target.value)} inputMode="numeric" />
-        </label>
-        <label className="tool-field">
-          <span>Ränta (%)</span>
-          <input value={rate} onChange={(e) => setRate(e.target.value)} inputMode="decimal" />
-        </label>
-        <label className="tool-field">
-          <span>Månadsavgift (kr)</span>
-          <input value={fee} onChange={(e) => setFee(e.target.value)} inputMode="numeric" />
-        </label>
-        <label className="tool-field">
-          <span>Amortering (%/år av lån)</span>
-          <input value={amort} onChange={(e) => setAmort(e.target.value)} inputMode="decimal" />
-        </label>
-        <label className="tool-field">
-          <span>Övriga kostnader (kr/mån, valfritt)</span>
-          <input value={other} onChange={(e) => setOther(e.target.value)} inputMode="numeric" />
-        </label>
-        <button type="button" className="tool-calc-btn" onClick={handleCalc}>
-          Beräkna maxbud
-        </button>
-      </div>
-
-      {calculated && result.maxPrice > 0 && (
-        <div className="tool-calc-result">
-          <h2>Resultat</h2>
-          <dl className="tool-result-grid">
-            <dt>Ungefärligt maxpris</dt>
-            <dd><strong>{fmt(result.maxPrice)} kr</strong></dd>
-            <dt>Ungefärligt lånebelopp</dt>
-            <dd>{fmt(result.loan)} kr</dd>
-            <dt>Månadskostnad vid maxpris</dt>
-            <dd>{fmt(result.monthlyAtMax)} kr</dd>
-          </dl>
-          {result.sensitive && (
-            <p className="tool-result-warn">
-              Kalkylen är känslig för ränta och avgift – en höjning på 1 procentenhet eller ökad
-              avgift kan sänka ditt faktiska maxbud.
-            </p>
-          )}
-          <div className="guide-cta guide-cta--inline">
-            <h2>Vill du jämföra maxbudet mot objektets risk?</h2>
-            <GuideCtaButton href="/new" event="tool_cta_click" label={CTA_START_ANALYSIS} primary />
-          </div>
+    <ToolCalculatorShell
+      calculated={calculated}
+      preview={tool}
+      cta={tool}
+      disclaimer="Förenklad kalkyl utan ränteavdrag. Jämför alltid med slutpriser och föreningens risk."
+      form={
+        <div className="tool-form-grid tool-form-grid--paired">
+          <label className="tool-field">
+            <span>Kontantinsats (kr)</span>
+            <input value={down} onChange={(e) => setDown(e.target.value)} inputMode="numeric" />
+          </label>
+          <label className="tool-field">
+            <span>Max månadskostnad (kr)</span>
+            <input value={maxMonthly} onChange={(e) => setMaxMonthly(e.target.value)} inputMode="numeric" />
+          </label>
+          <label className="tool-field">
+            <span>Ränta (%)</span>
+            <input value={rate} onChange={(e) => setRate(e.target.value)} inputMode="decimal" />
+          </label>
+          <label className="tool-field">
+            <span>Amortering (%/år)</span>
+            <input value={amort} onChange={(e) => setAmort(e.target.value)} inputMode="decimal" />
+          </label>
+          <label className="tool-field">
+            <span>Månadsavgift (kr)</span>
+            <input value={fee} onChange={(e) => setFee(e.target.value)} inputMode="numeric" />
+          </label>
+          <label className="tool-field">
+            <span>Övrigt (kr/mån)</span>
+            <input value={other} onChange={(e) => setOther(e.target.value)} inputMode="numeric" />
+          </label>
+          <button type="button" className="tool-calc-btn tool-form-span" onClick={handleCalc}>
+            Beräkna maxbud
+          </button>
         </div>
-      )}
-
-      <p className="guide-disclaimer">
-        Förenklad kalkyl utan ränteavdrag. Jämför alltid med slutpriser och föreningens risk.
-      </p>
-    </div>
+      }
+      result={
+        calculated && result.maxPrice > 0 ? (
+          <>
+            <ToolResultHero label="Uppskattat maxbud" value={fmt(result.maxPrice)} suffix="kr" />
+            <ToolResultStats
+              items={[
+                { label: "Bekväm månadskostnad", value: `${fmt(result.maxM)} kr` },
+                { label: "Uppskattat lånebelopp", value: `${fmt(result.loan)} kr` },
+                { label: "Månadsavgift", value: `${fmt(result.f)} kr` },
+                { label: "Ränta", value: `${fmt(result.interestMonthly)} kr` },
+                { label: "Amortering", value: `${fmt(result.amortMonthly)} kr` },
+              ]}
+            />
+            <p className="tool-result-note">{result.comment}</p>
+          </>
+        ) : (
+          <>
+            <ToolResultHero label="Kunde inte räkna ut" value="–" />
+            <p className="tool-result-note">
+              Kontrollera att månadskostnaden räcker efter avgift och övriga kostnader.
+            </p>
+          </>
+        )
+      }
+    />
   );
 }

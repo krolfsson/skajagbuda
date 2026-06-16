@@ -1,4 +1,9 @@
-import type { Guide } from "./types";
+import type { Guide, GuideWithMeta } from "./types";
+import { getGuideIndexFields } from "./guide-index-meta";
+
+function enrichGuide(guide: Guide): GuideWithMeta {
+  return { ...guide, ...getGuideIndexFields(guide.slug) };
+}
 
 export const GUIDES: Guide[] = [
   {
@@ -148,6 +153,7 @@ export const GUIDES: Guide[] = [
       "budstrategi-bostadsratt",
       "pris-per-kvm-bostadsratt",
     ],
+    relatedToolSlugs: ["maxbud"],
   },
   {
     slug: "vad-ar-rimligt-maxbud",
@@ -296,6 +302,7 @@ export const GUIDES: Guide[] = [
       "hur-mycket-ska-man-buda-over-utgangspris",
       "checklista-innan-budgivning",
     ],
+    relatedToolSlugs: ["maxbud"],
   },
   {
     slug: "vad-ska-man-fraga-maklaren-innan-bud",
@@ -369,6 +376,7 @@ export const GUIDES: Guide[] = [
       "roda-flaggor-bostadsratt",
       "checklista-innan-budgivning",
     ],
+    relatedToolSlugs: ["boendekostnad"],
   },
   {
     slug: "analysera-brf-arsredovisning",
@@ -590,6 +598,7 @@ export const GUIDES: Guide[] = [
       "avgiftshojning-brf",
       "analysera-brf-arsredovisning",
     ],
+    relatedToolSlugs: ["brf-skuld-per-kvm"],
   },
   {
     slug: "avgiftshojning-brf",
@@ -738,6 +747,7 @@ export const GUIDES: Guide[] = [
       "analysera-brf-arsredovisning",
       "kassa-i-bostadsrattsforening",
     ],
+    relatedToolSlugs: ["brf-skuld-per-kvm"],
   },
   {
     slug: "kassa-i-bostadsrattsforening",
@@ -812,6 +822,7 @@ export const GUIDES: Guide[] = [
       "underhallsplan-brf",
       "avgiftshojning-brf",
     ],
+    relatedToolSlugs: ["boendekostnad"],
   },
   {
     slug: "pris-per-kvm-bostadsratt",
@@ -961,6 +972,7 @@ export const GUIDES: Guide[] = [
       "pris-per-kvm-bostadsratt",
       "checklista-innan-budgivning",
     ],
+    relatedToolSlugs: ["boendekostnad"],
   },
   {
     slug: "budgivning-stockholm",
@@ -1035,6 +1047,7 @@ export const GUIDES: Guide[] = [
       "budstrategi-bostadsratt",
       "vad-ar-rimligt-maxbud",
     ],
+    relatedToolSlugs: ["maxbud"],
   },
   {
     slug: "roda-flaggor-bostadsratt",
@@ -1108,6 +1121,7 @@ export const GUIDES: Guide[] = [
       "analysera-brf-arsredovisning",
       "checklista-innan-budgivning",
     ],
+    relatedToolSlugs: ["brf-skuld-per-kvm"],
   },
   {
     slug: "for-lag-avgift-bostadsratt",
@@ -1256,6 +1270,7 @@ export const GUIDES: Guide[] = [
       "tomtratt-bostadsratt",
       "roda-flaggor-bostadsratt",
     ],
+    relatedToolSlugs: ["brf-skuld-per-kvm"],
   },
   {
     slug: "tomtratt-bostadsratt",
@@ -1329,6 +1344,7 @@ export const GUIDES: Guide[] = [
       "analysera-brf-arsredovisning",
       "avgiftshojning-brf",
     ],
+    relatedToolSlugs: ["boendekostnad"],
   },
   {
     slug: "besiktning-bostadsratt",
@@ -1402,6 +1418,7 @@ export const GUIDES: Guide[] = [
       "stambyte-bostadsratt-risk",
       "checklista-innan-budgivning",
     ],
+    relatedToolSlugs: ["boendekostnad"],
   },
   {
     slug: "checklista-innan-budgivning",
@@ -1495,14 +1512,19 @@ export const GUIDES: Guide[] = [
   },
 ];
 
-export function getGuideBySlug(slug: string): Guide | undefined {
-  return GUIDES.find((guide) => guide.slug === slug);
+export function getGuideBySlug(slug: string): GuideWithMeta | undefined {
+  const guide = GUIDES.find((g) => g.slug === slug);
+  return guide ? enrichGuide(guide) : undefined;
 }
 
-export function getGuidesBySlugs(slugs: string[]): Guide[] {
+export function getGuidesBySlugs(slugs: string[]): GuideWithMeta[] {
   return slugs
     .map((slug) => getGuideBySlug(slug))
-    .filter((guide): guide is Guide => guide !== undefined);
+    .filter((guide): guide is GuideWithMeta => guide !== undefined);
+}
+
+export function getAllGuides(): GuideWithMeta[] {
+  return GUIDES.map(enrichGuide);
 }
 
 export function getAllGuideSlugs(): string[] {

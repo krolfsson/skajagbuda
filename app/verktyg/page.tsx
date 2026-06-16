@@ -3,6 +3,7 @@ import Link from "next/link";
 import { SITE_URL, CTA_START_ANALYSIS } from "@/lib/brand";
 import { TOOLS } from "@/lib/content/tools";
 import { AnalyticsPageView } from "@/components/AnalyticsPageView";
+import { ToolIcon } from "@/components/tools/ToolIcon";
 
 export const metadata: Metadata = {
   title: "Gratisverktyg för bostadsköpare",
@@ -18,29 +19,44 @@ export const metadata: Metadata = {
 
 export default function VerktygIndexPage() {
   return (
-    <div className="content-index">
+    <div className="content-index content-index--tools">
       <AnalyticsPageView event="view_tool" payload={{ page: "verktyg_index" }} />
       <p className="guide-eyebrow">Verktyg</p>
       <h1 className="guide-h1">Gratisverktyg inför budgivning</h1>
       <p className="guide-lead">
-        Förenklade kalkylatorer som ger dig bättre underlag innan du budar. Komplettera med en full
-        analys när du hittat ett konkret objekt.
+        Snabba kalkyler som ger bättre underlag innan du budar. Komplettera med en full analys när
+        du hittat ett konkret objekt.
       </p>
-      <ul className="content-index-grid">
+
+      <ul className="tools-grid">
         {TOOLS.map((t) => (
           <li key={t.slug}>
-            <Link href={`/verktyg/${t.slug}`} className="content-index-card">
-              <span className="content-index-card-title">{t.title}</span>
-              <span className="content-index-card-desc">{t.description}</span>
-              <svg className="content-index-arrow" width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+            <Link href={`/verktyg/${t.slug}`} className="tool-card">
+              <div className="tool-card-top">
+                <ToolIcon name={t.icon} />
+                <span className="tool-card-badge">{t.badge}</span>
+              </div>
+              <h2 className="tool-card-title">{t.shortTitle}</h2>
+              <p className="tool-card-desc">{t.indexDescription}</p>
+              <svg className="tool-card-chevron" width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
                 <path d="M4 2l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </Link>
           </li>
         ))}
       </ul>
-      <div className="guide-cta">
+
+      <section className="tools-content-block">
+        <h2 className="tools-content-block-title">Bra kalkyl först. Bättre beslut med analys.</h2>
+        <p className="tools-content-block-text">
+          Boendekostnad, maxbud och BRF-skuld säger mycket — men inte allt. En full analys väger
+          även föreningens ekonomi, planerat underhåll, röda flaggor och budstrategi.
+        </p>
+      </section>
+
+      <div className="guide-cta guide-cta--tools">
         <h2>Nästa steg: analysera objektet</h2>
+        <p>Klistra in objektlänken och få en preliminär risknivå gratis.</p>
         <Link href="/new" className="guide-cta-primary">{CTA_START_ANALYSIS}</Link>
       </div>
     </div>

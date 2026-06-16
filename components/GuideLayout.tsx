@@ -1,22 +1,22 @@
 import Link from "next/link";
 import { PRODUCT_DOMAIN, SITE_URL, CTA_START_ANALYSIS } from "@/lib/brand";
-import { getGuideBySlug, getGuidesBySlugs } from "@/lib/content/guides";
+import { getGuidesBySlugs } from "@/lib/content/guides";
 import { getToolBySlug } from "@/lib/content/tools";
-import type { Guide } from "@/lib/content/types";
+import type { GuideWithMeta } from "@/lib/content/types";
 import { GuideCtaButton } from "@/components/GuideCtaButton";
+import { GuideCalloutBox } from "@/components/guides/GuideCalloutBox";
+import { GuideInlineCta } from "@/components/guides/GuideInlineCta";
 
 function sectionId(index: number, id: string) {
   return id || `section-${index}`;
 }
 
-export function GuideLayout({ guide }: { guide: Guide }) {
+export function GuideLayout({ guide }: { guide: GuideWithMeta }) {
   const url = `${SITE_URL}/guider/${guide.slug}`;
   const relatedGuides = getGuidesBySlugs(guide.relatedSlugs);
   const relatedTools = (guide.relatedToolSlugs ?? [])
     .map((s) => getToolBySlug(s))
     .filter(Boolean);
-
-  const midIndex = Math.min(2, Math.max(0, guide.sections.length - 1));
 
   const articleJsonLd = {
     "@context": "https://schema.org",
@@ -67,9 +67,19 @@ export function GuideLayout({ guide }: { guide: Guide }) {
         <span>{guide.title}</span>
       </nav>
 
-      <p className="guide-eyebrow">Guide</p>
-      <h1 className="guide-h1">{guide.title}</h1>
-      <p className="guide-lead">{guide.intro}</p>
+      <div className="guide-article-header">
+        <div className="guide-article-meta">
+          <p className="guide-eyebrow">Guide</p>
+          <span className="guide-article-category">{guide.category}</span>
+          {guide.popular && (
+            <span className="guide-card-badge guide-card-badge--popular">Populär</span>
+          )}
+        </div>
+        <h1 className="guide-h1">{guide.title}</h1>
+        <p className="guide-lead">{guide.intro}</p>
+      </div>
+
+      <GuideInlineCta compact />
 
       {guide.sections.length > 1 && (
         <nav className="guide-toc" aria-label="Innehåll">
@@ -78,8 +88,9 @@ export function GuideLayout({ guide }: { guide: Guide }) {
             {guide.sections.map((s, i) => (
               <li key={s.id}>
                 <a href={`#${sectionId(i, s.id)}`} className="guide-toc-link">
-                  <span>{s.heading}</span>
-                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                  <span className="guide-toc-index">{String(i + 1).padStart(2, "0")}</span>
+                  <span className="guide-toc-text">{s.heading}</span>
+                  <svg className="guide-toc-arrow" width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
                     <path d="M4 2l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
                 </a>
@@ -90,39 +101,20 @@ export function GuideLayout({ guide }: { guide: Guide }) {
       )}
 
       {guide.sections.map((section, index) => (
-        <div key={section.id}>
-          <section id={sectionId(index, section.id)} className="guide-section">
-            <h2 className="guide-h2">{section.heading}</h2>
-            {section.paragraphs.map((p) => (
-              <p key={p.slice(0, 40)}>{p}</p>
-            ))}
-            {section.bullets && (
-              <ul className="guide-list">
-                {section.bullets.map((b) => (
-                  <li key={b.slice(0, 50)}>{b}</li>
-                ))}
-              </ul>
-            )}
-            {section.callout && (
-              <div className="guide-callout">
-                <p>{section.callout}</p>
-              </div>
-            )}
-          </section>
-
-          {index === midIndex && (
-            <div className="guide-cta guide-cta--inline">
-              <h2>Vill du kontrollera ett konkret objekt?</h2>
-              <p>
-                Klistra in annons, budhistorik och årsredovisning. Få en preliminär risknivå gratis.
-              </p>
-              <div className="guide-cta-actions">
-                <GuideCtaButton href="/new" event="guide_cta_click" label={CTA_START_ANALYSIS} primary />
-                <GuideCtaButton href="/exempel" event="guide_cta_click" label="Se exempelanalys" />
-              </div>
-            </div>
+        <section key={section.id} id={sectionId(index, section.id)} className="guide-section">
+          <h2 className="guide-h2">{section.heading}</h2>
+          {section.paragraphs.map((p) => (
+            <p key={p.slice(0, 40)}>{p}</p>
+          ))}
+          {section.bullets && (
+            <ul className="guide-list">
+              {section.bullets.map((b) => (
+                <li key={b.slice(0, 50)}>{b}</li>
+              ))}
+            </ul>
           )}
-        </div>
+          {section.callout && <GuideCalloutBox callout={section.callout} />}
+        </section>
       ))}
 
       {guide.faq && guide.faq.length > 0 && (
@@ -143,9 +135,10 @@ export function GuideLayout({ guide }: { guide: Guide }) {
           <ul className="guide-related-list">
             {relatedGuides.map((g) => (
               <li key={g.slug}>
-                <Link href={`/guider/${g.slug}`} className="guide-toc-link">
+                <Link href={`/guider/${g.slug}`} className="guide-related-link">
                   <span>
                     <strong>{g.title}</strong>
+                    <span className="guide-related-desc">{g.category}</span>
                   </span>
                   <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
                     <path d="M4 2l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
@@ -155,9 +148,9 @@ export function GuideLayout({ guide }: { guide: Guide }) {
             ))}
             {relatedTools.map((t) => t && (
               <li key={t.slug}>
-                <Link href={`/verktyg/${t.slug}`} className="guide-toc-link">
+                <Link href={`/verktyg/${t.slug}`} className="guide-related-link">
                   <span>
-                    <strong>{t.title}</strong>
+                    <strong>{t.shortTitle}</strong>
                     <span className="guide-related-desc">Gratisverktyg</span>
                   </span>
                   <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">

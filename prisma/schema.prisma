@@ -26,7 +26,7 @@ model PropertyAnalysis {
   // Physical attributes
   livingAreaSqm    Decimal? @db.Decimal(6, 2)
   rooms            Decimal? @db.Decimal(4, 1)
-  floor            Int?
+  floor            Decimal? @db.Decimal(4, 1)
   totalFloors      Int?
   hasBalcony       Boolean  @default(false)
   balconyDirection String?

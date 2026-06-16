@@ -12,7 +12,7 @@ export const CreateAnalysisSchema = z.object({
 
   livingAreaSqm: z.coerce.number().positive().optional(),
   rooms: z.coerce.number().positive().optional(),
-  floor: z.coerce.number().int().optional(),
+  floor: z.coerce.number().optional(),
   totalFloors: z.coerce.number().int().optional(),
   hasBalcony: z.coerce.boolean().optional().default(false),
   balconyDirection: z.string().max(50).optional(),

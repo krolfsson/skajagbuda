@@ -57,7 +57,7 @@ export default async function ToolPage({ params }: Props) {
   ];
 
   return (
-    <div className="guide-page">
+    <div className="guide-page guide-page--tool">
       <AnalyticsPageView event="view_tool" payload={{ slug }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
