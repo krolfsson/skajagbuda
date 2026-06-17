@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import Link from "next/link";
 import { summaryToBullets } from "@/lib/format-summary";
 import {
   CATEGORY_HINTS,
@@ -37,6 +38,7 @@ export function ScorecardReport({
   conclusionLine,
   showHeading = true,
   titleAs: TitleTag = "h3",
+  mobileCompactPreview = false,
 }: {
   title: string;
   meta: string;
@@ -44,6 +46,7 @@ export function ScorecardReport({
   conclusionLine?: string;
   showHeading?: boolean;
   titleAs?: "h1" | "h2" | "h3";
+  mobileCompactPreview?: boolean;
 }) {
   const rec = REC_COLORS[sc.recommendation] ?? REC_COLORS["Buda försiktigt"];
   const riskDot = RISK_DOT[sc.riskLevel] ?? BRAND.caution;
@@ -55,7 +58,7 @@ export function ScorecardReport({
   const hasRedFlags = sc.redFlags.length > 0;
 
   return (
-    <div className="example-report">
+    <div className={`example-report${mobileCompactPreview ? " example-report--mobile-compact" : ""}`}>
       {showHeading && (
         <div className="example-report__heading">
           <TitleTag>{title}</TitleTag>
@@ -211,6 +214,14 @@ export function ScorecardReport({
           </div>
         </div>
       </div>
+
+      {mobileCompactPreview && (
+        <div className="example-report__compact-cta">
+          <Link href="/exempel" className="example-report__compact-link">
+            Se hela exempelanalysen →
+          </Link>
+        </div>
+      )}
 
       <div className="example-report__summary-long ex-panel">
         <PanelLabel>Sammanfattning</PanelLabel>

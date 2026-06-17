@@ -4,6 +4,7 @@ import { SITE_URL, CTA_START_ANALYSIS_ARROW } from "@/lib/brand";
 import { getAllGuides } from "@/lib/content/guides";
 import { AnalyticsPageView } from "@/components/AnalyticsPageView";
 import { GuideCard } from "@/components/guides/GuideCard";
+import { GuideVerktygCard } from "@/components/guides/GuideVerktygCard";
 import { GuideIndexCta } from "@/components/guides/GuideInlineCta";
 
 export const metadata: Metadata = {
@@ -39,6 +40,9 @@ export default function GuiderIndexPage() {
             <GuideCard guide={g} />
           </li>
         ))}
+        <li>
+          <GuideVerktygCard />
+        </li>
       </ul>
 
       <GuideIndexCta />

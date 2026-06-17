@@ -23,7 +23,7 @@ export function LandingExampleReport() {
         </div>
 
         <div className="home-example-report-wrap">
-          <ExampleReport showHeading={false} />
+          <ExampleReport showHeading={false} mobileCompactPreview />
         </div>
       </div>
     </section>

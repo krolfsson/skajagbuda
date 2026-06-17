@@ -4,7 +4,13 @@ import { ScorecardReport } from "@/components/ScorecardReport";
 /**
  * Full example scorecard — shared by landing page and /exempel.
  */
-export function ExampleReport({ showHeading = true }: { showHeading?: boolean }) {
+export function ExampleReport({
+  showHeading = true,
+  mobileCompactPreview = false,
+}: {
+  showHeading?: boolean;
+  mobileCompactPreview?: boolean;
+}) {
   return (
     <ScorecardReport
       title={EXAMPLE_PROPERTY.title}
@@ -12,6 +18,7 @@ export function ExampleReport({ showHeading = true }: { showHeading?: boolean })
       scorecard={EXAMPLE_SCORECARD}
       conclusionLine={EXAMPLE_CONCLUSION}
       showHeading={showHeading}
+      mobileCompactPreview={mobileCompactPreview}
     />
   );
 }
