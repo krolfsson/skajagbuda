@@ -189,32 +189,28 @@ function FieldLabel({
 function StepIndicator({ current }: { current: number }) {
   return (
     <div className="analysis-stepper">
-      <div
-        className="analysis-stepper-inner"
-        style={{ display: "grid", gridTemplateColumns: `repeat(${STEPS.length}, 1fr)` }}
-      >
+      <div className="analysis-stepper-inner">
         {STEPS.map((step, i) => {
           const done = step.id < current;
           const active = step.id === current;
           return (
-            <div key={step.id} style={{ display: "flex", flexDirection: "column", alignItems: "center", position: "relative" }}>
+            <div key={step.id} className="analysis-stepper-step">
               {i > 0 && (
-                <div style={{ position: "absolute", left: 0, right: "50%", top: "11px", height: "1px", background: done ? "var(--brand)" : "var(--border)" }} />
+                <div
+                  className={`analysis-stepper-line analysis-stepper-line--left${done ? " analysis-stepper-line--done" : ""}`}
+                />
               )}
               {i < STEPS.length - 1 && (
-                <div style={{ position: "absolute", left: "50%", right: 0, top: "11px", height: "1px", background: done ? "var(--brand)" : "var(--border)" }} />
+                <div
+                  className={`analysis-stepper-line analysis-stepper-line--right${done ? " analysis-stepper-line--done" : ""}`}
+                />
               )}
-              <div style={{
-                width: "22px", height: "22px", borderRadius: "50%", zIndex: 1,
-                background: done || active ? "var(--brand)" : "var(--surface)",
-                border: done || active ? "none" : "1.5px solid var(--border-strong)",
-                display: "flex", alignItems: "center", justifyContent: "center",
-              }}>
-                <span style={{ fontSize: "10px", fontWeight: 600, color: active || done ? "#fff" : "var(--muted)" }}>
+              <div className={`analysis-stepper-dot${done || active ? " analysis-stepper-dot--done" : ""}${active ? " analysis-stepper-dot--active" : ""}`}>
+                <span className={done || active ? "analysis-stepper-dot-label" : "analysis-stepper-dot-label--muted"}>
                   {done ? "✓" : step.id}
                 </span>
               </div>
-              <span style={{ fontSize: "10px", marginTop: "5px", color: active ? "var(--brand)" : "var(--muted)", fontWeight: active ? 600 : 400 }}>
+              <span className={`analysis-stepper-label${active ? " analysis-stepper-label--active" : ""}`}>
                 {step.label}
               </span>
             </div>

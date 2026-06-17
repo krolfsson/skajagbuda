@@ -1,4 +1,12 @@
+import { isPaywallDisabled } from "@/lib/paywall";
+
 export function DevBypassBanner() {
+  const viaPaywallFlag = isPaywallDisabled();
+
+  const hint = viaPaywallFlag
+    ? "PAYWALL_DISABLED=true"
+    : "DEV_BYPASS_PAYMENT=true";
+
   return (
     <div
       className="no-print"
@@ -14,7 +22,8 @@ export function DevBypassBanner() {
         lineHeight: 1.5,
       }}
     >
-      Dev-läge: betalväggen är avstängd via <code>DEV_BYPASS_PAYMENT=true</code> i .env.
+      Betalväggen är avstängd via <code>{hint}</code>
+      {viaPaywallFlag ? " — sätt PAYWALL_DISABLED=false för att aktivera betalning igen." : " i .env."}
     </div>
   );
 }

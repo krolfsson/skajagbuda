@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { checkRateLimit } from "@/lib/rateLimit";
-import { isDevPaymentBypassEnabled } from "@/lib/dev-bypass";
+import { isAnalysisUnlocked } from "@/lib/paywall";
 import { resolveScorecardForAnalysis } from "@/lib/risk-level";
 import { AnalysisRunError, runPropertyAnalysis } from "@/lib/run-property-analysis";
 
@@ -42,9 +42,7 @@ export async function POST(
 
   const isInitialRun =
     analysis.fullAnalysisStatus === "LOCKED" || analysis.fullAnalysisStatus === "FAILED";
-  const isPaidRun =
-    isDevPaymentBypassEnabled() ||
-    (analysis.paymentStatus === "PAID" && analysis.analysisUnlocked);
+  const isPaidRun = isAnalysisUnlocked(analysis);
 
   if (!isInitialRun && !isPaidRun) {
     return NextResponse.json({ error: "Analysen kräver betalning för omkörning." }, { status: 402 });

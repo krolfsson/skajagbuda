@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
-import { isDevPaymentBypassEnabled } from "@/lib/dev-bypass";
+import { isAnalysisUnlocked, isPaywallBypassActive } from "@/lib/paywall";
 import {
   resolveScorecardForAnalysis,
   scorecardNeedsRiskSync,
@@ -29,9 +29,8 @@ export default async function ResultPage({
     <PaymentVerifier analysisId={id} sessionId={sessionId} />
   ) : null;
 
-  const devBypass = isDevPaymentBypassEnabled();
-  const isUnlocked =
-    devBypass || (analysis.paymentStatus === "PAID" && analysis.analysisUnlocked);
+  const paywallBypass = isPaywallBypassActive();
+  const isUnlocked = isAnalysisUnlocked(analysis);
 
   const scorecard = resolveScorecardForAnalysis(analysis);
   const isComplete =
@@ -92,7 +91,7 @@ export default async function ResultPage({
       <>
         {paymentVerifier}
         <ResultAnalytics event="full_analysis_completed" analysisId={id} />
-        <FullScorecard analysis={analysis} scorecard={scorecard!} devBypass={devBypass} />
+        <FullScorecard analysis={analysis} scorecard={scorecard!} devBypass={paywallBypass} />
       </>
     );
   }
