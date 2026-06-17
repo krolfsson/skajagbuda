@@ -103,7 +103,7 @@ export function ScorecardReport({
         </div>
       </div>
 
-      <div className={`example-report__redflags ex-panel${sc.redFlags.length > 0 ? " ex-panel--danger" : ""}`}>
+      <div className="example-report__redflags ex-panel ex-panel--danger">
         <PanelLabel>Röda flaggor</PanelLabel>
         {sc.redFlags.length > 0 ? (
           <ul className="ex-list ex-list--danger">
@@ -116,7 +116,7 @@ export function ScorecardReport({
         )}
       </div>
 
-      <div className="example-report__strengths ex-panel">
+      <div className="example-report__strengths ex-panel ex-panel--good">
         <PanelLabel>Styrkor</PanelLabel>
         <ul className="ex-list ex-list--good">
           {sc.strengths.map((s) => (
@@ -125,7 +125,7 @@ export function ScorecardReport({
         </ul>
       </div>
 
-      <div className="example-report__weaknesses ex-panel">
+      <div className="example-report__weaknesses ex-panel ex-panel--caution">
         <PanelLabel>Svagheter</PanelLabel>
         {sc.weaknesses.length > 0 ? (
           <ul className="ex-list ex-list--caution">

@@ -207,14 +207,15 @@ input[type="number"]::-webkit-outer-spin-button {
 @media (max-width: 768px) {
   .site-header-inner {
     height: auto;
-    min-height: 88px;
+    min-height: 96px;
     padding: 16px 20px;
     justify-content: center;
   }
 
   .site-logo-link {
     margin-left: 0;
-    width: 50%;
+    width: 70%;
+    max-width: 70vw;
     min-width: 0;
     justify-content: center;
   }
@@ -261,7 +262,7 @@ input[type="number"]::-webkit-outer-spin-button {
 
 @media (max-width: 768px) {
   .home-page {
-    min-height: calc(100vh - 88px);
+    min-height: calc(100vh - 96px);
   }
 }
 
@@ -718,6 +719,7 @@ input[type="number"]::-webkit-outer-spin-button {
     "disclaimer disclaimer disclaimer";
   gap: 12px;
   margin-top: 4px;
+  width: 100%;
 }
 
 .example-report__score {
@@ -765,8 +767,13 @@ input[type="number"]::-webkit-outer-spin-button {
 }
 
 .full-report-page__inner {
-  max-width: 960px;
+  width: 100%;
+  max-width: 1180px;
   margin: 0 auto;
+}
+
+.report-print-root {
+  width: 100%;
 }
 
 .full-report-page__toolbar {
@@ -821,6 +828,16 @@ input[type="number"]::-webkit-outer-spin-button {
   border-color: var(--danger-border);
 }
 
+.ex-panel--good {
+  background: var(--success-bg);
+  border-color: var(--success-border);
+}
+
+.ex-panel--caution {
+  background: var(--caution-bg);
+  border-color: var(--caution-border);
+}
+
 .ex-panel-label {
   font-size: 10px;
   text-transform: uppercase;
@@ -832,6 +849,14 @@ input[type="number"]::-webkit-outer-spin-button {
 
 .ex-panel--danger .ex-panel-label {
   color: var(--danger);
+}
+
+.ex-panel--good .ex-panel-label {
+  color: var(--success);
+}
+
+.ex-panel--caution .ex-panel-label {
+  color: var(--caution);
 }
 
 .ex-score-row {
@@ -1114,18 +1139,9 @@ input[type="number"]::-webkit-outer-spin-button {
   }
 }
 
-@media (min-width: 769px) and (max-width: 1024px) {
+@media (min-width: 769px) and (max-width: 900px) {
   .example-report {
-    grid-template-columns: 200px 1fr;
-    grid-template-areas:
-      "score summary"
-      "score categories"
-      "redflags redflags"
-      "strengths weaknesses"
-      "questions questions"
-      "bid bid"
-      "summary-long summary-long"
-      "disclaimer disclaimer";
+    grid-template-columns: 180px 1fr 1fr;
   }
 }
 
@@ -3726,7 +3742,7 @@ input[type="number"]::-webkit-outer-spin-button {
 
 @media (max-width: 768px) {
   .analysis-page {
-    min-height: calc(100vh - 88px);
+    min-height: calc(100vh - 96px);
     padding-bottom: 64px !important;
   }
 }

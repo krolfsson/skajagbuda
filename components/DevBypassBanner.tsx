@@ -11,7 +11,7 @@ export function DevBypassBanner() {
     <div
       className="no-print"
       style={{
-        maxWidth: "960px",
+        maxWidth: "1180px",
         margin: "0 auto 16px",
         padding: "10px 14px",
         background: "#fffbeb",
