@@ -111,11 +111,6 @@ export function SiteHeader() {
               </Link>
             ))}
           </nav>
-
-          <Link href="/new" className="site-header-mobile-cta">
-            {CTA_START_ANALYSIS}
-            <span aria-hidden="true"> →</span>
-          </Link>
         </div>
       </div>
     </header>

@@ -267,7 +267,7 @@ input[type="number"]::-webkit-outer-spin-button {
 /* Mobile header */
 .site-header-bar--mobile {
   display: block;
-  padding: 18px 20px 20px;
+  padding: 14px 18px 14px;
   border: none;
   border-radius: 0;
   box-shadow: none;
@@ -279,7 +279,7 @@ input[type="number"]::-webkit-outer-spin-button {
   justify-content: center;
   width: 78%;
   max-width: 300px;
-  margin: 0 auto 16px;
+  margin: 0 auto 12px;
   text-decoration: none;
 }
 
@@ -292,7 +292,7 @@ input[type="number"]::-webkit-outer-spin-button {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 8px;
-  margin-bottom: 12px;
+  margin-bottom: 0;
 }
 
 .site-header-pill {
@@ -316,26 +316,6 @@ input[type="number"]::-webkit-outer-spin-button {
 
 .site-header-pill span {
   white-space: nowrap;
-}
-
-.site-header-mobile-cta {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  width: 100%;
-  min-height: 50px;
-  font-size: 15px;
-  font-weight: 600;
-  background: var(--brand);
-  color: #fff;
-  border-radius: 12px;
-  text-decoration: none;
-  transition: background 0.15s ease;
-}
-
-.site-header-mobile-cta:hover {
-  background: var(--brand-hover);
 }
 
 @media (min-width: 960px) {
@@ -2045,7 +2025,7 @@ input[type="number"]::-webkit-outer-spin-button {
   .home-hero {
     grid-template-columns: 1fr;
     gap: 0;
-    padding: 38px 20px 24px;
+    padding: 28px 20px 24px;
   }
 
   .home-eyebrow {
