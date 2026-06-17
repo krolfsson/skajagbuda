@@ -6,7 +6,7 @@ import { ShareButton } from "@/components/ShareButton";
 import { ExportReportButton } from "@/components/ExportReportButton";
 import { DownloadPdfButton } from "@/components/DownloadPdfButton";
 import { DevBypassBanner } from "@/components/DevBypassBanner";
-import { ScorecardReport } from "@/components/ScorecardReport";
+import { AnalysisReport } from "@/components/AnalysisReport";
 
 function fmtDate(d: Date) {
   return new Intl.DateTimeFormat("sv-SE", {
@@ -58,7 +58,9 @@ export function FullScorecard({
         </p>
 
         <div className="report-print-root">
-          <ScorecardReport title={analysis.title} meta={meta} scorecard={sc} titleAs="h1" />
+          <div className="analysis-report-shell">
+            <AnalysisReport title={analysis.title} meta={meta} scorecard={sc} titleAs="h1" />
+          </div>
 
           <p className="print-only report-print-footer">
             Exporterad från skajagbuda.se · {fmtDate(analysis.createdAt)}

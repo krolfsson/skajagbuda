@@ -1,5 +1,4 @@
-import { ExampleReport } from "@/components/ExampleReport";
-import { EXAMPLE_PROPERTY } from "@/lib/example-scorecard";
+import { AnalysisPreview } from "@/components/AnalysisPreview";
 
 export function LandingExampleReport() {
   return (
@@ -16,14 +15,8 @@ export function LandingExampleReport() {
           </p>
         </header>
 
-        <div className="home-example-preview">
-          <p className="home-example-preview-label">Preview av upplåst analys</p>
-          <h3 className="home-example-object-title">{EXAMPLE_PROPERTY.title}</h3>
-          <p className="home-example-object-meta">{EXAMPLE_PROPERTY.metaShort}</p>
-        </div>
-
         <div className="home-example-report-wrap">
-          <ExampleReport showHeading={false} mobileCompactPreview />
+          <AnalysisPreview />
         </div>
       </div>
     </section>

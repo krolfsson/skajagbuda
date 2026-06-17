@@ -21,30 +21,21 @@ export const metadata: Metadata = {
 
 export default function ExempelPage() {
   return (
-    <div style={{ background: "var(--bg)", minHeight: "calc(100vh - 116px)", padding: "24px 16px 80px" }}>
-      <div style={{ maxWidth: "1180px", width: "100%", margin: "0 auto" }}>
-
-        {/* Top bar */}
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "24px" }}>
-          <Link href="/" style={{ fontSize: "13px", color: "var(--muted)", textDecoration: "none" }}>
+    <div className="full-report-page">
+      <div className="full-report-page__inner">
+        <div className="exempel-page__toolbar no-print">
+          <Link href="/" className="full-report-page__back">
             ← Tillbaka
           </Link>
-          <span style={{
-            fontSize: "11px", padding: "4px 10px",
-            background: "var(--brand-light)", border: "1px solid var(--brand-border)",
-            borderRadius: "20px", color: "var(--brand)", fontWeight: 500,
-          }}>
-            Exempelanalys
-          </span>
+          <span className="exempel-page__badge">Exempelanalys</span>
         </div>
 
-        <ExampleReport />
+        <div className="analysis-report-shell">
+          <ExampleReport />
+        </div>
 
-        {/* CTA */}
-        <div style={{ marginTop: "32px", textAlign: "center" }}>
-          <p style={{ fontSize: "13px", color: "var(--muted)", marginBottom: "12px" }}>
-            Kör en riktig analys på bostaden du tittar på
-          </p>
+        <div className="exempel-page__cta no-print">
+          <p>Kör en riktig analys på bostaden du tittar på</p>
           <Link href="/new" className="guide-cta-primary">
             {CTA_START_ANALYSIS_ARROW}
           </Link>
