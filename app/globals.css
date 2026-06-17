@@ -3738,12 +3738,14 @@ input[type="number"]::-webkit-outer-spin-button {
 
 .analysis-page {
   min-height: calc(100vh - 116px);
+  scroll-margin-top: 116px;
 }
 
 @media (max-width: 768px) {
   .analysis-page {
     min-height: calc(100vh - 96px);
     padding-bottom: 64px !important;
+    scroll-margin-top: 96px;
   }
 }
 

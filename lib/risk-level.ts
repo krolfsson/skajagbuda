@@ -1,5 +1,6 @@
 import type { Scorecard } from "@/lib/schemas";
 import { ScorecardSchema } from "@/lib/schemas";
+import { coerceScorecardInput } from "@/lib/coerce-scorecard";
 
 export const RISK_LEVELS = ["Låg", "Medel", "Hög", "Mycket hög"] as const;
 export type RiskLevel = (typeof RISK_LEVELS)[number];
@@ -41,9 +42,14 @@ export function resolveScorecardForAnalysis(analysis: {
   if (analysis.aiRawJson == null || typeof analysis.aiRawJson !== "object") {
     return null;
   }
-  const parsed = ScorecardSchema.safeParse(analysis.aiRawJson);
-  const scorecard = parsed.success ? parsed.data : (analysis.aiRawJson as Scorecard);
-  return normalizeScorecardRisk(scorecard);
+  const coerced = coerceScorecardInput(analysis.aiRawJson);
+  const parsed = ScorecardSchema.safeParse(coerced);
+  if (!parsed.success) {
+    const fallback = ScorecardSchema.safeParse(analysis.aiRawJson);
+    if (!fallback.success) return null;
+    return normalizeScorecardRisk(fallback.data);
+  }
+  return normalizeScorecardRisk(parsed.data);
 }
 
 export function scorecardNeedsRiskSync(analysis: {

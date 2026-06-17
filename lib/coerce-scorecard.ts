@@ -36,8 +36,71 @@ const RISK_ALIASES: Record<string, (typeof RISK_LEVELS)[number]> = {
 const DEFAULT_DISCLAIMER =
   "Detta är inte finansiell rådgivning. Gör alltid din egen bedömning och rådgör med bank och eventuellt en oberoende mäklare eller jurist innan du fattar beslut.";
 
-const THIN_DATA_STRENGTH =
-  "Begränsat underlag i formuläret — analysen bygger främst på adress och allmänna antaganden.";
+const THIN_DATA_BOILERPLATE = /begränsat underlag|komplettera med annons/i;
+
+function isThinDataBoilerplate(text: string): boolean {
+  return THIN_DATA_BOILERPLATE.test(text);
+}
+
+function bulletLine(text: string): string {
+  const cleaned = text.replace(/^[-•*]\s+/, "").trim();
+  return cleaned ? `- ${cleaned}` : "";
+}
+
+function normalizeSummary(value: unknown): string | null {
+  if (typeof value === "string" && value.trim()) {
+    const text = value.trim();
+    if (!isThinDataBoilerplate(text)) return text;
+  }
+
+  const bullets = toStringArray(value);
+  if (bullets.length > 0) {
+    return bullets
+      .map(bulletLine)
+      .filter(Boolean)
+      .join("\n");
+  }
+
+  return null;
+}
+
+function buildSummaryFallback(strengths: string[], weaknesses: string[], redFlags: string[]): string {
+  const points = [...weaknesses.slice(0, 3), ...redFlags.slice(0, 2), ...strengths.slice(0, 2)]
+    .map((point) => point.replace(/^[-•*]\s+/, "").trim())
+    .filter(Boolean);
+
+  if (points.length > 0) {
+    return points.map((point) => `- ${point}`).join("\n");
+  }
+
+  return "- Analys baserad på inskickat underlag.";
+}
+
+function deriveOneSentenceSummary(
+  raw: unknown,
+  summary: string,
+  strengths: string[],
+): string {
+  if (typeof raw === "string" && raw.trim() && !isThinDataBoilerplate(raw)) {
+    return raw.trim().slice(0, 150);
+  }
+
+  const summaryLines = summary
+    .split(/\n/)
+    .map((line) => line.replace(/^[-•*]\s+/, "").trim())
+    .filter(Boolean);
+
+  if (summaryLines[0] && !isThinDataBoilerplate(summaryLines[0])) {
+    return summaryLines[0].slice(0, 150);
+  }
+
+  const strength = strengths.find((item) => item.trim() && !isThinDataBoilerplate(item));
+  if (strength) {
+    return strength.replace(/^[-•*]\s+/, "").slice(0, 150);
+  }
+
+  return "Sammanfattning baserad på inskickat objektunderlag.";
+}
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
@@ -100,11 +163,11 @@ function normalizeBidStrategy(value: unknown): Scorecard["bidStrategy"] {
 
   return {
     openingMove: field("openingMove", "Utgå från ett försiktigt öppningsbud baserat på tillgänglig data."),
-    nextStep: field("nextStep", "Håll budstegen små tills mer underlag finns på plats."),
+    nextStep: field("nextStep", "Håll budstegen små och vänta in svar på viktiga frågor innan du höjer."),
     walkAwayPoint: field("walkAwayPoint", "Sätt en tydlig maxnivå innan budgivningen och håll dig till den."),
     negotiationNotes: field(
       "negotiationNotes",
-      "Komplettera med annons, årsredovisning och budhistorik för en skarpare strategi."
+      "Använd svagheter och öppna frågor som förhandlingsunderlag innan slutbud."
     ),
   };
 }
@@ -136,14 +199,10 @@ export function coerceScorecardInput(raw: unknown): unknown {
   const questionsToAsk = toStringArray(raw.questionsToAsk);
 
   const summary =
-    typeof raw.summary === "string" && raw.summary.trim()
-      ? raw.summary.trim()
-      : "Analysen bygger på begränsat underlag. Komplettera med annons, pris, boyta och årsredovisning för en skarpare bedömning.";
+    normalizeSummary(raw.summary) ??
+    buildSummaryFallback(strengths, weaknesses, redFlags);
 
-  const oneSentenceSummary =
-    typeof raw.oneSentenceSummary === "string" && raw.oneSentenceSummary.trim()
-      ? raw.oneSentenceSummary.trim().slice(0, 150)
-      : summary.slice(0, 150);
+  const oneSentenceSummary = deriveOneSentenceSummary(raw.oneSentenceSummary, summary, strengths);
 
   return {
     score: Math.min(100, Math.max(0, toInt(raw.score, 50))),
@@ -152,11 +211,11 @@ export function coerceScorecardInput(raw: unknown): unknown {
     maxBidSuggestion: normalizeMaxBid(raw.maxBidSuggestion),
     oneSentenceSummary,
     summary,
-    strengths: strengths.length > 0 ? strengths : [THIN_DATA_STRENGTH],
-    weaknesses:
-      weaknesses.length > 0
-        ? weaknesses
-        : ["Begränsat underlag — pris, förening och underhåll kunde inte bedömas i detalj."],
+    strengths:
+      strengths.length > 0
+        ? strengths
+        : ["Analys genomförd utifrån inskickat underlag."],
+    weaknesses,
     redFlags,
     questionsToAsk:
       questionsToAsk.length > 0

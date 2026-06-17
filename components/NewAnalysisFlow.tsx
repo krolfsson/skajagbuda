@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { trackEvent } from "@/lib/analytics";
 import { CTA_START_ANALYSIS } from "@/lib/brand";
@@ -290,6 +290,14 @@ export default function NewAnalysisFlow() {
   const [analyzing, setAnalyzing] = useState(false);
   const [analyzeTitle, setAnalyzeTitle] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const flowTopRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const id = requestAnimationFrame(() => {
+      flowTopRef.current?.scrollIntoView({ block: "start", behavior: "auto" });
+    });
+    return () => cancelAnimationFrame(id);
+  }, [step]);
 
   function set(key: keyof FormData, value: string | boolean) {
     setForm((prev) => ({ ...prev, [key]: value }));
@@ -446,7 +454,7 @@ export default function NewAnalysisFlow() {
   const foundCount = countFound(fieldStatus);
 
   return (
-    <div className="analysis-page" style={{ background: "var(--bg)", padding: "32px 16px 80px" }}>
+    <div ref={flowTopRef} className="analysis-page" style={{ background: "var(--bg)", padding: "32px 16px 80px" }}>
       <div style={{ maxWidth: "620px", margin: "0 auto" }}>
         <a href="/" className="analysis-back-link">← Tillbaka</a>
 
