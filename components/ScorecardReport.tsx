@@ -1,20 +1,24 @@
 import type { ReactNode } from "react";
 import { summaryToBullets } from "@/lib/format-summary";
-import { deriveConclusion, fmtMoney, normalizeBid } from "@/lib/report-ui";
+import {
+  CATEGORY_HINTS,
+  CATEGORY_LABELS,
+  deriveConclusion,
+  deriveConclusionBox,
+  deriveDecisionSummary,
+  deriveNextSteps,
+  deriveRiskExplanation,
+  deriveScoreInterpretation,
+  deriveScoreSubtext,
+  deriveWalkAwayAmount,
+  fmtMoney,
+  normalizeBid,
+} from "@/lib/report-ui";
 import type { Scorecard } from "@/lib/schemas";
 import { REC_COLORS, RISK_DOT, BRAND, scoreBarColor } from "@/lib/ui-colors";
 
-const CAT_LABELS: Record<string, string> = {
-  price: "Pris",
-  association: "Föreningen",
-  condition: "Skick",
-  location: "Läge",
-  liquidity: "Likviditet",
-  risk: "Risk",
-};
-
-function ScoreBar({ value, inverted }: { value: number; inverted?: boolean }) {
-  const color = scoreBarColor(value, inverted);
+function ScoreBar({ value }: { value: number }) {
+  const color = scoreBarColor(value);
   return (
     <div className="ex-bar-track">
       <div className="ex-bar-fill" style={{ width: `${value}%`, background: color }} />
@@ -44,6 +48,11 @@ export function ScorecardReport({
   const rec = REC_COLORS[sc.recommendation] ?? REC_COLORS["Buda försiktigt"];
   const riskDot = RISK_DOT[sc.riskLevel] ?? BRAND.caution;
   const conclusion = conclusionLine ?? deriveConclusion(sc);
+  const conclusionBox = deriveConclusionBox(sc);
+  const decisionSummary = deriveDecisionSummary(sc);
+  const nextSteps = deriveNextSteps(sc);
+  const walkAwayAmount = deriveWalkAwayAmount(sc);
+  const hasRedFlags = sc.redFlags.length > 0;
 
   return (
     <div className="example-report">
@@ -54,12 +63,19 @@ export function ScorecardReport({
         </div>
       )}
 
+      <div className="example-report__conclusion ex-panel ex-panel--conclusion">
+        <PanelLabel>Slutsats</PanelLabel>
+        <p className="ex-conclusion-box">{conclusionBox}</p>
+      </div>
+
       <div className="example-report__score ex-panel">
         <PanelLabel>Total score</PanelLabel>
         <div className="ex-score-row">
           <span className="ex-score-value">{sc.score}</span>
           <span className="ex-score-max">/ 100</span>
         </div>
+        <p className="ex-score-interpretation">{deriveScoreInterpretation(sc)}</p>
+        <p className="ex-score-subtext">{deriveScoreSubtext(sc)}</p>
         <div className="ex-score-metrics">
           <div>
             <PanelLabel>Rekommendation</PanelLabel>
@@ -73,6 +89,7 @@ export function ScorecardReport({
               <span className="ex-risk-dot" style={{ background: riskDot }} />
               <span className="ex-risk-text" style={{ color: riskDot }}>{sc.riskLevel}</span>
             </div>
+            <p className="ex-metric-hint">{deriveRiskExplanation(sc)}</p>
           </div>
           {sc.maxBidSuggestion && (
             <div>
@@ -83,37 +100,60 @@ export function ScorecardReport({
         </div>
       </div>
 
+      <div className="example-report__next-steps ex-panel">
+        <PanelLabel>Nästa steg innan bud</PanelLabel>
+        <ul className="ex-next-steps">
+          {nextSteps.map((step) => (
+            <li key={step}>{step}</li>
+          ))}
+        </ul>
+      </div>
+
+      <div
+        className={`example-report__redflags ex-panel ${hasRedFlags ? "ex-panel--danger" : "ex-panel--good"}`}
+      >
+        {hasRedFlags ? (
+          <>
+            <PanelLabel>Röda flaggor</PanelLabel>
+            <ul className="ex-list ex-list--danger">
+              {sc.redFlags.map((f) => (
+                <li key={f}>{f}</li>
+              ))}
+            </ul>
+          </>
+        ) : (
+          <>
+            <PanelLabel>Inga tydliga röda flaggor hittades</PanelLabel>
+            <p className="ex-body-text">
+              Kontrollera ändå budhistorik, underhållsplan och eventuella kommande avgiftshöjningar innan du går
+              vidare.
+            </p>
+          </>
+        )}
+      </div>
+
       <div className="example-report__summary-short ex-panel">
         <PanelLabel>Kort sammanfattning</PanelLabel>
-        <p className="ex-body-text">{sc.oneSentenceSummary}</p>
+        <p className="ex-body-text ex-body-text--long">{decisionSummary}</p>
       </div>
 
       <div className="example-report__categories ex-panel">
         <PanelLabel>Kategoripoäng</PanelLabel>
+        <p className="ex-cat-hint">Högre poäng är bättre inom varje område.</p>
         <div className="ex-cat-list">
           {Object.entries(sc.categoryScores)
-            .filter(([key]) => key in CAT_LABELS)
+            .filter(([key]) => key in CATEGORY_LABELS)
             .map(([key, val]) => (
               <div key={key} className="ex-cat-row">
-                <span className="ex-cat-label">{CAT_LABELS[key] ?? key}</span>
-                <ScoreBar value={val} inverted={key === "risk"} />
+                <div className="ex-cat-label-wrap">
+                  <span className="ex-cat-label">{CATEGORY_LABELS[key] ?? key}</span>
+                  <span className="ex-cat-helper">{CATEGORY_HINTS[key]}</span>
+                </div>
+                <ScoreBar value={val} />
                 <span className="ex-cat-num">{val}</span>
               </div>
             ))}
         </div>
-      </div>
-
-      <div className="example-report__redflags ex-panel ex-panel--danger">
-        <PanelLabel>Röda flaggor</PanelLabel>
-        {sc.redFlags.length > 0 ? (
-          <ul className="ex-list ex-list--danger">
-            {sc.redFlags.map((f) => (
-              <li key={f}>{f}</li>
-            ))}
-          </ul>
-        ) : (
-          <p className="ex-body-text ex-muted">Inga identifierade</p>
-        )}
       </div>
 
       <div className="example-report__strengths ex-panel ex-panel--good">
@@ -134,7 +174,7 @@ export function ScorecardReport({
             ))}
           </ul>
         ) : (
-          <p className="ex-body-text ex-muted">Inga identifierade</p>
+          <p className="ex-body-text ex-muted">Inga tydliga svagheter identifierade utifrån underlaget.</p>
         )}
       </div>
 
@@ -152,17 +192,23 @@ export function ScorecardReport({
       <div className="example-report__bid ex-panel">
         <PanelLabel>Budstrategi</PanelLabel>
         <div className="ex-bid-grid">
-          {[
-            { label: "Öppningsbud", value: sc.bidStrategy.openingMove },
-            { label: "Nästa steg", value: sc.bidStrategy.nextStep },
-            { label: "Walk-away", value: sc.bidStrategy.walkAwayPoint },
-            { label: "Strategi", value: sc.bidStrategy.negotiationNotes },
-          ].map(({ label, value }) => (
-            <div key={label}>
-              <p className="ex-bid-label">{label}</p>
-              <p className="ex-body-text">{value}</p>
-            </div>
-          ))}
+          <div>
+            <p className="ex-bid-label">Öppningsbud</p>
+            <p className="ex-body-text">{sc.bidStrategy.openingMove}</p>
+          </div>
+          <div>
+            <p className="ex-bid-label">Nästa steg</p>
+            <p className="ex-body-text">{sc.bidStrategy.nextStep}</p>
+          </div>
+          <div className="ex-bid-walkaway">
+            <p className="ex-bid-label">Gå inte över</p>
+            {walkAwayAmount && <p className="ex-walkaway-amount">{walkAwayAmount}</p>}
+            <p className="ex-body-text">{sc.bidStrategy.walkAwayPoint}</p>
+          </div>
+          <div>
+            <p className="ex-bid-label">Strategi</p>
+            <p className="ex-body-text">{sc.bidStrategy.negotiationNotes}</p>
+          </div>
         </div>
       </div>
 
