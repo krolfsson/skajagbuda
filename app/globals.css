@@ -485,6 +485,12 @@ input[type="number"]::-webkit-outer-spin-button {
   white-space: nowrap;
 }
 
+.site-header-pill--active {
+  color: var(--brand);
+  background: var(--brand-light);
+  border-color: var(--brand-border);
+}
+
 @media (min-width: 960px) {
   .site-header-bar--desktop {
     display: flex;

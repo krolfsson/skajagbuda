@@ -17,9 +17,14 @@ const DESKTOP_NAV = [
 ] as const;
 
 const MOBILE_PILLS = [
-  { href: "/guider", label: "Guider", icon: "guide" },
-  { href: "/verktyg", label: "Verktyg", icon: "tool" },
-  { href: "/#exempelanalys", label: "Exempel", icon: "example" },
+  { href: "/guider", label: "Guider", icon: "guide", match: (path: string) => path.startsWith("/guider") },
+  { href: "/verktyg", label: "Verktyg", icon: "tool", match: (path: string) => path.startsWith("/verktyg") },
+  {
+    href: "/#exempelanalys",
+    label: "Exempel",
+    icon: "example",
+    match: (path: string) => path === "/exempel",
+  },
 ] as const;
 
 function NavIcon({ name }: { name: "guide" | "tool" | "example" }) {
@@ -67,6 +72,10 @@ function navLinkClass(active: boolean) {
   return `site-header-nav-link${active ? " site-header-nav-link--active" : ""}`;
 }
 
+function pillClass(active: boolean) {
+  return `site-header-pill${active ? " site-header-pill--active" : ""}`;
+}
+
 export function SiteHeader() {
   const pathname = usePathname();
 
@@ -103,12 +112,20 @@ export function SiteHeader() {
           </a>
 
           <nav className="site-header-mobile-pills" aria-label="Snabbnavigation">
-            {MOBILE_PILLS.map((item) => (
-              <Link key={item.href} href={item.href} className="site-header-pill">
-                <NavIcon name={item.icon} />
-                <span>{item.label}</span>
-              </Link>
-            ))}
+            {MOBILE_PILLS.map((item) => {
+              const active = item.match(pathname);
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={pillClass(active)}
+                  aria-current={active ? "page" : undefined}
+                >
+                  <NavIcon name={item.icon} />
+                  <span>{item.label}</span>
+                </Link>
+              );
+            })}
           </nav>
         </div>
       </div>
