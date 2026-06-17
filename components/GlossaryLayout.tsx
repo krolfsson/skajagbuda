@@ -82,7 +82,7 @@ export function GlossaryLayout({ term }: { term: GlossaryTerm }) {
             {relatedTools.map((t) => t && (
               <li key={t.slug}>
                 <Link href={`/verktyg/${t.slug}`} className="guide-toc-link">
-                  <span><strong>{t.title}</strong></span>
+                  <span><strong>{t.shortTitle}</strong></span>
                   <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
                     <path d="M4 2l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>

@@ -64,7 +64,7 @@ export default async function ToolPage({ params }: Props) {
       <nav className="guide-breadcrumb" aria-label="Brödsmulor">
         <Link href="/">Start</Link><span>/</span>
         <Link href="/verktyg">Verktyg</Link><span>/</span>
-        <span>{tool.title}</span>
+        <span>{tool.shortTitle}</span>
       </nav>
 
       <p className="guide-eyebrow">Verktyg</p>

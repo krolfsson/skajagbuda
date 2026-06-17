@@ -3,7 +3,7 @@ import type { ToolMeta } from "./types";
 export const TOOLS: ToolMeta[] = [
   {
     slug: "boendekostnad",
-    title: "Boendekostnadskalkylator",
+    title: "Boendekostnad",
     shortTitle: "Boendekostnad",
     description: "Räkna ut ungefärlig månadskostnad för bostadsrätt – ränta, amortering och avgift.",
     indexDescription:
