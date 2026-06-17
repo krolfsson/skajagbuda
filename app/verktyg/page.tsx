@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { SITE_URL, CTA_START_ANALYSIS } from "@/lib/brand";
+import { SITE_URL, CTA_START_ANALYSIS_ARROW } from "@/lib/brand";
 import { TOOLS } from "@/lib/content/tools";
 import { AnalyticsPageView } from "@/components/AnalyticsPageView";
 import { ToolIcon } from "@/components/tools/ToolIcon";
@@ -59,7 +59,7 @@ export default function VerktygIndexPage() {
       <div className="guide-cta guide-cta--tools">
         <h2>Nästa steg: analysera objektet</h2>
         <p>Klistra in objektlänken och få en preliminär risknivå gratis.</p>
-        <Link href="/new" className="guide-cta-primary">{CTA_START_ANALYSIS}</Link>
+        <Link href="/new" className="guide-cta-primary">{CTA_START_ANALYSIS_ARROW}</Link>
       </div>
     </div>
   );

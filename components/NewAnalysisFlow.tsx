@@ -645,11 +645,6 @@ export default function NewAnalysisFlow() {
                   className="analysis-nav-submit"
                   onClick={handleAnalyze}
                   disabled={loading}
-                  style={{
-                    color: loading ? "var(--muted)" : "#fff",
-                    background: loading ? "var(--border)" : "var(--brand)",
-                    cursor: loading ? "not-allowed" : "pointer",
-                  }}
                 >
                   {loading ? "Bedömer risk…" : CTA_START_ANALYSIS}
                 </button>

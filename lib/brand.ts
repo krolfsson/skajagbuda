@@ -12,6 +12,9 @@ export const FULL_ANALYSIS_PRICE_SEK = 29;
 /** Primary CTA label linking to /new across the site. */
 export const CTA_START_ANALYSIS = "Starta gratis analys";
 
+/** Same CTA with forward arrow for flow-start buttons. */
+export const CTA_START_ANALYSIS_ARROW = `${CTA_START_ANALYSIS} →`;
+
 /** Public contact email (NEXT_PUBLIC_CONTACT_EMAIL). */
 export const CONTACT_EMAIL =
   process.env.NEXT_PUBLIC_CONTACT_EMAIL?.trim() || "kontakt@skajagbuda.se";

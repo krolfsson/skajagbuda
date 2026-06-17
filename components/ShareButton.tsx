@@ -41,23 +41,7 @@ export function ShareButton({
   }
 
   return (
-    <button
-      type="button"
-      className="no-print"
-      onClick={handleShare}
-      style={{
-        display: "flex",
-        alignItems: "center",
-        gap: "6px",
-        fontSize: "12px",
-        color: "var(--muted)",
-        background: "var(--surface)",
-        border: "1px solid var(--border)",
-        borderRadius: "var(--radius-sm)",
-        padding: "6px 12px",
-        cursor: "pointer",
-      }}
-    >
+    <button type="button" className="btn-secondary-sm no-print" onClick={handleShare}>
       <svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true">
         <path
           d="M8 2v9m0 0l-3-3m3 3l3-3M3 13h10"

@@ -6,8 +6,8 @@ export function Logo() {
     <Image
       src="/logo.png"
       alt={PRODUCT_NAME}
-      width={1024}
-      height={341}
+      width={846}
+      height={137}
       priority
       className="site-logo"
     />

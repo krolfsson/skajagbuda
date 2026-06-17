@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { CTA_START_ANALYSIS } from "@/lib/brand";
+import { CTA_START_ANALYSIS_ARROW } from "@/lib/brand";
 
 type InfoPageLayoutProps = {
   eyebrow?: string;
@@ -27,7 +27,7 @@ export function InfoPageLayout({
         {showCta && (
           <div className="info-page-cta">
             <Link href="/new" className="home-btn-primary">
-              {CTA_START_ANALYSIS}
+              {CTA_START_ANALYSIS_ARROW}
             </Link>
           </div>
         )}

@@ -80,20 +80,7 @@ export function AnalysisLoader({
 
   if (manual && !active) {
     return (
-      <button
-        type="button"
-        onClick={() => setActive(true)}
-        style={{
-          fontSize: "13px",
-          fontWeight: 600,
-          padding: "9px 20px",
-          background: "var(--brand)",
-          color: "#fff",
-          border: "none",
-          borderRadius: "var(--radius-sm)",
-          cursor: "pointer",
-        }}
-      >
+      <button type="button" className="btn-primary btn-primary--sm" onClick={() => setActive(true)}>
         Försök igen
       </button>
     );
@@ -111,26 +98,18 @@ export function AnalysisLoader({
         {error ?? "Det tar cirka 30–60 sekunder. Sidan uppdateras automatiskt."}
       </p>
       {error && manual && (
+        <div style={{ marginTop: "20px" }}>
         <button
           type="button"
+          className="btn-primary btn-primary--sm"
           onClick={() => {
             setError(null);
             setActive(true);
           }}
-          style={{
-            marginTop: "20px",
-            fontSize: "13px",
-            fontWeight: 600,
-            padding: "9px 20px",
-            background: "var(--brand)",
-            color: "#fff",
-            border: "none",
-            borderRadius: "var(--radius-sm)",
-            cursor: "pointer",
-          }}
         >
           Försök igen
         </button>
+        </div>
       )}
     </div>
   );

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { PRODUCT_DOMAIN, SITE_URL, CTA_START_ANALYSIS } from "@/lib/brand";
+import { PRODUCT_DOMAIN, SITE_URL, CTA_START_ANALYSIS_ARROW } from "@/lib/brand";
 
 const TITLE = "Att tänka på vid budgivning och köp av bostadsrätt";
 const DESCRIPTION =
@@ -553,20 +553,8 @@ export default function AttTankaPaPage() {
           Klistra in annons, budhistorik och årsredovisning så får du en preliminär risknivå gratis –
           och en full analys med maxbud, budstrategi och röda flaggor.
         </p>
-        <Link
-          href="/new"
-          style={{
-            display: "inline-block",
-            fontSize: "14px",
-            fontWeight: 600,
-            padding: "11px 26px",
-            background: "var(--brand)",
-            color: "#fff",
-            borderRadius: "6px",
-            textDecoration: "none",
-          }}
-        >
-          {CTA_START_ANALYSIS}
+        <Link href="/new" className="guide-cta-primary">
+          {CTA_START_ANALYSIS_ARROW}
         </Link>
       </div>
     </div>

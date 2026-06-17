@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Logo } from "@/components/Logo";
-import { CTA_START_ANALYSIS } from "@/lib/brand";
+import { CTA_START_ANALYSIS_ARROW } from "@/lib/brand";
 
 const DESKTOP_NAV = [
   { href: "/guider", label: "Guider", match: (path: string) => path.startsWith("/guider") },
@@ -92,8 +92,7 @@ export function SiteHeader() {
 
           <div className="site-header-actions">
             <Link href="/new" className="site-header-cta">
-              {CTA_START_ANALYSIS}
-              <span aria-hidden="true"> →</span>
+              {CTA_START_ANALYSIS_ARROW}
             </Link>
           </div>
         </div>

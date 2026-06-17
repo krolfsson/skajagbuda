@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ExampleReport } from "@/components/ExampleReport";
-import { SITE_URL, CTA_START_ANALYSIS } from "@/lib/brand";
+import { SITE_URL, CTA_START_ANALYSIS_ARROW } from "@/lib/brand";
 
 const TITLE = "Exempelanalys – så ser en full bostadsanalys ut";
 const DESCRIPTION =
@@ -45,12 +45,8 @@ export default function ExempelPage() {
           <p style={{ fontSize: "13px", color: "var(--muted)", marginBottom: "12px" }}>
             Kör en riktig analys på bostaden du tittar på
           </p>
-          <Link href="/new" style={{
-            display: "inline-block", fontSize: "13px", fontWeight: 600,
-            padding: "10px 24px", background: "var(--brand)", color: "#fff",
-            borderRadius: "6px", textDecoration: "none",
-          }}>
-            {CTA_START_ANALYSIS}
+          <Link href="/new" className="guide-cta-primary">
+            {CTA_START_ANALYSIS_ARROW}
           </Link>
         </div>
       </div>

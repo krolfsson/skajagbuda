@@ -2,7 +2,7 @@ import Link from "next/link";
 import { LandingExampleReport } from "@/components/LandingExampleReport";
 import { HomeAnalytics, HomeAnchorCta, HomeCtaLink } from "@/components/HomeAnalytics";
 import { TrustSignals } from "@/components/TrustSignals";
-import { CTA_START_ANALYSIS } from "@/lib/brand";
+import { CTA_START_ANALYSIS_ARROW } from "@/lib/brand";
 
 const REPORT_ITEMS = [
   {
@@ -88,7 +88,7 @@ export default function HomePage() {
           </p>
           <div className="home-hero-ctas">
             <HomeCtaLink href="/new" event="click_start_analysis" className="home-btn-primary">
-              {CTA_START_ANALYSIS}
+              {CTA_START_ANALYSIS_ARROW}
             </HomeCtaLink>
             <HomeAnchorCta href="#exempelanalys" event="click_example_analysis" className="home-btn-secondary">
               Se exempelanalys
@@ -186,7 +186,7 @@ export default function HomePage() {
           </div>
           <div className="home-cta-actions">
             <HomeCtaLink href="/new" event="click_start_analysis" className="home-btn-primary home-cta-btn">
-              {CTA_START_ANALYSIS}
+              {CTA_START_ANALYSIS_ARROW}
             </HomeCtaLink>
             <TrustSignals variant="cta" />
           </div>

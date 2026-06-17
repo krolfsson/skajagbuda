@@ -16,24 +16,11 @@ export function DownloadPdfButton({ title }: { title: string }) {
   }
 
   return (
-    <button
-      type="button"
-      className="no-print"
-      onClick={handlePrint}
-      style={{
-        display: "flex",
-        alignItems: "center",
-        gap: "6px",
-        fontSize: "12px",
-        color: "var(--brand)",
-        background: "var(--brand-light)",
-        border: "1px solid var(--brand-border)",
-        borderRadius: "var(--radius-sm)",
-        padding: "6px 12px",
-        cursor: "pointer",
-        fontWeight: 600,
-      }}
-    >
+      <button
+        type="button"
+        className="btn-secondary-sm btn-secondary-sm--brand no-print"
+        onClick={handlePrint}
+      >
       <svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true">
         <path
           d="M4 2h5l3 3v9H4V2zM9 2v3h3M6 9h4M6 11.5h4"
