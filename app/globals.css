@@ -435,7 +435,7 @@ input[type="number"]::-webkit-outer-spin-button {
 /* Mobile header */
 .site-header-bar--mobile {
   display: block;
-  padding: 14px 18px 14px;
+  padding: 18px 18px 15px;
   border: none;
   border-radius: 0;
   box-shadow: none;
@@ -447,7 +447,8 @@ input[type="number"]::-webkit-outer-spin-button {
   justify-content: center;
   width: 62%;
   max-width: 240px;
-  margin: 0 auto 12px;
+  margin: 0 auto 11px;
+  padding: 2px 0 3px;
   text-decoration: none;
 }
 
@@ -459,7 +460,7 @@ input[type="number"]::-webkit-outer-spin-button {
 .site-header-mobile-pills {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 8px;
+  gap: 7px;
   margin-bottom: 0;
 }
 
@@ -3112,14 +3113,14 @@ h1.analysis-preview__title {
   .home-hero {
     grid-template-columns: 1fr;
     gap: 0;
-    padding: 28px 20px 24px;
+    padding: 24px 20px 22px;
   }
 
   .home-eyebrow {
     font-size: 11px;
     letter-spacing: 0.16em;
     line-height: 1.4;
-    margin-bottom: 18px;
+    margin-bottom: 16px;
   }
 
   .home-h1 {
@@ -3127,14 +3128,14 @@ h1.analysis-preview__title {
     font-weight: 700;
     letter-spacing: -0.04em;
     line-height: 1.04;
-    margin-bottom: 18px;
+    margin-bottom: 16px;
   }
 
   .home-lead {
     font-size: 1.125rem;
     line-height: 1.48;
     max-width: 100%;
-    margin-bottom: 20px;
+    margin-bottom: 18px;
   }
 
   .home-lead--desktop {
@@ -3148,7 +3149,7 @@ h1.analysis-preview__title {
   .home-hero-ctas {
     flex-direction: column;
     align-items: stretch;
-    gap: 11px;
+    gap: 10px;
     margin-bottom: 0;
   }
 
@@ -3162,7 +3163,7 @@ h1.analysis-preview__title {
     align-items: flex-start;
     font-size: 12.5px;
     line-height: 1.4;
-    margin-top: 12px;
+    margin-top: 10px;
   }
 
   .home-disclaimer-icon {
