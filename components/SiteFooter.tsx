@@ -1,12 +1,11 @@
 import Link from "next/link";
+import { Logo } from "@/components/Logo";
 import {
   CTA_START_ANALYSIS,
   FOOTER_DISCLAIMER,
   PRODUCT_DOMAIN,
   TRUST_PAYMENT_LINE,
   TRUST_PRICE_LINE_FOOTER,
-  WORDMARK_HOST,
-  WORDMARK_TLD,
 } from "@/lib/brand";
 
 const PRODUCT_LINKS = [
@@ -29,10 +28,9 @@ export function SiteFooter() {
     <footer className="site-footer">
       <div className="site-footer-inner">
         <div className="site-footer-brand">
-          <p className="site-footer-wordmark">
-            <span>{WORDMARK_HOST}</span>
-            <span className="site-footer-wordmark-tld">{WORDMARK_TLD}</span>
-          </p>
+          <Link href="/" className="site-footer-logo" aria-label={`${PRODUCT_DOMAIN} startsida`}>
+            <Logo />
+          </Link>
           <p className="site-footer-desc">
             Beslutsstöd för bostadsköpare som vill få bättre underlag innan de budar.
           </p>

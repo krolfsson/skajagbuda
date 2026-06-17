@@ -2925,18 +2925,17 @@ h1.analysis-preview__title {
   gap: clamp(28px, 4vw, 48px);
 }
 
-.site-footer-wordmark {
-  font-family: var(--font-wordmark), var(--font-heading);
-  font-size: 22px;
-  font-weight: 700;
-  letter-spacing: -0.04em;
-  line-height: 1;
-  color: var(--brand);
-  margin: 0 0 12px;
+.site-footer-logo {
+  display: inline-flex;
+  align-items: center;
+  margin: 0 0 14px;
+  text-decoration: none;
 }
 
-.site-footer-wordmark-tld {
-  color: #6a9a8e;
+.site-footer-logo .site-logo {
+  display: block;
+  height: 28px;
+  width: auto;
 }
 
 .site-footer-desc {
