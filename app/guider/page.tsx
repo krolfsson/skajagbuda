@@ -21,7 +21,7 @@ export const metadata: Metadata = {
 
 export default function GuiderIndexPage() {
   const guides = getAllGuides();
-  const midIndex = 6;
+  const midIndex = 3;
 
   return (
     <div className="content-index content-index--guides">
@@ -61,7 +61,10 @@ export default function GuiderIndexPage() {
 
       <div className="guide-cta guide-cta--tools">
         <h2>Nästa steg: analysera objektet</h2>
-        <p>Klistra in objektlänken och få en preliminär risknivå gratis.</p>
+        <p>
+          Guiderna hjälper dig förstå riskerna. När du har ett konkret objekt kan du få en
+          preliminär risknivå gratis.
+        </p>
         <Link href="/new" className="guide-cta-primary">{CTA_START_ANALYSIS_ARROW}</Link>
       </div>
     </div>

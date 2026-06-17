@@ -2,10 +2,12 @@ import Link from "next/link";
 import { PRODUCT_DOMAIN, SITE_URL, CTA_START_ANALYSIS } from "@/lib/brand";
 import { getGuidesBySlugs } from "@/lib/content/guides";
 import { getToolBySlug } from "@/lib/content/tools";
-import type { GuideWithMeta } from "@/lib/content/types";
+import type { GuideCalloutType, GuideWithMeta } from "@/lib/content/types";
 import { GuideCtaButton } from "@/components/GuideCtaButton";
-import { GuideCalloutBox } from "@/components/guides/GuideCalloutBox";
-import { GuideInlineCta } from "@/components/guides/GuideInlineCta";
+import { GuideCalloutBox, normalizeGuideCallout } from "@/components/guides/GuideCalloutBox";
+import { GuideInlineCta, GuideSectionCta } from "@/components/guides/GuideInlineCta";
+
+const INLINE_CALLOUT_TYPES = new Set<GuideCalloutType>(["red-flag", "remember", "ask-broker"]);
 
 function sectionId(index: number, id: string) {
   return id || `section-${index}`;
@@ -17,6 +19,8 @@ export function GuideLayout({ guide }: { guide: GuideWithMeta }) {
   const relatedTools = (guide.relatedToolSlugs ?? [])
     .map((s) => getToolBySlug(s))
     .filter(Boolean);
+  const showEarlyCtaAfterFirstSection = guide.sections.length > 1;
+  let shownSectionCta = false;
 
   const articleJsonLd = {
     "@context": "https://schema.org",
@@ -79,7 +83,7 @@ export function GuideLayout({ guide }: { guide: GuideWithMeta }) {
         <p className="guide-lead">{guide.intro}</p>
       </div>
 
-      <GuideInlineCta compact />
+      {!showEarlyCtaAfterFirstSection && <GuideInlineCta compact />}
 
       {guide.sections.length > 1 && (
         <nav className="guide-toc" aria-label="Innehåll">
@@ -100,22 +104,31 @@ export function GuideLayout({ guide }: { guide: GuideWithMeta }) {
         </nav>
       )}
 
-      {guide.sections.map((section, index) => (
-        <section key={section.id} id={sectionId(index, section.id)} className="guide-section">
-          <h2 className="guide-h2">{section.heading}</h2>
-          {section.paragraphs.map((p) => (
-            <p key={p.slice(0, 40)}>{p}</p>
-          ))}
-          {section.bullets && (
-            <ul className="guide-list">
-              {section.bullets.map((b) => (
-                <li key={b.slice(0, 50)}>{b}</li>
-              ))}
-            </ul>
-          )}
-          {section.callout && <GuideCalloutBox callout={section.callout} />}
-        </section>
-      ))}
+      {guide.sections.map((section, index) => {
+        const callout = section.callout ? normalizeGuideCallout(section.callout) : null;
+        const showSectionCta =
+          !shownSectionCta && callout !== null && INLINE_CALLOUT_TYPES.has(callout.type);
+        if (showSectionCta) shownSectionCta = true;
+
+        return (
+          <section key={section.id} id={sectionId(index, section.id)} className="guide-section">
+            <h2 className="guide-h2">{section.heading}</h2>
+            {section.paragraphs.map((p) => (
+              <p key={p.slice(0, 40)}>{p}</p>
+            ))}
+            {section.bullets && (
+              <ul className="guide-list">
+                {section.bullets.map((b) => (
+                  <li key={b.slice(0, 50)}>{b}</li>
+                ))}
+              </ul>
+            )}
+            {section.callout && <GuideCalloutBox callout={section.callout} />}
+            {showSectionCta && <GuideSectionCta />}
+            {index === 0 && showEarlyCtaAfterFirstSection && <GuideInlineCta compact />}
+          </section>
+        );
+      })}
 
       {guide.faq && guide.faq.length > 0 && (
         <section id="faq" className="guide-section">
@@ -164,8 +177,11 @@ export function GuideLayout({ guide }: { guide: GuideWithMeta }) {
       )}
 
       <div className="guide-cta">
-        <h2>Osäker inför nästa bud?</h2>
-        <p>Få ett nyktert beslutsunderlag innan du går vidare i budgivningen.</p>
+        <h2>Nästa steg: analysera objektet</h2>
+        <p>
+          Guiderna hjälper dig förstå riskerna. När du har ett konkret objekt kan du få en
+          preliminär risknivå gratis.
+        </p>
         <div className="guide-cta-actions">
           <GuideCtaButton href="/new" event="guide_cta_click" label={CTA_START_ANALYSIS} primary />
           <GuideCtaButton href="/exempel" event="guide_cta_click" label="Se exempelanalys" />
