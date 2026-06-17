@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useId, useRef, useState } from "react";
 import { Logo } from "@/components/Logo";
 import { CTA_START_ANALYSIS } from "@/lib/brand";
 
@@ -23,18 +22,10 @@ const MOBILE_PILLS = [
   { href: "/#exempelanalys", label: "Exempel", icon: "example" },
 ] as const;
 
-const MOBILE_MENU = [
-  { href: "/guider", label: "Guider" },
-  { href: "/verktyg", label: "Verktyg" },
-  { href: "/#exempelanalys", label: "Exempelanalys" },
-  { href: "/om", label: "Om tjänsten" },
-  { href: "/kontakt", label: "Kontakt" },
-] as const;
-
 function NavIcon({ name }: { name: "guide" | "tool" | "example" }) {
   if (name === "guide") {
     return (
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
         <path
           d="M5 4h10a2 2 0 0 1 2 2v14l-4-2.5L9 20V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h2"
           stroke="currentColor"
@@ -47,7 +38,7 @@ function NavIcon({ name }: { name: "guide" | "tool" | "example" }) {
   }
   if (name === "tool") {
     return (
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
         <path
           d="M14.7 6.3a4.5 4.5 0 0 0-6.1 6.1L3 18l3 3 5.6-5.6a4.5 4.5 0 0 0 6.1-6.1l-2.2 2.2-3.9-3.9 2.2-2.2Z"
           stroke="currentColor"
@@ -59,7 +50,7 @@ function NavIcon({ name }: { name: "guide" | "tool" | "example" }) {
     );
   }
   return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <path d="M4 19V5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
       <path d="M4 19h16" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
       <path
@@ -78,34 +69,6 @@ function navLinkClass(active: boolean) {
 
 export function SiteHeader() {
   const pathname = usePathname();
-  const [menuOpen, setMenuOpen] = useState(false);
-  const menuId = useId();
-  const menuRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    setMenuOpen(false);
-  }, [pathname]);
-
-  useEffect(() => {
-    if (!menuOpen) return;
-
-    function onKeyDown(e: KeyboardEvent) {
-      if (e.key === "Escape") setMenuOpen(false);
-    }
-
-    function onPointerDown(e: MouseEvent) {
-      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
-        setMenuOpen(false);
-      }
-    }
-
-    document.addEventListener("keydown", onKeyDown);
-    document.addEventListener("mousedown", onPointerDown);
-    return () => {
-      document.removeEventListener("keydown", onKeyDown);
-      document.removeEventListener("mousedown", onPointerDown);
-    };
-  }, [menuOpen]);
 
   return (
     <header className="site-header">
@@ -135,48 +98,10 @@ export function SiteHeader() {
           </div>
         </div>
 
-        <div className="site-header-bar site-header-bar--mobile" ref={menuRef}>
-          <div className="site-header-mobile-top">
-            <a href="/" className="site-header-logo site-header-logo--mobile">
-              <Logo />
-            </a>
-            <button
-              type="button"
-              className="site-header-menu-btn"
-              aria-label={menuOpen ? "Stäng meny" : "Öppna meny"}
-              aria-expanded={menuOpen}
-              aria-controls={menuId}
-              onClick={() => setMenuOpen((open) => !open)}
-            >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <path
-                  d="M4 7h16M4 12h16M4 17h16"
-                  stroke="currentColor"
-                  strokeWidth="1.8"
-                  strokeLinecap="round"
-                />
-              </svg>
-            </button>
-          </div>
-
-          {menuOpen && (
-            <nav
-              id={menuId}
-              className="site-header-mobile-dropdown"
-              aria-label="Mer navigation"
-            >
-              {MOBILE_MENU.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className="site-header-mobile-dropdown-link"
-                  onClick={() => setMenuOpen(false)}
-                >
-                  {item.label}
-                </Link>
-              ))}
-            </nav>
-          )}
+        <div className="site-header-bar site-header-bar--mobile">
+          <a href="/" className="site-header-logo site-header-logo--mobile">
+            <Logo />
+          </a>
 
           <nav className="site-header-mobile-pills" aria-label="Snabbnavigation">
             {MOBILE_PILLS.map((item) => (
