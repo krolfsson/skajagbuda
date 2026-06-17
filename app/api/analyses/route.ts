@@ -73,13 +73,10 @@ export async function POST(req: NextRequest) {
   } catch (err) {
     console.error("[POST /api/analyses]", err);
     const msg = err instanceof Error ? err.message : "Internt serverfel.";
-    const isDatabaseError =
-      msg.includes("DATABASE_URL") ||
-      msg.includes("connect") ||
-      msg.includes("prisma");
+    const isMissingDatabaseUrl = msg.includes("DATABASE_URL is not set");
     return NextResponse.json(
       {
-        error: isDatabaseError
+        error: isMissingDatabaseUrl
           ? "Databasen är inte konfigurerad. Kontrollera DATABASE_URL i .env."
           : "Internt serverfel. Försök igen.",
       },

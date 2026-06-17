@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
 import { Barlow, Instrument_Sans } from "next/font/google";
-import Link from "next/link";
 import "./globals.css";
-import { Logo } from "@/components/Logo";
+import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
-import { PRODUCT_DOMAIN, PRODUCT_TAGLINE, SITE_URL, SEO_KEYWORDS, CTA_START_ANALYSIS, OG_TITLE, OG_DESCRIPTION, OG_IMAGE_ALT, OG_IMAGE_PATH, OG_IMAGE_SIZE } from "@/lib/brand";
+import { PRODUCT_DOMAIN, PRODUCT_TAGLINE, SITE_URL, SEO_KEYWORDS, OG_TITLE, OG_DESCRIPTION, OG_IMAGE_ALT, OG_IMAGE_PATH, OG_IMAGE_SIZE } from "@/lib/brand";
 
 const barlow = Barlow({
   subsets: ["latin"],
@@ -88,36 +87,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify([ORG_JSONLD, WEBSITE_JSONLD]) }}
         />
-        <header
-          className="site-header"
-          style={{
-            background: "var(--surface)",
-            borderBottom: "1px solid var(--border)",
-            position: "sticky",
-            top: 0,
-            zIndex: 50,
-          }}
-        >
-          <div className="site-header-inner">
-            <a href="/" className="site-logo-link">
-              <Logo />
-            </a>
-            <nav className="site-nav">
-              <Link href="/guider" className="nav-link">
-                Guider
-              </Link>
-              <Link href="/verktyg" className="nav-link">
-                Verktyg
-              </Link>
-              <a href="/#exempelanalys" className="nav-link">
-                Exempelanalys
-              </a>
-              <Link href="/new" className="nav-cta">
-                {CTA_START_ANALYSIS}
-              </Link>
-            </nav>
-          </div>
-        </header>
+        <SiteHeader />
         <main>{children}</main>
         <SiteFooter />
       </body>
