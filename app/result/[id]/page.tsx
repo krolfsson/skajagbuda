@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { isAnalysisUnlocked, isPaywallBypassActive } from "@/lib/paywall";
@@ -10,6 +11,14 @@ import { PaymentVerifier, AnalysisLoader } from "@/components/PaymentFlow";
 import { FullScorecard } from "@/components/FullScorecard";
 import { DevBypassBanner } from "@/components/DevBypassBanner";
 import { ResultAnalytics } from "@/components/ResultAnalytics";
+import { NOINDEX_ROBOTS } from "@/lib/seo";
+
+export async function generateMetadata(): Promise<Metadata> {
+  return {
+    title: "Bostadsanalys",
+    robots: NOINDEX_ROBOTS,
+  };
+}
 
 export default async function ResultPage({
   params,

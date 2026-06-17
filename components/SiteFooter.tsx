@@ -10,6 +10,7 @@ import {
 
 const PRODUCT_LINKS = [
   { href: "/guider", label: "Guider" },
+  { href: "/att-tanka-pa", label: "Att tänka på" },
   { href: "/verktyg", label: "Verktyg" },
   { href: "/ordlista", label: "Ordlista" },
   { href: "/exempel", label: "Exempelanalys" },

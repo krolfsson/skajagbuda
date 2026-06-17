@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
 import { InfoPageLayout } from "@/components/InfoPageLayout";
 import { CONTACT_EMAIL, PRODUCT_DOMAIN } from "@/lib/brand";
+import { buildPageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildPageMetadata({
+  path: "/kontakt",
   title: "Kontakt",
   description: `Kontakta ${PRODUCT_DOMAIN} med frågor, feedback eller om något i analysen inte stämmer.`,
-  alternates: { canonical: "/kontakt" },
-};
+});
 
 export default function KontaktPage() {
   return (

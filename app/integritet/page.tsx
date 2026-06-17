@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
 import { InfoPageLayout, InfoSection } from "@/components/InfoPageLayout";
 import { PRODUCT_DOMAIN } from "@/lib/brand";
+import { buildPageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildPageMetadata({
+  path: "/integritet",
   title: "Integritet",
   description: `Hur ${PRODUCT_DOMAIN} hanterar information du matar in och betalning via Stripe.`,
-  alternates: { canonical: "/integritet" },
-};
+});
 
 export default function IntegritetPage() {
   return (

@@ -9,7 +9,7 @@ const DESKTOP_NAV = [
   { href: "/guider", label: "Guider", match: (path: string) => path.startsWith("/guider") },
   { href: "/verktyg", label: "Verktyg", match: (path: string) => path.startsWith("/verktyg") },
   {
-    href: "/#exempelanalys",
+    href: "/exempel",
     label: "Exempel",
     match: (path: string) => path === "/exempel",
   },
@@ -20,7 +20,7 @@ const MOBILE_PILLS = [
   { href: "/guider", label: "Guider", icon: "guide", match: (path: string) => path.startsWith("/guider") },
   { href: "/verktyg", label: "Verktyg", icon: "tool", match: (path: string) => path.startsWith("/verktyg") },
   {
-    href: "/#exempelanalys",
+    href: "/exempel",
     label: "Exempel",
     icon: "example",
     match: (path: string) => path === "/exempel",

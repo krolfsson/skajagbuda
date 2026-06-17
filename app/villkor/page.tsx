@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
 import { InfoPageLayout, InfoSection } from "@/components/InfoPageLayout";
 import { FULL_ANALYSIS_PRICE_SEK, PRODUCT_DOMAIN } from "@/lib/brand";
+import { buildPageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildPageMetadata({
+  path: "/villkor",
   title: "Villkor",
   description: `Användarvillkor för ${PRODUCT_DOMAIN} — beslutsstöd för bostadsköpare, inte finansiell rådgivning.`,
-  alternates: { canonical: "/villkor" },
-};
+});
 
 export default function VillkorPage() {
   return (

@@ -4034,6 +4034,25 @@ h1.analysis-preview__title {
   max-width: 960px;
 }
 
+.guides-pillar-link {
+  font-size: 16px;
+  line-height: 1.55;
+  color: var(--muted);
+  margin: 0 0 28px;
+  max-width: 62ch;
+}
+
+.guides-pillar-link a {
+  color: var(--brand);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.guides-pillar-link a:hover {
+  color: var(--brand-hover);
+}
+
 .guides-grid {
   list-style: none;
   display: grid;

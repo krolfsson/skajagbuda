@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { PRODUCT_DOMAIN, SITE_URL, CTA_START_ANALYSIS_ARROW } from "@/lib/brand";
+import { ATT_TANKA_PA_RELATED_GUIDES, PILLAR_LINKS } from "@/lib/seo";
+import { getToolBySlug } from "@/lib/content/tools";
 
 const TITLE = "Att tänka på vid budgivning och köp av bostadsrätt";
 const DESCRIPTION =
@@ -545,6 +547,44 @@ export default function AttTankaPaPage() {
             <p className="guide-faq-a">{item.a}</p>
           </div>
         ))}
+      </section>
+
+      <section className="guide-related">
+        <h2 className="guide-h2">Fördjupa dig vidare</h2>
+        <ul className="guide-related-list">
+          {ATT_TANKA_PA_RELATED_GUIDES.map((g) => (
+            <li key={g.slug}>
+              <Link href={`/guider/${g.slug}`} className="guide-toc-link">
+                <span><strong>{g.title}</strong></span>
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                  <path d="M4 2l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </Link>
+            </li>
+          ))}
+          {(["boendekostnad", "maxbud", "brf-skuld-per-kvm"] as const).map((slug) => {
+            const tool = getToolBySlug(slug);
+            if (!tool) return null;
+            return (
+              <li key={slug}>
+                <Link href={`/verktyg/${slug}`} className="guide-toc-link">
+                  <span><strong>{tool.title}</strong></span>
+                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                    <path d="M4 2l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </Link>
+              </li>
+            );
+          })}
+          <li>
+            <Link href={PILLAR_LINKS.ordlista.href} className="guide-toc-link">
+              <span><strong>{PILLAR_LINKS.ordlista.label}</strong></span>
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                <path d="M4 2l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </Link>
+          </li>
+        </ul>
       </section>
 
       <div className="guide-cta">

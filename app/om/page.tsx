@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
 import { InfoPageLayout, InfoSection } from "@/components/InfoPageLayout";
 import { PRODUCT_DOMAIN } from "@/lib/brand";
+import { buildPageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildPageMetadata({
+  path: "/om",
   title: "Om tjänsten",
   description: `${PRODUCT_DOMAIN} är ett beslutsstöd för bostadsköpare. Strukturera underlag från annons, budhistorik och årsredovisning innan du går vidare i budgivningen.`,
-  alternates: { canonical: "/om" },
-};
+});
 
 export default function OmPage() {
   return (

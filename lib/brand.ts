@@ -47,7 +47,7 @@ export const OG_DESCRIPTION =
   "Klistra in objektlänken. Vi hämtar underlaget där det går och låter AI strukturera pris, förening och risk — preliminär risknivå gratis.";
 export const OG_IMAGE_ALT =
   "skajagbuda.se – beslutsstöd för bostadsköp med preliminär risknivå gratis";
-export const OG_IMAGE_PATH = "/og-preview.jpg";
+export const OG_IMAGE_PATH = "/opengraph-image";
 export const OG_IMAGE_SIZE = { width: 1200, height: 630 } as const;
 
 /** Default keywords reused across pages for SEO. */

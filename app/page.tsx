@@ -60,12 +60,12 @@ const REPORT_ITEMS = [
 ];
 
 const TOPICS = [
+  { title: "Att tänka på inför bud", desc: "Komplett genomgång av risk, förening och strategi.", href: "/att-tanka-pa" },
   { title: "Sätt en budstrategi", desc: "Öppningsbud, nästa steg och walk-away.", href: "/guider/budstrategi-bostadsratt" },
   { title: "Räkna rimligt maxbud", desc: "Sätt en gräns innan budgivningen.", href: "/guider/vad-ar-rimligt-maxbud" },
   { title: "Granska BRF-årsredovisning", desc: "Se vad du ska kontrollera innan köp.", href: "/guider/analysera-brf-arsredovisning" },
   { title: "Förstå stambyte", desc: "Risk, kostnad eller möjlighet i föreningen.", href: "/guider/stambyte-bostadsratt-risk" },
-  { title: "Räkna boendekostnad", desc: "Se ungefärlig månadskostnad.", href: "/verktyg/boendekostnad" },
-  { title: "Gå igenom checklistan", desc: "Detta bör du kontrollera före bud.", href: "/guider/checklista-innan-budgivning" },
+  { title: "Ordlista", desc: "Förklaringar av vanliga begrepp.", href: "/ordlista" },
 ];
 
 export default function HomePage() {

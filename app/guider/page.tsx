@@ -34,6 +34,11 @@ export default function GuiderIndexPage() {
         lägger första budet. Varje guide leder vidare till analys när du hittat ett objekt.
       </p>
 
+      <p className="guides-pillar-link">
+        Vill du ha allt samlat? Läs vår{" "}
+        <Link href="/att-tanka-pa">kompletta guide: att tänka på vid budgivning</Link>.
+      </p>
+
       <ul className="guides-grid">
         {guides.slice(0, midIndex).map((g) => (
           <li key={g.slug}>

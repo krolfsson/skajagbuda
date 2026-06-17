@@ -4,6 +4,7 @@ import "./globals.css";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { PRODUCT_DOMAIN, PRODUCT_TAGLINE, SITE_URL, SEO_KEYWORDS, OG_TITLE, OG_DESCRIPTION, OG_IMAGE_ALT, OG_IMAGE_PATH, OG_IMAGE_SIZE } from "@/lib/brand";
+import { getSiteVerification, INDEX_ROBOTS } from "@/lib/seo";
 
 const barlow = Barlow({
   subsets: ["latin"],
@@ -32,12 +33,12 @@ export const metadata: Metadata = {
   creator: PRODUCT_DOMAIN,
   publisher: PRODUCT_DOMAIN,
   category: "finance",
-  alternates: { canonical: SITE_URL },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1 },
+  alternates: {
+    canonical: SITE_URL,
+    types: { "application/rss+xml": `${SITE_URL}/feed.xml` },
   },
+  verification: getSiteVerification(),
+  robots: INDEX_ROBOTS,
   openGraph: {
     type: "website",
     locale: "sv_SE",
@@ -51,7 +52,7 @@ export const metadata: Metadata = {
         width: OG_IMAGE_SIZE.width,
         height: OG_IMAGE_SIZE.height,
         alt: OG_IMAGE_ALT,
-        type: "image/jpeg",
+        type: "image/png",
       },
     ],
   },
@@ -77,6 +78,8 @@ const WEBSITE_JSONLD = {
   name: PRODUCT_DOMAIN,
   url: SITE_URL,
   inLanguage: "sv-SE",
+  description: PRODUCT_TAGLINE,
+  publisher: { "@type": "Organization", name: PRODUCT_DOMAIN, url: SITE_URL },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

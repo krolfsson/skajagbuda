@@ -1,25 +1,35 @@
 import type { MetadataRoute } from "next";
 import { SITE_URL } from "@/lib/brand";
+import { STATIC_INDEXABLE_PATHS } from "@/lib/seo";
 import { getAllGuideSlugs } from "@/lib/content/guides";
 import { getAllToolSlugs } from "@/lib/content/tools";
 import { getAllGlossarySlugs } from "@/lib/content/glossary";
 
+const PRIORITY: Record<string, number> = {
+  "/": 1,
+  "/att-tanka-pa": 0.95,
+  "/guider": 0.9,
+  "/verktyg": 0.85,
+  "/ordlista": 0.8,
+  "/exempel": 0.8,
+};
+
+const FREQUENCY: Record<string, MetadataRoute.Sitemap[number]["changeFrequency"]> = {
+  "/": "weekly",
+  "/guider": "weekly",
+  "/verktyg": "monthly",
+  "/ordlista": "monthly",
+};
+
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
 
-  const staticPages: MetadataRoute.Sitemap = [
-    { url: `${SITE_URL}/`, lastModified: now, changeFrequency: "weekly", priority: 1 },
-    { url: `${SITE_URL}/guider`, lastModified: now, changeFrequency: "weekly", priority: 0.9 },
-    { url: `${SITE_URL}/verktyg`, lastModified: now, changeFrequency: "monthly", priority: 0.85 },
-    { url: `${SITE_URL}/ordlista`, lastModified: now, changeFrequency: "monthly", priority: 0.8 },
-    { url: `${SITE_URL}/att-tanka-pa`, lastModified: now, changeFrequency: "monthly", priority: 0.85 },
-    { url: `${SITE_URL}/exempel`, lastModified: now, changeFrequency: "monthly", priority: 0.8 },
-    { url: `${SITE_URL}/new`, lastModified: now, changeFrequency: "monthly", priority: 0.75 },
-    { url: `${SITE_URL}/om`, lastModified: now, changeFrequency: "yearly", priority: 0.4 },
-    { url: `${SITE_URL}/kontakt`, lastModified: now, changeFrequency: "yearly", priority: 0.35 },
-    { url: `${SITE_URL}/integritet`, lastModified: now, changeFrequency: "yearly", priority: 0.3 },
-    { url: `${SITE_URL}/villkor`, lastModified: now, changeFrequency: "yearly", priority: 0.3 },
-  ];
+  const staticPages = STATIC_INDEXABLE_PATHS.map((path) => ({
+    url: path === "/" ? `${SITE_URL}/` : `${SITE_URL}${path}`,
+    lastModified: now,
+    changeFrequency: FREQUENCY[path] ?? "monthly",
+    priority: PRIORITY[path] ?? 0.5,
+  }));
 
   const guides = getAllGuideSlugs().map((slug) => ({
     url: `${SITE_URL}/guider/${slug}`,
