@@ -34,9 +34,9 @@
   --caution: #6b5c45;
   --caution-bg: #f8f6f2;
   --caution-border: #e4ddd0;
-  --success: var(--brand-secondary);
-  --success-bg: var(--brand-secondary-light);
-  --success-border: var(--brand-secondary-border);
+  --success: var(--brand);
+  --success-bg: var(--brand-light);
+  --success-border: var(--brand-border);
 
   --radius-sm: 6px;
   --radius: 10px;
