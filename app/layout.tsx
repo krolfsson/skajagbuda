@@ -36,7 +36,10 @@ export const metadata: Metadata = {
   category: "finance",
   alternates: {
     canonical: SITE_URL,
-    types: { "application/rss+xml": `${SITE_URL}/feed.xml` },
+    types: {
+      "application/rss+xml": `${SITE_URL}/feed.xml`,
+      "text/plain": `${SITE_URL}/llms.txt`,
+    },
   },
   verification: getSiteVerification(),
   robots: INDEX_ROBOTS,
