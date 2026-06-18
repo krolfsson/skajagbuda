@@ -2,8 +2,7 @@ import type { Metadata } from "next";
 import { Barlow, Instrument_Sans } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
 import "./globals.css";
-import { SiteHeader } from "@/components/SiteHeader";
-import { SiteFooter } from "@/components/SiteFooter";
+import { SiteChrome } from "@/components/SiteChrome";
 import { PRODUCT_DOMAIN, PRODUCT_TAGLINE, SITE_URL, SEO_KEYWORDS, OG_TITLE, OG_DESCRIPTION, OG_IMAGE_ALT, OG_IMAGE_PATH, OG_IMAGE_SIZE } from "@/lib/brand";
 import { getSiteVerification, INDEX_ROBOTS } from "@/lib/seo";
 
@@ -94,9 +93,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify([ORG_JSONLD, WEBSITE_JSONLD]) }}
         />
-        <SiteHeader />
-        <main>{children}</main>
-        <SiteFooter />
+        <SiteChrome>{children}</SiteChrome>
         <Analytics />
       </body>
     </html>
