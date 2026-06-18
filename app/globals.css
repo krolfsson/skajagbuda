@@ -5991,7 +5991,8 @@ h1.analysis-preview__title {
   font-size: 11px;
   color: var(--muted-light);
   text-align: right;
-  padding: 24px 0 22px;
+  padding: 0 0 22px;
+  align-self: stretch;
 }
 
 .admin-chart-block__body {
@@ -6004,8 +6005,8 @@ h1.analysis-preview__title {
 .admin-chart-plot {
   position: relative;
   flex: 1;
-  min-height: 140px;
-  max-height: 200px;
+  min-height: 160px;
+  max-height: 220px;
   cursor: crosshair;
 }
 
@@ -6017,6 +6018,8 @@ h1.analysis-preview__title {
 
 .admin-chart-cursor-line {
   position: absolute;
+  top: 0;
+  bottom: 0;
   width: 1px;
   transform: translateX(-50%);
   background: var(--border-strong);
@@ -6027,7 +6030,7 @@ h1.analysis-preview__title {
 .admin-chart-tooltip {
   position: absolute;
   z-index: 2;
-  transform: translate(-50%, calc(-100% - 10px));
+  transform: translate(-50%, calc(-100% - 12px));
   background: var(--fg);
   color: #fff;
   border-radius: 8px;
@@ -6085,14 +6088,21 @@ h1.analysis-preview__title {
 .admin-line-svg {
   width: 100%;
   height: 100%;
-  min-height: 140px;
-  max-height: 200px;
+  min-height: 160px;
+  max-height: 220px;
   display: block;
 }
 
 .admin-line-grid {
   stroke: #ececea;
-  stroke-width: 0.5;
+  stroke-width: 0.6;
+  vector-effect: non-scaling-stroke;
+}
+
+.admin-line-base {
+  stroke: var(--border);
+  stroke-width: 0.8;
+  vector-effect: non-scaling-stroke;
 }
 
 .admin-area {
