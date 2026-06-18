@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { SITE_URL, PRODUCT_DOMAIN } from "@/lib/brand";
 import { getToolBySlug, getAllToolSlugs } from "@/lib/content/tools";
 import { getGuidesBySlugs } from "@/lib/content/guides";
+import { buildPageMetadata } from "@/lib/seo";
 import { BoendekostnadCalculator } from "@/components/calculators/BoendekostnadCalculator";
 import { BrfSkuldCalculator } from "@/components/calculators/BrfSkuldCalculator";
 import { MaxbudCalculator } from "@/components/calculators/MaxbudCalculator";
@@ -26,12 +27,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const tool = getToolBySlug(slug);
   if (!tool) return {};
-  return {
+  return buildPageMetadata({
+    path: `/verktyg/${slug}`,
     title: tool.metaTitle.replace(" | skajagbuda.se", ""),
     description: tool.metaDescription,
-    alternates: { canonical: `/verktyg/${slug}` },
-    openGraph: { url: `${SITE_URL}/verktyg/${slug}`, title: tool.metaTitle, description: tool.metaDescription },
-  };
+  });
 }
 
 export default async function ToolPage({ params }: Props) {

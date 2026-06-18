@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { getAllGlossarySlugs, getGlossaryBySlug } from "@/lib/content/glossary";
 import { GlossaryLayout } from "@/components/GlossaryLayout";
 import { AnalyticsPageView } from "@/components/AnalyticsPageView";
-import { SITE_URL } from "@/lib/brand";
+import { buildPageMetadata } from "@/lib/seo";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -15,12 +15,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const term = getGlossaryBySlug(slug);
   if (!term) return {};
-  return {
+  return buildPageMetadata({
+    path: `/ordlista/${slug}`,
     title: term.metaTitle.replace(" | skajagbuda.se", ""),
     description: term.metaDescription,
-    alternates: { canonical: `/ordlista/${slug}` },
-    openGraph: { url: `${SITE_URL}/ordlista/${slug}`, title: term.metaTitle, description: term.metaDescription },
-  };
+  });
 }
 
 export default async function GlossaryPage({ params }: Props) {

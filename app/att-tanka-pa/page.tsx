@@ -1,16 +1,18 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { PRODUCT_DOMAIN, SITE_URL, CTA_START_ANALYSIS_ARROW } from "@/lib/brand";
-import { ATT_TANKA_PA_RELATED_GUIDES, PILLAR_LINKS } from "@/lib/seo";
+import { ATT_TANKA_PA_RELATED_GUIDES, PILLAR_LINKS, buildPageMetadata } from "@/lib/seo";
 import { getToolBySlug } from "@/lib/content/tools";
 
 const TITLE = "Att tänka på vid budgivning och köp av bostadsrätt";
 const DESCRIPTION =
   "Den kompletta guiden inför budgivningen: budstrategier, föreningens ekonomi och årsredovisning, stambyte, tomträtt, omförhandling av lån, dolda fel, röda flaggor och frågor att ställa mäklaren.";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildPageMetadata({
+  path: "/att-tanka-pa",
   title: TITLE,
   description: DESCRIPTION,
+  type: "article",
   keywords: [
     "att tänka på vid budgivning",
     "budgivning tips",
@@ -25,14 +27,7 @@ export const metadata: Metadata = {
     "röda flaggor bostadsköp",
     "frågor att ställa mäklaren",
   ],
-  alternates: { canonical: "/att-tanka-pa" },
-  openGraph: {
-    type: "article",
-    url: `${SITE_URL}/att-tanka-pa`,
-    title: TITLE,
-    description: DESCRIPTION,
-  },
-};
+});
 
 const TOC = [
   { id: "budgivning", label: "Så fungerar en budgivning" },

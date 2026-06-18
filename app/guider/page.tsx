@@ -1,24 +1,19 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { SITE_URL, CTA_START_ANALYSIS_ARROW } from "@/lib/brand";
+import { CTA_START_ANALYSIS_ARROW } from "@/lib/brand";
 import { getAllGuides } from "@/lib/content/guides";
 import { AnalyticsPageView } from "@/components/AnalyticsPageView";
 import { GuideCard } from "@/components/guides/GuideCard";
 import { GuideVerktygCard } from "@/components/guides/GuideVerktygCard";
 import { GuideIndexCta } from "@/components/guides/GuideInlineCta";
+import { buildPageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildPageMetadata({
+  path: "/guider",
   title: "Guider inför budgivning och bostadsköp",
   description:
     "Guider om budstrategi, BRF-analys, maxbud, stambyte, tomträtt och röda flaggor – så du får bättre underlag innan du budar på bostadsrätt.",
-  alternates: { canonical: "/guider" },
-  openGraph: {
-    type: "website",
-    url: `${SITE_URL}/guider`,
-    title: "Guider inför budgivning | skajagbuda.se",
-    description: "Praktiska guider för bostadsköpare – budgivning, förening och risk.",
-  },
-};
+});
 
 export default function GuiderIndexPage() {
   const guides = getAllGuides();

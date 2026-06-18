@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Logo } from "@/components/Logo";
 import { CTA_START_ANALYSIS_ARROW } from "@/lib/brand";
+import { trackEvent } from "@/lib/analytics";
 
 const DESKTOP_NAV = [
   { href: "/guider", label: "Guider", match: (path: string) => path.startsWith("/guider") },
@@ -100,7 +101,11 @@ export function SiteHeader() {
           </nav>
 
           <div className="site-header-actions">
-            <Link href="/new" className="site-header-cta">
+            <Link
+              href="/new"
+              className="site-header-cta"
+              onClick={() => trackEvent("click_start_analysis", { source: "header" })}
+            >
               {CTA_START_ANALYSIS_ARROW}
             </Link>
           </div>

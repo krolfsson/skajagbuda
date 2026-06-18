@@ -1,23 +1,19 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ExampleReport } from "@/components/ExampleReport";
-import { SITE_URL, CTA_START_ANALYSIS_ARROW } from "@/lib/brand";
+import { CTA_START_ANALYSIS_ARROW } from "@/lib/brand";
+import { buildPageMetadata } from "@/lib/seo";
 
 const TITLE = "Exempelanalys – så ser en full bostadsanalys ut";
 const DESCRIPTION =
   "Se en komplett exempelanalys med score, risknivå, rekommenderat maxbud, budstrategi, föreningsrisk, röda flaggor och frågor att ställa – allt annonsen inte berättar.";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildPageMetadata({
+  path: "/exempel",
   title: TITLE,
   description: DESCRIPTION,
-  alternates: { canonical: "/exempel" },
-  openGraph: {
-    type: "article",
-    url: `${SITE_URL}/exempel`,
-    title: TITLE,
-    description: DESCRIPTION,
-  },
-};
+  type: "article",
+});
 
 export default function ExempelPage() {
   return (

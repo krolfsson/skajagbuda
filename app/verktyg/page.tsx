@@ -1,21 +1,17 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { SITE_URL, CTA_START_ANALYSIS_ARROW } from "@/lib/brand";
+import { CTA_START_ANALYSIS_ARROW } from "@/lib/brand";
 import { TOOLS } from "@/lib/content/tools";
 import { AnalyticsPageView } from "@/components/AnalyticsPageView";
 import { ToolIcon } from "@/components/tools/ToolIcon";
+import { buildPageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildPageMetadata({
+  path: "/verktyg",
   title: "Gratisverktyg för bostadsköpare",
   description:
     "Gratis kalkylatorer för boendekostnad, BRF skuld per kvm och maxbud – förenklad hjälp inför budgivning på bostadsrätt.",
-  alternates: { canonical: "/verktyg" },
-  openGraph: {
-    url: `${SITE_URL}/verktyg`,
-    title: "Gratisverktyg | skajagbuda.se",
-    description: "Kalkylatorer för boendekostnad, skuld/kvm och maxbud.",
-  },
-};
+});
 
 export default function VerktygIndexPage() {
   return (

@@ -23,7 +23,7 @@ declare global {
   }
 }
 
-/** Hook-ready analytics — koppla till GA/Plausible/PostHog senare. */
+/** Hook-ready analytics — dataLayer, Plausible och Vercel Analytics. */
 export function trackEvent(event: AnalyticsEvent, payload?: AnalyticsPayload) {
   if (typeof window === "undefined") return;
 
@@ -42,4 +42,10 @@ export function trackEvent(event: AnalyticsEvent, payload?: AnalyticsPayload) {
       ),
     });
   }
+
+  void import("@vercel/analytics")
+    .then(({ track }) => {
+      track(event, payload as Record<string, string | number | boolean | null>);
+    })
+    .catch(() => {});
 }

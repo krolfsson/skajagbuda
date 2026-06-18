@@ -1,16 +1,15 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { SITE_URL } from "@/lib/brand";
 import { GLOSSARY } from "@/lib/content/glossary";
 import { AnalyticsPageView } from "@/components/AnalyticsPageView";
+import { buildPageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildPageMetadata({
+  path: "/ordlista",
   title: "Ordlista – begrepp vid bostadsköp",
   description:
     "Förklaringar av skuld per kvm, stambyte, tomträtt, årsavgift, underhållsplan och fler begrepp du möter vid köp av bostadsrätt.",
-  alternates: { canonical: "/ordlista" },
-  openGraph: { url: `${SITE_URL}/ordlista`, title: "Ordlista | skajagbuda.se" },
-};
+});
 
 export default function OrdlistaIndexPage() {
   return (
