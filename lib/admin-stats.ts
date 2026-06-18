@@ -7,10 +7,24 @@ export type AdminGranularity = "day" | "week" | "month";
 export type AdminTimeSeriesPoint = {
   period: string;
   label: string;
+  shortLabel: string;
   started: number;
   freeCompleted: number;
   paid: number;
   revenueSek: number;
+};
+
+export type AdminAnalysisStatus = "Påbörjad" | "Gratis klar" | "Checkout" | "Betald";
+
+export type AdminRecentAnalysis = {
+  id: string;
+  createdAt: string;
+  title: string;
+  city: string | null;
+  status: AdminAnalysisStatus;
+  score: number | null;
+  riskLevel: string | null;
+  amountSek: number | null;
 };
 
 export type AdminRecentPayment = {
@@ -23,16 +37,17 @@ export type AdminRecentPayment = {
 
 export type AdminStats = {
   summary: {
+    revenueSek: number;
+    paid: number;
     totalStarted: number;
     freeCompleted: number;
     checkoutsStarted: number;
     pendingCheckouts: number;
-    paid: number;
-    revenueSek: number;
     conversionRate: number;
     checkoutConversionRate: number;
   };
   series: AdminTimeSeriesPoint[];
+  recentAnalyses: AdminRecentAnalysis[];
   recentPayments: AdminRecentPayment[];
   range: AdminRange;
   granularity: AdminGranularity;
@@ -53,14 +68,21 @@ function defaultGranularity(range: AdminRange): AdminGranularity {
   return "month";
 }
 
-function formatLabel(date: Date, granularity: AdminGranularity): string {
+function formatLabel(date: Date, granularity: AdminGranularity) {
   if (granularity === "month") {
-    return date.toLocaleDateString("sv-SE", { month: "short", year: "2-digit" });
+    return date.toLocaleDateString("sv-SE", { month: "short", year: "numeric" });
   }
   if (granularity === "week") {
     return date.toLocaleDateString("sv-SE", { day: "numeric", month: "short" });
   }
   return date.toLocaleDateString("sv-SE", { weekday: "short", day: "numeric", month: "short" });
+}
+
+function formatShortLabel(date: Date, granularity: AdminGranularity) {
+  if (granularity === "month") {
+    return date.toLocaleDateString("sv-SE", { month: "short" });
+  }
+  return String(date.getDate());
 }
 
 type BucketRow = {
@@ -76,7 +98,6 @@ async function fetchBuckets(
 ): Promise<BucketRow[]> {
   const sinceClause = since ? `AND "createdAt" >= $1` : "";
   const params = since ? [since] : [];
-
   const trunc =
     granularity === "day" ? "day" : granularity === "week" ? "week" : "month";
 
@@ -100,6 +121,17 @@ function pct(numerator: number, denominator: number): number {
   return Math.round((numerator / denominator) * 1000) / 10;
 }
 
+export function deriveAnalysisStatus(row: {
+  paymentStatus: string;
+  freeAnalysisStatus: string;
+  stripeCheckoutSessionId: string | null;
+}): AdminAnalysisStatus {
+  if (row.paymentStatus === "PAID") return "Betald";
+  if (row.paymentStatus === "PENDING" || row.stripeCheckoutSessionId) return "Checkout";
+  if (row.freeAnalysisStatus === "COMPLETED") return "Gratis klar";
+  return "Påbörjad";
+}
+
 export async function getAdminStats(
   range: AdminRange,
   granularity?: AdminGranularity,
@@ -108,7 +140,7 @@ export async function getAdminStats(
   const bucketGranularity = granularity ?? defaultGranularity(range);
   const dateFilter = since ? { createdAt: { gte: since } } : undefined;
 
-  const [summaryCounts, buckets, recentPaid] = await Promise.all([
+  const [summaryCounts, buckets, recentAnalysesRows, recentPaid] = await Promise.all([
     Promise.all([
       prisma.propertyAnalysis.count({ where: dateFilter }),
       prisma.propertyAnalysis.count({
@@ -118,13 +150,30 @@ export async function getAdminStats(
         where: { ...dateFilter, stripeCheckoutSessionId: { not: null } },
       }),
       prisma.propertyAnalysis.count({
-        where: { ...dateFilter, paymentStatus: "PENDING" },
+        where: { ...dateFilter, paymentStatus: "PAID" },
       }),
       prisma.propertyAnalysis.count({
-        where: { ...dateFilter, paymentStatus: "PAID" },
+        where: { ...dateFilter, paymentStatus: "PENDING" },
       }),
     ]),
     fetchBuckets(since, bucketGranularity),
+    prisma.propertyAnalysis.findMany({
+      where: dateFilter,
+      orderBy: { createdAt: "desc" },
+      take: 20,
+      select: {
+        id: true,
+        createdAt: true,
+        title: true,
+        city: true,
+        paymentStatus: true,
+        freeAnalysisStatus: true,
+        stripeCheckoutSessionId: true,
+        aiScore: true,
+        aiRiskLevel: true,
+        freeRiskLevel: true,
+      },
+    }),
     prisma.propertyAnalysis.findMany({
       where: { paymentStatus: "PAID" },
       orderBy: { updatedAt: "desc" },
@@ -138,13 +187,13 @@ export async function getAdminStats(
     }),
   ]);
 
-  const [totalStarted, freeCompleted, checkoutsStarted, pendingCheckouts, paid] =
-    summaryCounts;
+  const [totalStarted, freeCompleted, checkoutsStarted, paid, pendingCheckouts] = summaryCounts;
   const revenueSek = paid * FULL_ANALYSIS_PRICE_SEK;
 
   const series: AdminTimeSeriesPoint[] = buckets.map((row) => ({
     period: row.period.toISOString(),
     label: formatLabel(row.period, bucketGranularity),
+    shortLabel: formatShortLabel(row.period, bucketGranularity),
     started: row.started,
     freeCompleted: row.free_completed,
     paid: row.paid,
@@ -153,16 +202,26 @@ export async function getAdminStats(
 
   return {
     summary: {
+      revenueSek,
+      paid,
       totalStarted,
       freeCompleted,
       checkoutsStarted,
       pendingCheckouts,
-      paid,
-      revenueSek,
       conversionRate: pct(paid, totalStarted),
       checkoutConversionRate: pct(paid, checkoutsStarted),
     },
     series,
+    recentAnalyses: recentAnalysesRows.map((row) => ({
+      id: row.id,
+      createdAt: row.createdAt.toISOString(),
+      title: row.title,
+      city: row.city,
+      status: deriveAnalysisStatus(row),
+      score: row.aiScore,
+      riskLevel: row.aiRiskLevel ?? row.freeRiskLevel,
+      amountSek: row.paymentStatus === "PAID" ? FULL_ANALYSIS_PRICE_SEK : null,
+    })),
     recentPayments: recentPaid.map((row) => ({
       id: row.id,
       title: row.title,

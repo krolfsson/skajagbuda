@@ -1,48 +1,71 @@
 import type { AdminRecentPayment } from "@/lib/admin-stats";
+import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
 
-export function AdminRecentPayments({ payments }: { payments: AdminRecentPayment[] }) {
+export function AdminRecentPayments({
+  payments,
+  compact = false,
+}: {
+  payments: AdminRecentPayment[];
+  compact?: boolean;
+}) {
   if (payments.length === 0) {
     return (
-      <section className="admin-panel">
-        <h2 className="admin-panel-title">Senaste betalningar</h2>
-        <p className="admin-empty">Inga betalningar ännu.</p>
-      </section>
+      <AdminEmptyState
+        compact={compact}
+        icon="wallet"
+        title="Inga betalningar ännu"
+        description="Betalningar visas här när de kommer in."
+      />
     );
   }
 
+  const rows = compact ? payments.slice(0, 6) : payments;
+
   return (
-    <section className="admin-panel">
-      <div className="admin-panel-head">
-        <h2 className="admin-panel-title">Senaste betalningar</h2>
-        <p className="admin-panel-desc">15 senaste betalda analyser (alla tider)</p>
-      </div>
-      <div className="admin-table-wrap">
+    <>
+      <div className="admin-table-desktop">
         <table className="admin-table">
           <thead>
             <tr>
+              <th>Tid</th>
               <th>Objekt</th>
-              <th>Stad</th>
-              <th>Betalat</th>
               <th>Belopp</th>
             </tr>
           </thead>
           <tbody>
-            {payments.map((payment) => (
+            {rows.map((payment) => (
               <tr key={payment.id}>
-                <td className="admin-table-title">{payment.title}</td>
-                <td>{payment.city ?? "—"}</td>
-                <td>
+                <td className="admin-table-muted">
                   {new Date(payment.paidAt).toLocaleString("sv-SE", {
-                    dateStyle: "short",
-                    timeStyle: "short",
+                    day: "numeric",
+                    month: "short",
+                    hour: "2-digit",
+                    minute: "2-digit",
                   })}
                 </td>
+                <td className="admin-table-title">{payment.title}</td>
                 <td>{payment.amountSek} kr</td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
-    </section>
+      <div className="admin-cards-mobile">
+        {rows.map((payment) => (
+          <article key={payment.id} className="admin-card-row">
+            <div className="admin-card-row__head">
+              <span className="admin-status admin-status--paid">{payment.amountSek} kr</span>
+              <time className="admin-table-muted">
+                {new Date(payment.paidAt).toLocaleString("sv-SE", {
+                  day: "numeric",
+                  month: "short",
+                })}
+              </time>
+            </div>
+            <p className="admin-card-row__title">{payment.title}</p>
+          </article>
+        ))}
+      </div>
+    </>
   );
 }

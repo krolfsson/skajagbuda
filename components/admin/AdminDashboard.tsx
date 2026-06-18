@@ -1,23 +1,27 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import Link from "next/link";
+import { Logo } from "@/components/Logo";
 import type { AdminGranularity, AdminRange, AdminStats } from "@/lib/admin-stats";
 import { AdminLogin } from "@/components/admin/AdminLogin";
 import { AdminKpiGrid } from "@/components/admin/AdminKpiGrid";
-import { AdminBarChart } from "@/components/admin/AdminBarChart";
+import { AdminSimpleChart } from "@/components/admin/AdminSimpleChart";
+import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
+import { AdminRecentAnalyses } from "@/components/admin/AdminRecentAnalyses";
 import { AdminRecentPayments } from "@/components/admin/AdminRecentPayments";
 
 const RANGES: { value: AdminRange; label: string }[] = [
-  { value: "7d", label: "7 dagar" },
-  { value: "30d", label: "30 dagar" },
-  { value: "90d", label: "90 dagar" },
-  { value: "all", label: "All tid" },
+  { value: "7d", label: "7d" },
+  { value: "30d", label: "30d" },
+  { value: "90d", label: "90d" },
+  { value: "all", label: "All" },
 ];
 
 const GRANULARITIES: { value: AdminGranularity; label: string }[] = [
   { value: "day", label: "Dag" },
-  { value: "week", label: "Vecka" },
-  { value: "month", label: "Månad" },
+  { value: "week", label: "V" },
+  { value: "month", label: "M" },
 ];
 
 export function AdminDashboard() {
@@ -67,9 +71,7 @@ export function AdminDashboard() {
       body: JSON.stringify({ code }),
     });
     const json = (await res.json()) as { error?: string };
-    if (!res.ok) {
-      throw new Error(json.error ?? "Fel kod.");
-    }
+    if (!res.ok) throw new Error(json.error ?? "Fel kod.");
     setAuthenticated(true);
     await fetchStats();
   }
@@ -96,83 +98,124 @@ export function AdminDashboard() {
     );
   }
 
+  const hasSeries = stats && stats.series.length > 0;
+  const hasAnalysisChart =
+    hasSeries && stats.series.some((p) => p.started > 0 || p.paid > 0);
+
   return (
-    <div className="admin-page">
-      <header className="admin-header">
-        <div>
-          <p className="admin-eyebrow">Internt</p>
-          <h1 className="admin-title">Dashboard</h1>
+    <div className="admin-page admin-page--dashboard">
+      <div className="admin-shell">
+        <div className="admin-brand-row">
+          <Link href="/" className="admin-logo">
+            <Logo />
+          </Link>
         </div>
-        <div className="admin-header-actions">
-          <button type="button" className="admin-btn-ghost" onClick={() => void fetchStats()}>
-            Uppdatera
-          </button>
-          <button type="button" className="admin-btn-ghost" onClick={() => void handleLogout()}>
-            Logga ut
-          </button>
-        </div>
-      </header>
 
-      <div className="admin-controls">
-        <div className="admin-segmented" role="group" aria-label="Tidsperiod">
-          {RANGES.map((item) => (
-            <button
-              key={item.value}
-              type="button"
-              className={`admin-segmented-btn${range === item.value ? " admin-segmented-btn--active" : ""}`}
-              onClick={() => setRange(item.value)}
-            >
-              {item.label}
+        <header className="admin-toolbar">
+          <div className="admin-toolbar__left">
+            <h1 className="admin-title">Dashboard</h1>
+            <div className="admin-pills" role="group" aria-label="Tidsperiod">
+              {RANGES.map((item) => (
+                <button
+                  key={item.value}
+                  type="button"
+                  className={`admin-pill${range === item.value ? " admin-pill--active" : ""}`}
+                  onClick={() => setRange(item.value)}
+                >
+                  {item.label}
+                </button>
+              ))}
+            </div>
+            <div className="admin-pills" role="group" aria-label="Aggregering">
+              <button
+                type="button"
+                className={`admin-pill${granularity === "auto" ? " admin-pill--active" : ""}`}
+                onClick={() => setGranularity("auto")}
+              >
+                Auto
+              </button>
+              {GRANULARITIES.map((item) => (
+                <button
+                  key={item.value}
+                  type="button"
+                  className={`admin-pill${granularity === item.value ? " admin-pill--active" : ""}`}
+                  onClick={() => setGranularity(item.value)}
+                >
+                  {item.label}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div className="admin-toolbar__actions">
+            <button type="button" className="admin-btn-outline" onClick={() => void fetchStats()}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M20 12a8 8 0 1 1-2.05-5.32M20 4v5h-5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+              </svg>
+              Uppdatera
             </button>
-          ))}
-        </div>
-        <div className="admin-segmented" role="group" aria-label="Aggregering">
-          <button
-            type="button"
-            className={`admin-segmented-btn${granularity === "auto" ? " admin-segmented-btn--active" : ""}`}
-            onClick={() => setGranularity("auto")}
-          >
-            Auto
-          </button>
-          {GRANULARITIES.map((item) => (
-            <button
-              key={item.value}
-              type="button"
-              className={`admin-segmented-btn${granularity === item.value ? " admin-segmented-btn--active" : ""}`}
-              onClick={() => setGranularity(item.value)}
-            >
-              {item.label}
+            <button type="button" className="admin-btn-outline" onClick={() => void handleLogout()}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+              </svg>
+              Logga ut
             </button>
-          ))}
-        </div>
+          </div>
+        </header>
+
+        {error && <p className="admin-error">{error}</p>}
+
+        {stats && (
+          <div className="admin-sections">
+            <AdminKpiGrid summary={stats.summary} />
+
+            <div className="admin-triple-grid">
+              <section className="admin-card">
+                <h2 className="admin-card-title">Analyser över tid</h2>
+                {hasAnalysisChart ? (
+                  <AdminSimpleChart series={stats.series} variant="analyses" />
+                ) : (
+                  <AdminEmptyState
+                    compact
+                    title="Ingen aktivitet ännu"
+                    description="Grafen fylls när analyser startas."
+                  />
+                )}
+              </section>
+
+              <section className="admin-card">
+                <div className="admin-card-head">
+                  <h2 className="admin-card-title">Intäkter</h2>
+                  <p className="admin-card-sub">
+                    {stats.summary.revenueSek.toLocaleString("sv-SE")} kr totalt
+                  </p>
+                </div>
+                {hasSeries ? (
+                  <AdminSimpleChart series={stats.series} variant="revenue" />
+                ) : (
+                  <AdminEmptyState
+                    compact
+                    title="Inga intäkter ännu"
+                    description="Intäkter visas här vid betalning."
+                  />
+                )}
+              </section>
+
+              <section className="admin-card admin-card--payments">
+                <h2 className="admin-card-title">Senaste betalningar</h2>
+                <AdminRecentPayments payments={stats.recentPayments} compact />
+              </section>
+            </div>
+
+            <section className="admin-card admin-card--table-section">
+              <div className="admin-card-head">
+                <h2 className="admin-card-title">Senaste analyser</h2>
+                <span className="admin-link-muted">Visa alla →</span>
+              </div>
+              <AdminRecentAnalyses analyses={stats.recentAnalyses} />
+            </section>
+          </div>
+        )}
       </div>
-
-      {error && <p className="admin-error">{error}</p>}
-
-      {stats && (
-        <>
-          <AdminKpiGrid summary={stats.summary} />
-          <section className="admin-panel">
-            <div className="admin-panel-head">
-              <h2 className="admin-panel-title">Påbörjade vs betalda</h2>
-              <p className="admin-panel-desc">
-                Aggregerat per {stats.granularity === "day" ? "dag" : stats.granularity === "week" ? "vecka" : "månad"}
-              </p>
-            </div>
-            <AdminBarChart series={stats.series} />
-          </section>
-          <section className="admin-panel">
-            <div className="admin-panel-head">
-              <h2 className="admin-panel-title">Intäkter per period</h2>
-              <p className="admin-panel-desc">{stats.summary.revenueSek.toLocaleString("sv-SE")} kr totalt i vald period</p>
-            </div>
-            <AdminBarChart series={stats.series} mode="revenue" />
-          </section>
-          <AdminRecentPayments payments={stats.recentPayments} />
-        </>
-      )}
-
-      {loading && stats && <p className="admin-loading-inline">Uppdaterar…</p>}
     </div>
   );
 }
