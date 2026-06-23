@@ -14,12 +14,19 @@ export interface ComparableSale {
   floor: string | null;
 }
 
+export interface ComparablesResult {
+  text: string;
+  sales: ComparableSale[];
+  structuredJson: string;
+}
+
 export async function fetchComparables(
   city: string,
   area: string | null,
   sqm: number | null,
-  rooms: number | null
-): Promise<string | null> {
+  rooms: number | null,
+  targetAddress?: string | null
+): Promise<ComparablesResult | null> {
   const query = [area, city].filter(Boolean).join(" ").trim();
   if (!query) return null;
 
@@ -30,7 +37,7 @@ export async function fetchComparables(
         const sales = sold
           .map((l) => parseBooliListing(l))
           .filter((s): s is ComparableSale => s !== null);
-        if (sales.length > 0) return formatComparables(sales, query);
+        if (sales.length > 0) return buildComparablesResult(sales, query, targetAddress);
       }
     }
 
@@ -53,7 +60,10 @@ export async function fetchComparables(
 
     // Extract __NEXT_DATA__ — Booli is a Next.js app
     const nextMatch = html.match(/<script[^>]*id="__NEXT_DATA__"[^>]*>([\s\S]*?)<\/script>/);
-    if (!nextMatch) return buildFallbackComparableContext(query, city, sqm);
+    if (!nextMatch) {
+      const fallback = buildFallbackComparableContext(query, city, sqm);
+      return { text: fallback, sales: [], structuredJson: "[]" };
+    }
 
     const nextData = JSON.parse(nextMatch[1]);
     const listings: unknown[] =
@@ -63,7 +73,8 @@ export async function fetchComparables(
       [];
 
     if (!Array.isArray(listings) || listings.length === 0) {
-      return buildFallbackComparableContext(query, city, sqm);
+      const fallback = buildFallbackComparableContext(query, city, sqm);
+      return { text: fallback, sales: [], structuredJson: "[]" };
     }
 
     const sales = listings
@@ -71,11 +82,15 @@ export async function fetchComparables(
       .map((l: unknown) => parseBooliListing(l))
       .filter((s): s is ComparableSale => s !== null);
 
-    if (sales.length === 0) return buildFallbackComparableContext(query, city, sqm);
+    if (sales.length === 0) {
+      const fallback = buildFallbackComparableContext(query, city, sqm);
+      return { text: fallback, sales: [], structuredJson: "[]" };
+    }
 
-    return formatComparables(sales, query);
+    return buildComparablesResult(sales, query, targetAddress);
   } catch {
-    return buildFallbackComparableContext(query, city, sqm);
+    const fallback = buildFallbackComparableContext(query, city, sqm);
+    return { text: fallback, sales: [], structuredJson: "[]" };
   }
 }
 
@@ -114,6 +129,47 @@ function parseBooliListing(listing: unknown): ComparableSale | null {
     rooms: (l.rooms as number) ?? null,
     soldDate,
     floor: l.floor != null ? String(l.floor) : null,
+  };
+}
+
+function normalizeStreet(value: string): string {
+  return value
+    .toLowerCase()
+    .replace(/\s+/g, " ")
+    .replace(/[,.\-]/g, " ")
+    .trim();
+}
+
+function isSameAddress(saleAddress: string, targetAddress: string | null | undefined): boolean {
+  if (!targetAddress?.trim()) return false;
+  const a = normalizeStreet(saleAddress);
+  const b = normalizeStreet(targetAddress);
+  if (a === b) return true;
+  const aParts = a.split(" ").filter(Boolean);
+  const bParts = b.split(" ").filter(Boolean);
+  return aParts.length >= 2 && bParts.length >= 2 && aParts[0] === bParts[0] && aParts[1] === bParts[1];
+}
+
+function buildComparablesResult(
+  sales: ComparableSale[],
+  area: string,
+  targetAddress?: string | null
+): ComparablesResult {
+  const structured = sales.slice(0, 10).map((s) => ({
+    address: s.address,
+    soldDate: s.soldDate !== "–" ? s.soldDate : undefined,
+    sqm: s.sqm,
+    soldPrice: s.soldPrice,
+    pricePerSqm: s.pricePerSqm,
+    relevance: "Medel" as const,
+    comment: undefined,
+    isSameAddress: isSameAddress(s.address, targetAddress),
+  }));
+
+  return {
+    text: formatComparables(sales, area),
+    sales,
+    structuredJson: JSON.stringify(structured, null, 2),
   };
 }
 

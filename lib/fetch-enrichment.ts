@@ -13,14 +13,18 @@ export async function fetchEnrichmentForAnalysis(
       analysis.city ?? "",
       analysis.area,
       analysis.livingAreaSqm ? Number(analysis.livingAreaSqm) : null,
-      analysis.rooms ? Number(analysis.rooms) : null
+      analysis.rooms ? Number(analysis.rooms) : null,
+      analysis.address
     ),
     analysis.city ? fetchScbPriceIndex(analysis.city) : Promise.resolve(null),
   ]);
 
+  const comparablesResult = comparables.status === "fulfilled" ? comparables.value : null;
+
   return {
     listingHtml: listingHtml.status === "fulfilled" ? listingHtml.value : null,
-    comparables: comparables.status === "fulfilled" ? comparables.value : null,
+    comparables: comparablesResult?.text ?? null,
+    comparablesStructured: comparablesResult?.structuredJson ?? null,
     scbNote:
       scbData.status === "fulfilled" && scbData.value ? scbData.value.note : null,
   };

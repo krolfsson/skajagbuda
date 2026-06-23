@@ -1,4 +1,5 @@
 import type { Scorecard } from "@/lib/schemas";
+import type { ReportObjectInfo } from "@/lib/report-object-info";
 
 export const EXAMPLE_PROPERTY = {
   title: "Sveavägen 123, Vasastan",
@@ -12,11 +13,91 @@ export const EXAMPLE_PRICE_VS_MARKET =
 export const EXAMPLE_CONCLUSION =
   "Buda försiktigt och kräv svar om stambyte, tomträtt och räntebindning innan slutbud.";
 
+export const EXAMPLE_OBJECT_INFO: ReportObjectInfo = {
+  title: EXAMPLE_PROPERTY.title,
+  address: EXAMPLE_PROPERTY.title,
+  rooms: 2,
+  sqm: 62,
+  associationName: "BRF Vasastan",
+  askingPrice: 7_950_000,
+  monthlyFee: 4_200,
+  userMaxBudget: 8_500_000,
+  associationDebtPerSqm: 6_500,
+  associationCash: 2_500_000,
+  associationAnnualFeeChangePercent: -4,
+  hasAnnualReport: true,
+};
+
 export const EXAMPLE_SCORECARD: Scorecard = {
   score: 68,
   recommendation: "Buda försiktigt",
   riskLevel: "Medel",
   maxBidSuggestion: 8150000,
+  bidIntervals: {
+    fairValueLow: 7900000,
+    fairValueHigh: 8200000,
+    recommendedCeiling: 8150000,
+    stretchLevel: 8250000,
+    walkAwayLevel: 8300000,
+    uncertaintyNote: undefined,
+  },
+  priceAnalysis: {
+    askingPriceNote:
+      "Utgångspris 7 950 000 kr (128 000 kr/kvm) — satt lågt för att dra upp budgivningen enligt mönster i området.",
+    pricePerSqmNote:
+      "128 000 kr/kvm ligger i linje med Vasastan i annonsen, men faktiska slutpriser för 2:or i kvarteret ligger snarare 130 000–134 000 kr/kvm.",
+    estimatedFairRangeLow: 7900000,
+    estimatedFairRangeHigh: 8200000,
+    areaComparison:
+      "Tre 2:or i kvarteret såldes för 128 000–134 000 kr/kvm det senaste året. Verklig marknadsnivå pekar mot 8,1–8,3 Mkr — inte bara utgångspriset.",
+    comparableSummary: "Liknande 62 kvm i området såldes runt 8,1–8,3 Mkr — stödjer försiktighet över 8,15 Mkr.",
+    priorSalesNote: undefined,
+    verdict: "Rimligt",
+    conclusion:
+      "Prisbilden är rimlig upp till cirka 8,2 Mkr, men premium över 8,25 Mkr kräver acceptans av tomträtts- och stambytesrisk.",
+    missingComparablesNote: undefined,
+  },
+  bidArguments: {
+    holdBack: [
+      "Pris/kvm ligger högt relativt tillgängliga jämförelser om budgivningen driver över 8,2 Mkr.",
+      "Stambyte saknar bekräftad finansiering — kostnad kan slå mot avgiften.",
+      "Tomträttsavgäld omförhandlas 2027 — dold kostnad som inte syns i annonsen.",
+      "60 % rörliga föreningslån gör avgiften känslig för räntehöjningar.",
+    ],
+    premiumJustification: [
+      "Attraktivt läge nära Odenplan med bra kommunikationer.",
+      "Söderbalkong och genomtänkt planlösning.",
+      "Skuld/kvm 6 500 kr — under snitt i området.",
+      "Renoverat badrum 2023 och hiss i fastigheten.",
+    ],
+  },
+  comparisonObjects: [
+    {
+      address: "Liknande 62 kvm i Vasastan",
+      sqm: 62,
+      soldPrice: 8200000,
+      pricePerSqm: 132258,
+      relevance: "Hög",
+      comment: "stödjer försiktighet över 8,15 Mkr",
+      isSameAddress: false,
+    },
+    {
+      address: "Hornsgatan 149",
+      sqm: 66,
+      soldPrice: 9850000,
+      pricePerSqm: 149242,
+      relevance: "Medel",
+      comment: "högre skick och lägre avgift — inte direkt jämförbar",
+      isSameAddress: false,
+    },
+  ],
+  budgetContext: {
+    userMaxBudget: 8500000,
+    budgetVsRecommendation:
+      "Du har angett 8 500 000 kr som max, men analysens rekommenderade budtak är 8 150 000 kr. Prisbilden och föreningsrisken motiverar inte högre nivå utan ny information om tomträtt och stambytesfinansiering.",
+  },
+  associationRiskSummary:
+    "Skuld/kvm 6 500 kr är acceptabelt, men kassan (2,5 Mkr) är tunn inför planerat stambyte 2026–2027 utan klar finansiering. Avgiften sänktes nyligen med 4 % — kan vara kosmetiskt. 60 % rörliga lån och tomträttsomförhandling 2027 ökar risken för avgiftshöjning eller engångsinsats.",
   oneSentenceSummary:
     "Bra läge och rimlig avgift, men ett stambyte 2026–2027 utan finansiering — plus mindre uppenbara saker som tomträtt och rörliga föreningslån — döljer kostnader som inte syns i annonsen.",
   summary:

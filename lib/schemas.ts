@@ -61,11 +61,61 @@ export const CategoryScoresSchema = z.object({
   risk: z.number().int().min(0).max(100),
 });
 
+export const ComparisonObjectSchema = z.object({
+  address: z.string(),
+  soldDate: z.string().optional(),
+  sqm: z.number().positive().nullable().optional(),
+  soldPrice: z.number().int().positive().nullable().optional(),
+  pricePerSqm: z.number().int().positive().nullable().optional(),
+  relevance: z.enum(["Hög", "Medel", "Låg"]).optional(),
+  comment: z.string().optional(),
+  isSameAddress: z.boolean().optional().default(false),
+});
+
+export const BidIntervalsSchema = z.object({
+  fairValueLow: z.number().int().positive().nullable(),
+  fairValueHigh: z.number().int().positive().nullable(),
+  recommendedCeiling: z.number().int().positive().nullable(),
+  stretchLevel: z.number().int().positive().nullable(),
+  walkAwayLevel: z.number().int().positive().nullable(),
+  uncertaintyNote: z.string().optional(),
+});
+
+export const PriceAnalysisSchema = z.object({
+  askingPriceNote: z.string(),
+  pricePerSqmNote: z.string(),
+  estimatedFairRangeLow: z.number().int().positive().nullable(),
+  estimatedFairRangeHigh: z.number().int().positive().nullable(),
+  areaComparison: z.string(),
+  comparableSummary: z.string().optional(),
+  priorSalesNote: z.string().optional(),
+  verdict: z.enum(["Rimligt", "Pressat", "Överprisat", "Osäkert"]),
+  conclusion: z.string(),
+  missingComparablesNote: z.string().optional(),
+});
+
+export const BidArgumentsSchema = z.object({
+  holdBack: z.array(z.string()).min(1),
+  premiumJustification: z.array(z.string()),
+});
+
+export const BudgetContextSchema = z.object({
+  userMaxBudget: z.number().int().positive().nullable().optional(),
+  budgetVsRecommendation: z.string(),
+});
+
 export const ScorecardSchema = z.object({
   score: z.number().int().min(0).max(100),
   recommendation: z.enum(["Buda inte", "Buda försiktigt", "Buda", "Starkt case"]),
   riskLevel: z.enum(["Låg", "Medel", "Hög", "Mycket hög"]),
+  /** Rekommenderat budtak — oberoende marknadsbedömning, inte användarens budget. */
   maxBidSuggestion: z.number().int().positive().nullable(),
+  bidIntervals: BidIntervalsSchema,
+  priceAnalysis: PriceAnalysisSchema,
+  bidArguments: BidArgumentsSchema,
+  comparisonObjects: z.array(ComparisonObjectSchema),
+  budgetContext: BudgetContextSchema,
+  associationRiskSummary: z.string(),
   oneSentenceSummary: z.string(),
   summary: z.string(),
   strengths: z.array(z.string()).min(1),

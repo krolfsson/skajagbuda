@@ -6,10 +6,44 @@ export function fmtMoney(v: number | null | undefined) {
   return new Intl.NumberFormat("sv-SE", { maximumFractionDigits: 0 }).format(v) + " kr";
 }
 
+export function fmtMoneyCompact(v: number | null | undefined) {
+  if (!v) return "–";
+  if (v >= 1_000_000) {
+    const m = v / 1_000_000;
+    return `${m.toLocaleString("sv-SE", { maximumFractionDigits: 2 })} Mkr`;
+  }
+  return fmtMoney(v);
+}
+
+export function fmtMoneyRange(low: number | null | undefined, high: number | null | undefined) {
+  if (low && high) return `${fmtMoneyCompact(low)}–${fmtMoneyCompact(high)}`;
+  if (low) return `från ${fmtMoneyCompact(low)}`;
+  if (high) return `upp till ${fmtMoneyCompact(high)}`;
+  return "–";
+}
+
 export function normalizeBid(v: number): number {
   if (v > 0 && v < 500) return v * 1_000_000;
   if (v >= 500 && v < 10_000) return v * 1_000;
   return v;
+}
+
+export function fmtPricePerSqm(price: number | null | undefined, sqm: number | null | undefined): string {
+  if (!price || !sqm || sqm <= 0) return "–";
+  const ppm = Math.round(normalizeBid(price) / sqm);
+  return `${new Intl.NumberFormat("sv-SE", { maximumFractionDigits: 0 }).format(ppm)} kr/kvm`;
+}
+
+export function fmtPricePerSqmRange(
+  low: number | null | undefined,
+  high: number | null | undefined,
+  sqm: number | null | undefined
+): string {
+  if (!sqm || sqm <= 0) return "–";
+  if (low && high) return `${fmtPricePerSqm(low, sqm).replace(" kr/kvm", "")} – ${fmtPricePerSqm(high, sqm)}`;
+  if (low) return fmtPricePerSqm(low, sqm);
+  if (high) return fmtPricePerSqm(high, sqm);
+  return "–";
 }
 
 function cleanPoint(text: string): string {
@@ -78,43 +112,40 @@ export function deriveRiskExplanation(sc: Scorecard): string {
 export function deriveConclusion(sc: Scorecard): string {
   const bullets = summaryToBullets(sc.summary);
   const bidBullet = bullets.find((b) =>
-    /maxbud|slutbud|buda försiktigt|walk-away|walk away|kräv svar/i.test(b),
+    /budtak|rekommenderat|slutbud|walk-away|walk away|kräv svar|marknadsvärde/i.test(b),
   );
   if (bidBullet) return bidBullet;
 
-  const walk = sc.bidStrategy.walkAwayPoint.trim();
-  if (walk.length > 10) {
-    const short = walk.split(/[.—–]/)[0]?.trim();
-    if (short && short.length > 15) return `${sc.recommendation} — ${short}.`;
-  }
+  if (sc.priceAnalysis.conclusion) return sc.priceAnalysis.conclusion;
 
-  return `${sc.recommendation}. Granska röda flaggor och frågor innan slutbud.`;
+  return `${sc.recommendation}. Granska prisbilden, röda flaggor och frågor innan slutbud.`;
 }
 
 export function deriveConclusionBox(sc: Scorecard): string {
-  const bullets = summaryToBullets(sc.summary);
   const whyParts: string[] = [];
 
-  if (bullets.length >= 2) {
-    whyParts.push(cleanPoint(bullets[0]), cleanPoint(bullets[1]));
-  } else if (bullets.length === 1) {
-    whyParts.push(cleanPoint(bullets[0]));
-  } else if (sc.weaknesses[0]) {
-    whyParts.push(firstSentence(sc.weaknesses[0], 100));
+  if (sc.priceAnalysis.conclusion) {
+    whyParts.push(sc.priceAnalysis.conclusion);
+  } else {
+    const bullets = summaryToBullets(sc.summary);
+    if (bullets.length >= 2) {
+      whyParts.push(cleanPoint(bullets[0]), cleanPoint(bullets[1]));
+    } else if (bullets.length === 1) {
+      whyParts.push(cleanPoint(bullets[0]));
+    } else if (sc.weaknesses[0]) {
+      whyParts.push(firstSentence(sc.weaknesses[0], 100));
+    }
   }
 
-  if (sc.strengths[0] && whyParts.length < 2) {
-    whyParts.unshift(firstSentence(sc.strengths[0], 90));
-  }
-
-  const why = whyParts.filter(Boolean).join(" ").trim();
-  const maxBid = sc.maxBidSuggestion ? fmtMoney(normalizeBid(sc.maxBidSuggestion)) : null;
+  const why = whyParts.filter(Boolean).slice(0, 2).join(" ").trim();
+  const ceiling = sc.bidIntervals.recommendedCeiling ?? sc.maxBidSuggestion;
+  const walkAway = sc.bidIntervals.walkAwayLevel;
 
   let action = sc.bidStrategy.nextStep.trim();
-  if (maxBid && !/gå inte över|maxbud|walk-away/i.test(action)) {
-    action = `Gå inte över ${maxBid} utan bättre underlag om budhistorik, jämförbara slutpriser och eventuella avgiftshöjningar.`;
+  if (ceiling && !/motiverar inte|budtak|walk-away|analys/i.test(action)) {
+    action = `Analysens rekommenderade budtak är ${fmtMoney(normalizeBid(ceiling))}${walkAway ? ` — walk-away runt ${fmtMoney(normalizeBid(walkAway))}` : ""}. Höj bara om ny information motiverar det.`;
   } else if (!action) {
-    action = "Kontrollera budhistorik, föreningens ekonomi och planerade avgiftshöjningar innan du höjer.";
+    action = "Kontrollera budhistorik, förenings ekonomi och jämförbara slutpriser innan du höjer.";
   }
 
   const lead = sc.recommendation.endsWith(".") ? sc.recommendation : `${sc.recommendation}.`;
@@ -122,34 +153,29 @@ export function deriveConclusionBox(sc: Scorecard): string {
 }
 
 export function deriveDecisionSummary(sc: Scorecard): string {
-  const bullets = summaryToBullets(sc.summary);
-  if (bullets.length >= 3) {
-    return bullets
-      .slice(0, 3)
-      .map(cleanPoint)
-      .join(" ");
-  }
-
   const parts: string[] = [];
-  const positive =
-    sc.strengths[0] ??
-    (sc.categoryScores.association >= 60 ? "Föreningen ser stabil ut utifrån tillgängligt underlag." : null);
-  const negative = sc.weaknesses[0] ?? sc.redFlags[0];
-  const maxBid = sc.maxBidSuggestion ? fmtMoney(normalizeBid(sc.maxBidSuggestion)) : null;
 
-  if (positive) parts.push(`${firstSentence(positive, 110)}.`);
-  if (negative) {
+  if (sc.priceAnalysis.conclusion) {
+    parts.push(sc.priceAnalysis.conclusion);
+  }
+
+  const positive = sc.strengths[0];
+  const negative = sc.weaknesses[0] ?? sc.redFlags[0];
+  const ceiling = sc.bidIntervals.recommendedCeiling ?? sc.maxBidSuggestion;
+
+  if (positive && parts.length < 2) {
+    parts.push(`${firstSentence(positive, 110)}.`);
+  }
+  if (negative && parts.length < 3) {
     parts.push(
-      `Den största risken är ${firstSentence(negative, 100).toLowerCase().replace(/\.$/, "")}.`,
+      `Största risken: ${firstSentence(negative, 100).toLowerCase().replace(/\.$/, "")}.`,
     );
   }
 
-  if (maxBid) {
+  if (ceiling && parts.length < 3) {
     parts.push(
-      `Rekommendationen är att ${sc.recommendation.toLowerCase()} och hålla maxnivån runt ${maxBid} tills mer data finns.`,
+      `Rekommenderat budtak enligt analysen: ${fmtMoney(normalizeBid(ceiling))} — baserat på marknadsdata, inte enbart budget.`,
     );
-  } else {
-    parts.push(`${sc.recommendation}. Granska frågorna och svagheterna innan nästa bud.`);
   }
 
   if (parts.length === 0 && sc.oneSentenceSummary) {
@@ -157,6 +183,33 @@ export function deriveDecisionSummary(sc: Scorecard): string {
   }
 
   return parts.slice(0, 3).join(" ");
+}
+
+export function deriveBudgetNote(sc: Scorecard, userMaxBudget?: number | null): string {
+  const note = sc.budgetContext.budgetVsRecommendation.trim();
+  const budget = userMaxBudget ?? sc.budgetContext.userMaxBudget ?? null;
+  const ceiling = sc.bidIntervals.recommendedCeiling ?? sc.maxBidSuggestion;
+
+  if (note && !/^analysens budtak bygger på objektdata/i.test(note)) {
+    return note;
+  }
+
+  if (!budget || !ceiling) {
+    return note || "Analysens budtak bygger på objektdata och marknadsbedömning.";
+  }
+
+  const normalizedBudget = normalizeBid(budget);
+  const normalizedCeiling = normalizeBid(ceiling);
+
+  if (normalizedBudget === normalizedCeiling) {
+    return `Rekommenderat budtak sammanfaller med din angivna maxgräns (${fmtMoney(normalizedBudget)}), men inte på grund av budgeten i sig. Det stöds av pris/kvm, läget och jämförbara nivåer i underlaget — bekräfta med jämförelseobjekt innan slutbud.`;
+  }
+
+  if (normalizedBudget < normalizedCeiling) {
+    return `Du har angett ${fmtMoney(normalizedBudget)} som max. Analysen bedömer att objektet kan vara marknadsmässigt försvarbart upp till cirka ${fmtMoney(normalizedCeiling)}, men din personliga budget begränsar hur högt du bör gå utan att acceptera extra ekonomisk risk.`;
+  }
+
+  return `Du har angett ${fmtMoney(normalizedBudget)} som max, men analysens rekommenderade budtak är ${fmtMoney(normalizedCeiling)}. Prisbilden och föreningsrisken motiverar inte högre nivå utan ny information.`;
 }
 
 export function deriveNextSteps(sc: Scorecard): string[] {
@@ -169,6 +222,10 @@ export function deriveNextSteps(sc: Scorecard): string[] {
       seen.add(key);
       steps.push(step);
     }
+  }
+
+  if (sc.priceAnalysis.missingComparablesNote || sc.comparisonObjects.length === 0) {
+    add("Kräv jämförbara slutpriser för liknande objekt — underlaget är begränsat.");
   }
 
   for (const q of sc.questionsToAsk.slice(0, 2)) {
@@ -189,16 +246,20 @@ export function deriveNextSteps(sc: Scorecard): string[] {
     add("Kontrollera underhållsplanen.");
   }
 
-  if (sc.maxBidSuggestion) {
-    add(`Gå inte över ${fmtMoney(normalizeBid(sc.maxBidSuggestion))} utan ny information.`);
+  const ceiling = sc.bidIntervals.recommendedCeiling ?? sc.maxBidSuggestion;
+  if (ceiling) {
+    add(`Nuvarande underlag motiverar inte bud över ${fmtMoney(normalizeBid(ceiling))} utan ny information.`);
   } else {
-    add("Sätt en tydlig maxnivå innan budgivningen och håll dig till den.");
+    add("Sätt ett budtak baserat på prisanalysen — inte bara på din budget — innan budgivningen.");
   }
 
   return steps.slice(0, 5);
 }
 
 export function deriveWalkAwayAmount(sc: Scorecard): string | null {
+  const walkAway = sc.bidIntervals.walkAwayLevel;
+  if (walkAway) return fmtMoney(normalizeBid(walkAway));
+
   const text = sc.bidStrategy.walkAwayPoint;
   const match = text.match(/(\d[\d\s]{5,}|\d+[,.]?\d*)\s*(kr|mkr|Mkr)/i);
   if (match) {
@@ -209,9 +270,21 @@ export function deriveWalkAwayAmount(sc: Scorecard): string | null {
       return fmtMoney(n);
     }
   }
-  if (sc.maxBidSuggestion) return fmtMoney(normalizeBid(sc.maxBidSuggestion));
+
+  const ceiling = sc.bidIntervals.recommendedCeiling ?? sc.maxBidSuggestion;
+  if (ceiling) return fmtMoney(normalizeBid(ceiling));
   return null;
 }
+
+export const PRICE_VERDICT_COLORS: Record<
+  Scorecard["priceAnalysis"]["verdict"],
+  { text: string; bg: string; border: string }
+> = {
+  Rimligt: { text: "#166534", bg: "#f0fdf4", border: "#bbf7d0" },
+  Pressat: { text: "#92400e", bg: "#fffbeb", border: "#fde68a" },
+  Överprisat: { text: "#991b1b", bg: "#fef2f2", border: "#fecaca" },
+  Osäkert: { text: "#374151", bg: "#f9fafb", border: "#e5e7eb" },
+};
 
 export const CATEGORY_LABELS: Record<string, string> = {
   price: "Pris",

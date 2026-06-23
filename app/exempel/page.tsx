@@ -26,7 +26,7 @@ export default function ExempelPage() {
           <span className="exempel-page__badge">Exempelanalys</span>
         </div>
 
-        <div className="analysis-report-shell">
+        <div className="analysis-report-shell analysis-report-shell--full">
           <ExampleReport />
         </div>
 

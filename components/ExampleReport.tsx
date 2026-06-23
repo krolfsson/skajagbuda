@@ -1,17 +1,24 @@
-import { EXAMPLE_PROPERTY, EXAMPLE_SCORECARD, EXAMPLE_CONCLUSION } from "@/lib/example-scorecard";
-import { AnalysisReport } from "@/components/AnalysisReport";
+import {
+  EXAMPLE_CONCLUSION,
+  EXAMPLE_OBJECT_INFO,
+  EXAMPLE_SCORECARD,
+} from "@/lib/example-scorecard";
+import { FullAnalysisReport } from "@/components/FullAnalysisReport";
 
-/**
- * Full example scorecard — shared by /exempel (same layout as homepage preview).
- */
-export function ExampleReport() {
+export type ExampleReportProps = {
+  /** Show landing CTA at bottom — used on homepage. */
+  showFooterCta?: boolean;
+};
+
+/** Shared example report — same layout on /exempel, homepage and elsewhere. */
+export function ExampleReport({ showFooterCta = false }: ExampleReportProps) {
   return (
-    <AnalysisReport
-      title={EXAMPLE_PROPERTY.title}
-      meta={EXAMPLE_PROPERTY.metaShort}
+    <FullAnalysisReport
+      objectInfo={EXAMPLE_OBJECT_INFO}
       scorecard={EXAMPLE_SCORECARD}
       conclusionLine={EXAMPLE_CONCLUSION}
-      titleAs="h1"
+      showBetaBadge
+      showFooterCta={showFooterCta}
     />
   );
 }

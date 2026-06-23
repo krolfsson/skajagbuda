@@ -1,12 +1,12 @@
 import Link from "next/link";
 import type { PropertyAnalysis } from "@/app/generated/prisma/client";
-import { fmtMoney } from "@/lib/report-ui";
 import type { Scorecard } from "@/lib/schemas";
+import { reportObjectInfoFromAnalysis, formatObjectMeta } from "@/lib/report-object-info";
 import { ShareButton } from "@/components/ShareButton";
 import { ExportReportButton } from "@/components/ExportReportButton";
 import { DownloadPdfButton } from "@/components/DownloadPdfButton";
 import { DevBypassBanner } from "@/components/DevBypassBanner";
-import { AnalysisReport } from "@/components/AnalysisReport";
+import { FullAnalysisReport } from "@/components/FullAnalysisReport";
 
 function fmtDate(d: Date) {
   return new Intl.DateTimeFormat("sv-SE", {
@@ -25,14 +25,8 @@ export function FullScorecard({
   scorecard: Scorecard;
   devBypass?: boolean;
 }) {
-  const meta = [
-    analysis.rooms ? `${Number(analysis.rooms)} rok` : null,
-    analysis.livingAreaSqm ? `${Number(analysis.livingAreaSqm)} kvm` : null,
-    analysis.associationName ?? null,
-    analysis.askingPrice ? `Utgångspris ${fmtMoney(analysis.askingPrice)}` : null,
-  ]
-    .filter(Boolean)
-    .join(" · ");
+  const objectInfo = reportObjectInfoFromAnalysis(analysis);
+  const meta = formatObjectMeta(objectInfo);
 
   return (
     <div className="full-report-page">
@@ -53,13 +47,14 @@ export function FullScorecard({
           </div>
         </div>
 
-        <p className="no-print full-report-page__hint">
-          Rapporten sparas på denna länk. Bokmärk sidan, dela länken eller spara som PDF.
-        </p>
-
         <div className="report-print-root">
-          <div className="analysis-report-shell">
-            <AnalysisReport title={analysis.title} meta={meta} scorecard={sc} titleAs="h1" />
+          <div className="analysis-report-shell analysis-report-shell--full">
+            <FullAnalysisReport
+              objectInfo={objectInfo}
+              scorecard={sc}
+              showBetaBadge
+              showFooterCta={false}
+            />
           </div>
 
           <p className="print-only report-print-footer">

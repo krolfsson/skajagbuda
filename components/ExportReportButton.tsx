@@ -13,7 +13,7 @@ export function ExportReportButton({
   meta: string | null;
   scorecard: Scorecard;
 }) {
-  const [label, setLabel] = useState("Markdown");
+  const [label, setLabel] = useState("Spara analys");
 
   function handleExport() {
     const markdown = scorecardToMarkdown(title, meta, scorecard);
@@ -25,7 +25,7 @@ export function ExportReportButton({
     link.click();
     URL.revokeObjectURL(url);
     setLabel("Nedladdad!");
-    setTimeout(() => setLabel("Markdown"), 2000);
+    setTimeout(() => setLabel("Spara analys"), 2000);
   }
 
   return (

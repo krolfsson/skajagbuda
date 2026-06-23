@@ -62,20 +62,56 @@ Använd dessa riktvärden och referera till dem med siffror:
 - Objekt som legat länge = förhandlingsutrymme
 - Om budlogg finns: analysera budsteg och tempo konkret
 
-### 5. Användarens ekonomiska situation
-- Kontrollera att maxbud ryms inom budget och kontantinsatskrav (typiskt 15%)
-- Beräkna total månadskostnad: avgift + ränta + amortering. Jämför mot månadskomfortgräns.
-- Ränteexempel: vid 4,5% rörlig ränta, räkna ungefärlig månadskostnad på bolånet och visa i summary eller budstrategi
+### 5. Användarens ekonomiska situation (personlig begränsning — inte facit)
+- Användarens angivna maxbudget är ENDAST en personlig begränsning och får ALDRIG automatiskt bli rekommenderat maxbud eller marknadsvärde.
+- Gör en självständig bedömning av rimligt värde, rekommenderat budtak, stretch-nivå och walk-away baserat på objektdata, föreningsrisk, pris/kvm, jämförelseunderlag och osäkerheter.
+- Om användarens maxbudget påverkar rekommendationen ska det tydligt framgå i budgetContext.budgetVsRecommendation som en separat personlig begränsning — inte som marknadsvärde.
+- Om rekommenderat budtak sammanfaller med användarens maxbudget MÅSTE du explicit förklara varför oberoende faktorer (pris/kvm, läge, jämförelser) stödjer samma nivå — aldrig bara "du angav X".
+- Kontrollera att rekommenderat budtak ryms inom budget och kontantinsatskrav (typiskt 15%) — men sänk rekommendationen baserat på marknadsbedömning, inte bara spegla budgeten.
+- Beräkna total månadskostnad: avgift + ränta + amortering. Jämför mot månadskomfortgräns om angiven.
 
-### 6. Maxbud-beräkning
-Räkna ut maxBidSuggestion med denna logik:
-- Utgå från jämförbart pris/kvm i området × boyta (eller försiktig marknadsbedömning om data saknas)
-- Justera ned för hög föreningsskuld, planerat stambyte, hög avgiftshöjning
-- Begränsa till användarens maxbudget om den är lägre
-- Avrunda till närmaste 25 000 kr
-- Sätt null BARA om det helt saknas data för att göra en rimlig bedömning
-- Returnera ALLTID ett heltal i kronor, t.ex. 6750000 — ALDRIG ett värde under 100 000 om det är en lägenhet
-- Förklara kort i summary varför maxbudet landar där
+### 6. Tre separata värden — obligatoriskt
+Du MÅSTE skilja på:
+
+**A. Marknadsvärde / rimligt värde** (bidIntervals.fairValueLow–fairValueHigh + priceAnalysis):
+- Bedöm utifrån utgångspris, pris/kvm, område, storlek, våning, skick, balkong/hiss/eldstad, avgift, förenings ekonomi, renoveringsrisk, jämförelseobjekt och tidigare försäljningar.
+- Ange intervall i hela kronor. Vid osäker data: bredare intervall + uncertaintyNote.
+
+**B. Rekommenderat budtak** (maxBidSuggestion + bidIntervals.recommendedCeiling):
+- Vad köparen rationellt bör kunna gå till givet marknadsvärde, risker, budläge, föreningsrisk, osäkerheter, kvaliteter och likviditet.
+- Räkna själv: utgå från jämförbart pris/kvm × boyta, justera ned för skuld, stambyte, avgiftshöjning, saknad data.
+- Avrunda till närmaste 25 000 kr. Sätt null BARA om data helt saknas.
+- ALDRIG sätta detta lika med användarens maxbudget utan oberoende motivering.
+
+**C. Stretch och walk-away** (bidIntervals.stretchLevel, walkAwayLevel):
+- Stretch: nivå där premium kräver medveten riskacceptans.
+- Walk-away: över denna nivå kompenseras riskerna inte i priset.
+
+### 7. Prisbild och jämförelse (priceAnalysis + comparisonObjects)
+- Fyll priceAnalysis med konkret prisanalys: utgångspris, pris/kvm, bedömd rimlig nivå, områdesjämförelse, slutsats (Rimligt/Pressat/Överprisat/Osäkert).
+- Om jämförpriser finns i underlaget: strukturera minst 2–3 i comparisonObjects med adress, datum, storlek, slutpris, pris/kvm, relevans och kommentar.
+- Om objekt på samma adress finns: sätt isSameAddress: true och lyft i priorSalesNote — det väger tungt.
+- Om bekräftade jämförelseobjekt saknas: skriv i missingComparablesNote att "Vi saknar bekräftade jämförelseobjekt i underlaget. Därför bör prisbedömningen ses som mer osäker." — men resonera ändå utifrån pris/kvm, område och objektdata.
+
+### 8. Argument i budgivningen (bidArguments)
+- holdBack: minst 3 konkreta argument för att hålla nere budet (pris/kvm, föreningsrisk, saknad data, etc.)
+- premiumJustification: konkreta argument som kan motivera premium (läge, balkong, låg avgift, etc.)
+
+### 9. Föreningsrisk (associationRiskSummary)
+- Sammanfatta föreningens ekonomi, skuld, avgiftsutveckling, stambyte och dolda risker i 2–4 meningar med siffror.
+
+### 10. Skeptisk, bevisbaserad ton
+Ställ alltid dessa frågor internt:
+- Vad stödjer priset? Vad talar emot?
+- Vilken data saknas? Vilken risk kompenseras inte?
+- Vad måste mäklaren/föreningen svara på innan man höjer?
+
+UNDVIK: "Buda upp till ditt max", "Gå inte över din budget", "Objektet verkar rimligt" utan belägg.
+SKRIV HELLRE: "Priset kräver stöd från jämförbara slutpriser", "Nuvarande underlag motiverar inte bud över X", "Kräv svar om Y innan du höjer".
+
+### 11. Maxbud-fält (legacy + synk)
+- maxBidSuggestion och bidIntervals.recommendedCeiling ska vara samma värde (rekommenderat budtak B).
+- Förklara kort i summary varför budtaket landar där — med marknadsargument, inte budget.
 
 ${RISK_ASSESSMENT_CRITERIA}
 
@@ -89,7 +125,47 @@ Returnera ALLTID ett strikt JSON-objekt med exakt denna struktur:
   "score": <heltal 0-100>,
   "recommendation": <"Buda inte" | "Buda försiktigt" | "Buda" | "Starkt case">,
   "riskLevel": <"Låg" | "Medel" | "Hög" | "Mycket hög">,
-  "maxBidSuggestion": <heltal i HELA kronor, t.ex. 7500000 för 7,5 miljoner SEK. ALDRIG i miljoner. null om ej möjligt att bedöma>,
+  "maxBidSuggestion": <rekommenderat budtak B — heltal i HELA kronor. Oberoende av användarens budget. null om ej möjligt>,
+  "bidIntervals": {
+    "fairValueLow": <marknadsvärde A, lägre gräns i hela kronor eller null>,
+    "fairValueHigh": <marknadsvärde A, övre gräns i hela kronor eller null>,
+    "recommendedCeiling": <samma som maxBidSuggestion>,
+    "stretchLevel": <nivå med medveten riskacceptans, hela kronor eller null>,
+    "walkAwayLevel": <walk-away i hela kronor eller null>,
+    "uncertaintyNote": <valfritt — varför intervall är brett om data saknas>
+  },
+  "priceAnalysis": {
+    "askingPriceNote": <kommentar om utgångspris>,
+    "pricePerSqmNote": <pris/kvm vs område/jämförelser>,
+    "estimatedFairRangeLow": <hela kronor eller null>,
+    "estimatedFairRangeHigh": <hela kronor eller null>,
+    "areaComparison": <jämförelse med området>,
+    "comparableSummary": <valfritt — kort om jämförbara objekt>,
+    "priorSalesNote": <valfritt — tidigare försäljningar på adress/förening>,
+    "verdict": <"Rimligt" | "Pressat" | "Överprisat" | "Osäkert">,
+    "conclusion": <slutsats om prisbilden>,
+    "missingComparablesNote": <valfritt — om jämförelseobjekt saknas>
+  },
+  "bidArguments": {
+    "holdBack": [<minst 3 argument för att hålla nere budet>],
+    "premiumJustification": [<argument som kan motivera premium>]
+  },
+  "comparisonObjects": [
+    {
+      "address": <adress>,
+      "soldDate": <valfritt>,
+      "sqm": <kvm eller null>,
+      "soldPrice": <slutpris hela kronor eller null>,
+      "pricePerSqm": <pris/kvm hela kronor eller null>,
+      "relevance": <"Hög" | "Medel" | "Låg">,
+      "comment": <kort kommentar>,
+      "isSameAddress": <true om samma adress>
+    }
+  ],
+  "budgetContext": {
+    "budgetVsRecommendation": <förklara relation mellan användarens maxbudget och analysens budtak — aldrig spegla budgeten automatiskt>
+  },
+  "associationRiskSummary": <2-4 meningar om föreningsrisk med siffror>,
   "oneSentenceSummary": <en mening, max 150 tecken>,
   "summary": <4-6 korta punkter, varje rad börjar med "- ", max 1-2 meningar per punkt>,
   "strengths": [<lista med styrkor, minst en>],
@@ -97,9 +173,9 @@ Returnera ALLTID ett strikt JSON-objekt med exakt denna struktur:
   "redFlags": [<lista med röda flaggor, kan vara tom>],
   "questionsToAsk": [<frågor att ställa mäklaren eller föreningen>],
   "bidStrategy": {
-    "openingMove": <hur man öppnar budgivningen>,
+    "openingMove": <hur man öppnar budgivningen — baserat på analysens budtak, inte användarens budget>,
     "nextStep": <vad man gör om det blir budstrid>,
-    "walkAwayPoint": <när man ska sluta buda>,
+    "walkAwayPoint": <när man ska sluta buda — referera till walkAwayLevel>,
     "negotiationNotes": <övriga taktiska observationer>
   },
   "categoryScores": {
@@ -135,6 +211,7 @@ function fmtMoney(value: number | null | undefined): string {
 export interface EnrichmentData {
   listingHtml?: string | null;
   comparables?: string | null;
+  comparablesStructured?: string | null;
   scbNote?: string | null;
 }
 
@@ -230,7 +307,7 @@ export function buildUserPrompt(
   );
 
   sections.push(
-    `## Användarens ekonomi och preferenser\n- Max budget: ${fmtMoney(analysis.userMaxBudget)}\n- Kontantinsats: ${fmtMoney(analysis.userDownPayment)}\n- Månadskomfort (max): ${fmtMoney(analysis.userMonthlyComfortLimit)}\n- Egna anteckningar: ${fmt(analysis.userNotes)}`
+    `## Användarens ekonomi och preferenser (PERSONLIG BEGRÄNSNING — inte facit för marknadsvärde)\n- Max budget (personlig gräns): ${fmtMoney(analysis.userMaxBudget)}\n- Kontantinsats: ${fmtMoney(analysis.userDownPayment)}\n- Månadskomfort (max): ${fmtMoney(analysis.userMonthlyComfortLimit)}\n- Egna anteckningar: ${fmt(analysis.userNotes)}\n\nVIKTIGT: Max budget ovan får ALDRIG automatiskt bli rekommenderat maxbud. Gör en självständig pris- och riskbedömning och förklara relationen i budgetContext.budgetVsRecommendation.`
   );
 
   const freeTextParts: string[] = [];
@@ -247,6 +324,11 @@ export function buildUserPrompt(
   // External enrichment data
   const enrichParts: string[] = [];
   if (enrichment?.comparables) enrichParts.push(`### Jämförpriser (sålda objekt i området)\n${enrichment.comparables}`);
+  if (enrichment?.comparablesStructured) {
+    enrichParts.push(
+      `### Jämförelseobjekt (strukturerad data — använd i comparisonObjects)\n${enrichment.comparablesStructured}`
+    );
+  }
   if (enrichment?.scbNote) enrichParts.push(`### Marknadskontext (SCB)\n${enrichment.scbNote}`);
   if (enrichment?.listingHtml) enrichParts.push(`### Hämtad annonsdata\n${enrichment.listingHtml}`);
 

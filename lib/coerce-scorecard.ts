@@ -154,6 +154,144 @@ function normalizeMaxBid(value: unknown): number | null {
   return n;
 }
 
+function normalizeBidIntervals(
+  value: unknown,
+  maxBidSuggestion: number | null,
+  bidStrategy: Scorecard["bidStrategy"]
+): Scorecard["bidIntervals"] {
+  const raw = isRecord(value) ? value : {};
+  const recommended =
+    normalizeMaxBid(raw.recommendedCeiling) ?? maxBidSuggestion;
+  const walkAwayFromText = bidStrategy.walkAwayPoint.match(/(\d[\d\s]{5,}|\d+[,.]?\d*)\s*(kr|mkr|Mkr)/i);
+  let walkAway = normalizeMaxBid(raw.walkAwayLevel);
+  if (!walkAway && walkAwayFromText) {
+    const rawNum = walkAwayFromText[1].replace(/\s/g, "").replace(",", ".");
+    const n = Number(rawNum);
+    if (Number.isFinite(n) && n > 0) {
+      walkAway = /mkr/i.test(walkAwayFromText[2]) || n < 500 ? Math.round(n * 1_000_000) : n;
+    }
+  }
+  if (!walkAway && recommended) walkAway = recommended + 150_000;
+
+  const fairLow = normalizeMaxBid(raw.fairValueLow);
+  const fairHigh = normalizeMaxBid(raw.fairValueHigh);
+  let stretch = normalizeMaxBid(raw.stretchLevel);
+  if (!stretch && recommended) stretch = recommended + 100_000;
+
+  const uncertaintyNote =
+    typeof raw.uncertaintyNote === "string" && raw.uncertaintyNote.trim()
+      ? raw.uncertaintyNote.trim()
+      : undefined;
+
+  return {
+    fairValueLow: fairLow,
+    fairValueHigh: fairHigh,
+    recommendedCeiling: recommended,
+    stretchLevel: stretch,
+    walkAwayLevel: walkAway,
+    uncertaintyNote,
+  };
+}
+
+function normalizePriceVerdict(value: unknown): Scorecard["priceAnalysis"]["verdict"] {
+  if (typeof value === "string") {
+    const v = value.trim();
+    if (v === "Rimligt" || v === "Pressat" || v === "Överprisat" || v === "Osäkert") return v;
+    if (/press/i.test(v)) return "Pressat";
+    if (/över/i.test(v)) return "Överprisat";
+    if (/osäker/i.test(v)) return "Osäkert";
+  }
+  return "Osäkert";
+}
+
+function normalizePriceAnalysis(value: unknown, bidIntervals: Scorecard["bidIntervals"]): Scorecard["priceAnalysis"] {
+  const raw = isRecord(value) ? value : {};
+  const field = (key: string, fallback: string) => {
+    const v = raw[key];
+    return typeof v === "string" && v.trim() ? v.trim() : fallback;
+  };
+
+  return {
+    askingPriceNote: field("askingPriceNote", "Utgångspris bedöms utifrån tillgängligt underlag."),
+    pricePerSqmNote: field("pricePerSqmNote", "Pris/kvm kräver jämförelse med liknande objekt i området."),
+    estimatedFairRangeLow: normalizeMaxBid(raw.estimatedFairRangeLow) ?? bidIntervals.fairValueLow,
+    estimatedFairRangeHigh: normalizeMaxBid(raw.estimatedFairRangeHigh) ?? bidIntervals.fairValueHigh,
+    areaComparison: field("areaComparison", "Jämförelse med området kräver mer underlag."),
+    comparableSummary:
+      typeof raw.comparableSummary === "string" && raw.comparableSummary.trim()
+        ? raw.comparableSummary.trim()
+        : undefined,
+    priorSalesNote:
+      typeof raw.priorSalesNote === "string" && raw.priorSalesNote.trim()
+        ? raw.priorSalesNote.trim()
+        : undefined,
+    verdict: normalizePriceVerdict(raw.verdict),
+    conclusion: field(
+      "conclusion",
+      "Prisbedömningen bygger på begränsat underlag — kräv jämförbara slutpriser innan du höjer."
+    ),
+    missingComparablesNote:
+      typeof raw.missingComparablesNote === "string" && raw.missingComparablesNote.trim()
+        ? raw.missingComparablesNote.trim()
+        : undefined,
+  };
+}
+
+function normalizeComparisonObjects(value: unknown): Scorecard["comparisonObjects"] {
+  if (!Array.isArray(value)) return [];
+  const result: Scorecard["comparisonObjects"] = [];
+  for (const item of value) {
+    if (!isRecord(item)) continue;
+    const address = typeof item.address === "string" ? item.address.trim() : "";
+    if (!address) continue;
+    const relevance =
+      item.relevance === "Hög" || item.relevance === "Medel" || item.relevance === "Låg"
+        ? item.relevance
+        : undefined;
+    result.push({
+      address,
+      soldDate: typeof item.soldDate === "string" ? item.soldDate.trim() : undefined,
+      sqm: item.sqm != null ? Number(item.sqm) || null : null,
+      soldPrice: normalizeMaxBid(item.soldPrice),
+      pricePerSqm: normalizeMaxBid(item.pricePerSqm),
+      relevance,
+      comment: typeof item.comment === "string" ? item.comment.trim() : undefined,
+      isSameAddress: item.isSameAddress === true,
+    });
+  }
+  return result;
+}
+
+function normalizeBidArguments(value: unknown, weaknesses: string[], strengths: string[]): Scorecard["bidArguments"] {
+  const raw = isRecord(value) ? value : {};
+  const holdBack = toStringArray(raw.holdBack);
+  const premiumJustification = toStringArray(raw.premiumJustification);
+
+  return {
+    holdBack:
+      holdBack.length > 0
+        ? holdBack
+        : weaknesses.slice(0, 4).length > 0
+          ? weaknesses.slice(0, 4)
+          : ["Underlaget räcker inte för att motivera högre bud utan mer data."],
+    premiumJustification:
+      premiumJustification.length > 0 ? premiumJustification : strengths.slice(0, 4),
+  };
+}
+
+function normalizeBudgetContext(value: unknown): Scorecard["budgetContext"] {
+  const raw = isRecord(value) ? value : {};
+  const budgetVsRecommendation =
+    typeof raw.budgetVsRecommendation === "string" && raw.budgetVsRecommendation.trim()
+      ? raw.budgetVsRecommendation.trim()
+      : "Analysens budtak bygger på objektdata och marknadsbedömning — inte enbart på angiven budget.";
+
+  return {
+    userMaxBudget: normalizeMaxBid(raw.userMaxBudget),
+    budgetVsRecommendation,
+  };
+}
+
 function normalizeBidStrategy(value: unknown): Scorecard["bidStrategy"] {
   const raw = isRecord(value) ? value : {};
   const field = (key: keyof Scorecard["bidStrategy"], fallback: string) => {
@@ -204,11 +342,26 @@ export function coerceScorecardInput(raw: unknown): unknown {
 
   const oneSentenceSummary = deriveOneSentenceSummary(raw.oneSentenceSummary, summary, strengths);
 
+  const maxBidSuggestion = normalizeMaxBid(raw.maxBidSuggestion);
+  const bidStrategy = normalizeBidStrategy(raw.bidStrategy);
+  const bidIntervals = normalizeBidIntervals(raw.bidIntervals, maxBidSuggestion, bidStrategy);
+  const syncedMaxBid = bidIntervals.recommendedCeiling ?? maxBidSuggestion;
+
   return {
     score: Math.min(100, Math.max(0, toInt(raw.score, 50))),
     recommendation: normalizeRecommendation(raw.recommendation),
     riskLevel: normalizeRiskLevel(raw.riskLevel),
-    maxBidSuggestion: normalizeMaxBid(raw.maxBidSuggestion),
+    maxBidSuggestion: syncedMaxBid,
+    bidIntervals: { ...bidIntervals, recommendedCeiling: syncedMaxBid },
+    priceAnalysis: normalizePriceAnalysis(raw.priceAnalysis, bidIntervals),
+    bidArguments: normalizeBidArguments(raw.bidArguments, weaknesses, strengths),
+    comparisonObjects: normalizeComparisonObjects(raw.comparisonObjects),
+    budgetContext: normalizeBudgetContext(raw.budgetContext),
+    associationRiskSummary:
+      typeof raw.associationRiskSummary === "string" && raw.associationRiskSummary.trim()
+        ? raw.associationRiskSummary.trim()
+        : weaknesses.find((w) => /förening|avgift|stambyte|skuld|tomträtt/i.test(w)) ??
+          "Granska föreningens ekonomi, skuldsättning och planerade underhållsåtgärder innan bud.",
     oneSentenceSummary,
     summary,
     strengths:

@@ -4,7 +4,7 @@ import { useState } from "react";
 import { scorecardPdfFilename } from "@/lib/export-scorecard";
 
 export function DownloadPdfButton({ title }: { title: string }) {
-  const [label, setLabel] = useState("Spara som PDF");
+  const [label, setLabel] = useState("Ladda ner PDF");
 
   function handlePrint() {
     const originalTitle = document.title;
@@ -12,7 +12,7 @@ export function DownloadPdfButton({ title }: { title: string }) {
     window.print();
     document.title = originalTitle;
     setLabel("Välj Spara som PDF i dialogen");
-    setTimeout(() => setLabel("Spara som PDF"), 3000);
+    setTimeout(() => setLabel("Ladda ner PDF"), 3000);
   }
 
   return (

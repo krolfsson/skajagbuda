@@ -40,7 +40,7 @@ async function requestScorecard(messages: AiMessage[]): Promise<Scorecard> {
     rawResponse = await createCompletion({
       messages,
       temperature: 0.2,
-      maxTokens: 6000,
+      maxTokens: 8000,
       jsonMode: true,
     });
   } catch (err) {
@@ -122,7 +122,7 @@ export async function runPropertyAnalysis(
         {
           role: "user",
           content:
-            "Ditt förra svar kunde inte valideras. Returnera ENDAST ett komplett JSON-objekt med exakt den schema-struktur som beskrivs i systemprompten. Alla fält måste finnas. score och categoryScores ska vara heltal 0–100. recommendation måste vara exakt en av: Buda inte, Buda försiktigt, Buda, Starkt case. riskLevel måste vara exakt en av: Låg, Medel, Hög, Mycket hög. strengths måste ha minst ett element.",
+            "Ditt förra svar kunde inte valideras. Returnera ENDAST ett komplett JSON-objekt med exakt den schema-struktur som beskrivs i systemprompten. Alla fält måste finnas inklusive bidIntervals, priceAnalysis, bidArguments, comparisonObjects, budgetContext och associationRiskSummary. score och categoryScores ska vara heltal 0–100. recommendation måste vara exakt en av: Buda inte, Buda försiktigt, Buda, Starkt case. riskLevel måste vara exakt en av: Låg, Medel, Hög, Mycket hög. strengths måste ha minst ett element. maxBidSuggestion får ALDRIG automatiskt spegla användarens maxbudget.",
         },
       ]);
     } catch (retryErr) {
@@ -139,6 +139,16 @@ export async function runPropertyAnalysis(
   }
 
   scorecard = normalizeScorecardRisk(scorecard);
+
+  if (analysis.userMaxBudget) {
+    scorecard = {
+      ...scorecard,
+      budgetContext: {
+        ...scorecard.budgetContext,
+        userMaxBudget: analysis.userMaxBudget,
+      },
+    };
+  }
 
   const updated = await prisma.propertyAnalysis.update({
     where: { id: analysis.id },

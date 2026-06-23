@@ -15,7 +15,7 @@ export function LandingExampleReport() {
           </p>
         </header>
 
-        <div className="home-example-report-wrap">
+        <div className="analysis-report-shell analysis-report-shell--full home-example-report-wrap">
           <AnalysisPreview />
         </div>
       </div>
