@@ -4,6 +4,7 @@ import { getGuidesBySlugs } from "@/lib/content/guides";
 import { getToolBySlug } from "@/lib/content/tools";
 import type { GuideCalloutType, GuideWithMeta } from "@/lib/content/types";
 import { GuideCtaButton } from "@/components/GuideCtaButton";
+import { GuideQuickAnswer, GuideInternalLinks } from "@/components/guides/GuideSeoBlocks";
 import { GuideCalloutBox, normalizeGuideCallout } from "@/components/guides/GuideCalloutBox";
 import { GuideInlineCta, GuideSectionCta } from "@/components/guides/GuideInlineCta";
 
@@ -19,8 +20,6 @@ export function GuideLayout({ guide }: { guide: GuideWithMeta }) {
   const relatedTools = (guide.relatedToolSlugs ?? [])
     .map((s) => getToolBySlug(s))
     .filter(Boolean);
-  const showEarlyCtaAfterFirstSection = guide.sections.length > 1;
-  let shownSectionCta = false;
 
   const articleJsonLd = {
     "@context": "https://schema.org",
@@ -83,7 +82,15 @@ export function GuideLayout({ guide }: { guide: GuideWithMeta }) {
         <p className="guide-lead">{guide.intro}</p>
       </div>
 
-      {!showEarlyCtaAfterFirstSection && <GuideInlineCta compact />}
+      {guide.quickAnswer && guide.quickAnswer.length > 0 && (
+        <GuideQuickAnswer items={guide.quickAnswer} />
+      )}
+
+      <GuideInlineCta compact />
+
+      {guide.internalLinks && guide.internalLinks.length > 0 && (
+        <GuideInternalLinks links={guide.internalLinks} />
+      )}
 
       {guide.sections.length > 1 && (
         <nav className="guide-toc" aria-label="Innehåll">
@@ -107,8 +114,7 @@ export function GuideLayout({ guide }: { guide: GuideWithMeta }) {
       {guide.sections.map((section, index) => {
         const callout = section.callout ? normalizeGuideCallout(section.callout) : null;
         const showSectionCta =
-          !shownSectionCta && callout !== null && INLINE_CALLOUT_TYPES.has(callout.type);
-        if (showSectionCta) shownSectionCta = true;
+          callout !== null && INLINE_CALLOUT_TYPES.has(callout.type);
 
         return (
           <section key={section.id} id={sectionId(index, section.id)} className="guide-section">
@@ -125,7 +131,6 @@ export function GuideLayout({ guide }: { guide: GuideWithMeta }) {
             )}
             {section.callout && <GuideCalloutBox callout={section.callout} />}
             {showSectionCta && <GuideSectionCta />}
-            {index === 0 && showEarlyCtaAfterFirstSection && <GuideInlineCta compact />}
           </section>
         );
       })}

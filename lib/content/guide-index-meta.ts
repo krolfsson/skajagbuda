@@ -20,13 +20,13 @@ export const GUIDE_INDEX_FIELDS: Record<string, GuideIndexFields> = {
     category: "Budgivning",
     icon: "bid",
     indexDescription:
-      "Utgångspriset är en strategi, inte ett facit. Så tänker du kring överbud.",
+      "Hur mycket ska man buda över utgångspris? Slutpriser i området styr — inte tumregler.",
   },
   "vad-ar-rimligt-maxbud": {
-    category: "Ekonomi",
-    icon: "economy",
+    category: "Pris",
+    icon: "price",
     indexDescription:
-      "Sätt ett maxbud utifrån kostnad, risk och jämförelsepriser – inte känsla.",
+      "Rimligt maxbud för bostadsrätt — utifrån slutpriser, BRF-risk och boendekostnad.",
   },
   "budstrategi-bostadsratt": {
     category: "Budgivning",
@@ -45,7 +45,7 @@ export const GUIDE_INDEX_FIELDS: Record<string, GuideIndexFields> = {
     category: "BRF",
     icon: "brf",
     indexDescription:
-      "Vad du ska leta efter i årsredovisningen innan du budar.",
+      "Analysera BRF-årsredovisning: skuld/kvm, avgift, kassa och underhåll.",
   },
   "vad-ar-hog-skuld-per-kvm-brf": {
     category: "BRF",
@@ -58,7 +58,7 @@ export const GUIDE_INDEX_FIELDS: Record<string, GuideIndexFields> = {
     category: "Risk",
     icon: "risk",
     indexDescription:
-      "Hur stambyte påverkar avgift, risk och vad du ska fråga om innan bud.",
+      "Stambyte i bostadsrätt — risk, kostnad och vad du ska fråga om innan bud.",
   },
   "avgiftshojning-brf": {
     category: "BRF",
@@ -118,7 +118,7 @@ export const GUIDE_INDEX_FIELDS: Record<string, GuideIndexFields> = {
     category: "Risk",
     icon: "risk",
     indexDescription:
-      "Tomträtt, avgäld och varför det kan påverka avgiften framåt.",
+      "Tomträtt i bostadsrätt — avgäld, omförhandling och risk för höjd avgift.",
   },
   "besiktning-bostadsratt": {
     category: "Checklista",
@@ -130,7 +130,7 @@ export const GUIDE_INDEX_FIELDS: Record<string, GuideIndexFields> = {
     category: "Checklista",
     icon: "checklist",
     indexDescription:
-      "Snabb checklista innan du lägger bud – pris, förening, kostnad och risk.",
+      "Vad ska man kolla innan budgivning? Checklista för pris, BRF och maxbud.",
   },
 };
 

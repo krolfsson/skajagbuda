@@ -2,6 +2,7 @@ import type { MetadataRoute } from "next";
 import { SITE_URL } from "@/lib/brand";
 import { STATIC_INDEXABLE_PATHS } from "@/lib/seo";
 import { getAllGuideSlugs } from "@/lib/content/guides";
+import { PRIORITY_GUIDE_SLUGS } from "@/lib/content/guide-seo";
 import { getAllToolSlugs } from "@/lib/content/tools";
 import { getAllGlossarySlugs } from "@/lib/content/glossary";
 
@@ -35,7 +36,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     url: `${SITE_URL}/guider/${slug}`,
     lastModified: now,
     changeFrequency: "monthly" as const,
-    priority: 0.8,
+    priority: (PRIORITY_GUIDE_SLUGS as readonly string[]).includes(slug) ? 0.85 : 0.8,
   }));
 
   const tools = getAllToolSlugs().map((slug) => ({

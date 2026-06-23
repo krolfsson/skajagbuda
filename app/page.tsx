@@ -60,12 +60,36 @@ const REPORT_ITEMS = [
 ];
 
 const TOPICS = [
-  { title: "Att tänka på inför bud", desc: "Komplett genomgång av risk, förening och strategi.", href: "/att-tanka-pa" },
-  { title: "Sätt en budstrategi", desc: "Öppningsbud, nästa steg och walk-away.", href: "/guider/budstrategi-bostadsratt" },
-  { title: "Räkna rimligt maxbud", desc: "Sätt en gräns innan budgivningen.", href: "/guider/vad-ar-rimligt-maxbud" },
-  { title: "Granska BRF-årsredovisning", desc: "Se vad du ska kontrollera innan köp.", href: "/guider/analysera-brf-arsredovisning" },
-  { title: "Förstå stambyte", desc: "Risk, kostnad eller möjlighet i föreningen.", href: "/guider/stambyte-bostadsratt-risk" },
-  { title: "Ordlista", desc: "Förklaringar av vanliga begrepp.", href: "/ordlista" },
+  {
+    title: "Ska jag buda på bostadsrätt?",
+    desc: "Snabb kontroll av pris, BRF och risk innan första budet.",
+    href: "/guider/ska-jag-buda-pa-bostadsratt",
+  },
+  {
+    title: "Rimligt maxbud för bostadsrätt",
+    desc: "Sätt en gräns utifrån slutpriser — inte utgångspris.",
+    href: "/guider/vad-ar-rimligt-maxbud",
+  },
+  {
+    title: "Hög skuld per kvm i BRF",
+    desc: "Tolka skulden och vad som är riskabelt.",
+    href: "/guider/vad-ar-hog-skuld-per-kvm-brf",
+  },
+  {
+    title: "Frågor att ställa mäklaren",
+    desc: "Konkreta frågor innan budgivningen.",
+    href: "/guider/vad-ska-man-fraga-maklaren-innan-bud",
+  },
+  {
+    title: "Stambyte i bostadsrätt",
+    desc: "Risk, kostnad och vad du bör fråga om.",
+    href: "/guider/stambyte-bostadsratt-risk",
+  },
+  {
+    title: "Vad ska man kolla innan bud?",
+    desc: "Checklista för pris, förening och maxbud.",
+    href: "/guider/checklista-innan-budgivning",
+  },
 ];
 
 export default function HomePage() {

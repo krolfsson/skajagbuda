@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { CTA_START_ANALYSIS, CTA_START_ANALYSIS_ARROW } from "@/lib/brand";
+import { CTA_START_ANALYSIS_ARROW } from "@/lib/brand";
 import { GuideCtaButton } from "@/components/GuideCtaButton";
 
 export function GuideInlineCta({ compact = false }: { compact?: boolean }) {
@@ -11,7 +11,7 @@ export function GuideInlineCta({ compact = false }: { compact?: boolean }) {
         pris, förening och risk.
       </p>
       <div className="guide-cta-actions">
-        <GuideCtaButton href="/new" event="guide_cta_click" label={CTA_START_ANALYSIS} primary />
+        <GuideCtaButton href="/new" event="guide_cta_click" label={CTA_START_ANALYSIS_ARROW} primary />
         <Link href="/exempel" className="guide-cta-secondary">
           Se exempelanalys
         </Link>
@@ -28,7 +28,7 @@ export function GuideIndexCta() {
         Klistra in objektlänken och få en preliminär risknivå gratis innan du budar.
       </p>
       <div className="guide-cta-actions">
-        <GuideCtaButton href="/new" event="guide_cta_click" label={CTA_START_ANALYSIS} primary />
+        <GuideCtaButton href="/new" event="guide_cta_click" label={CTA_START_ANALYSIS_ARROW} primary />
         <Link href="/exempel" className="guide-cta-secondary">
           Se exempelanalys
         </Link>

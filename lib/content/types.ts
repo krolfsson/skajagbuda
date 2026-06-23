@@ -33,12 +33,18 @@ export type ContentSection = {
 
 export type FaqItem = { q: string; a: string };
 
+export type GuideInternalLink = { href: string; anchor: string };
+
 export type Guide = {
   slug: string;
   title: string;
   metaTitle: string;
   metaDescription: string;
   intro: string;
+  /** Short answer box shown after intro on priority guides. */
+  quickAnswer?: string[];
+  /** SEO internal links with explicit anchor text. */
+  internalLinks?: GuideInternalLink[];
   sections: ContentSection[];
   faq?: FaqItem[];
   relatedSlugs: string[];

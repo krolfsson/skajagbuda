@@ -1,8 +1,10 @@
 import type { Guide, GuideWithMeta } from "./types";
 import { getGuideIndexFields } from "./guide-index-meta";
+import { applyGuideSeo } from "./guide-seo";
 
 function enrichGuide(guide: Guide): GuideWithMeta {
-  return { ...guide, ...getGuideIndexFields(guide.slug) };
+  const withSeo = applyGuideSeo(guide);
+  return { ...withSeo, ...getGuideIndexFields(withSeo.slug) };
 }
 
 export const GUIDES: Guide[] = [
