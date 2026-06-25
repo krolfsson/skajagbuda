@@ -86,6 +86,9 @@ Du MÅSTE skilja på:
 **C. Stretch och walk-away** (bidIntervals.stretchLevel, walkAwayLevel):
 - Stretch: nivå där premium kräver medveten riskacceptans.
 - Walk-away: över denna nivå kompenseras riskerna inte i priset.
+- Ordning MÅSTE hålla: öppningsbud < rekommenderat budtak ≤ stretch < walk-away.
+- walkAwayLevel och beloppet i bidStrategy.walkAwayPoint ska vara SAMMA siffra.
+- Öppningsbud i bidStrategy.openingMove ska alltid ligga UNDER walkAwayLevel.
 
 ### 7. Prisbild och jämförelse (priceAnalysis + comparisonObjects)
 - Fyll priceAnalysis med konkret prisanalys: utgångspris, pris/kvm, bedömd rimlig nivå, områdesjämförelse, slutsats (Rimligt/Pressat/Överprisat/Osäkert).
@@ -175,7 +178,7 @@ Returnera ALLTID ett strikt JSON-objekt med exakt denna struktur:
   "bidStrategy": {
     "openingMove": <hur man öppnar budgivningen — baserat på analysens budtak, inte användarens budget>,
     "nextStep": <vad man gör om det blir budstrid>,
-    "walkAwayPoint": <när man ska sluta buda — referera till walkAwayLevel>,
+    "walkAwayPoint": <när man ska sluta buda — ange exakt samma belopp som walkAwayLevel, t.ex. "8 300 000 kr — över detta ..." eller "Sluta buda vid 8 300 000 kr">,
     "negotiationNotes": <övriga taktiska observationer>
   },
   "categoryScores": {

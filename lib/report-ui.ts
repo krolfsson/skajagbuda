@@ -260,17 +260,6 @@ export function deriveWalkAwayAmount(sc: Scorecard): string | null {
   const walkAway = sc.bidIntervals.walkAwayLevel;
   if (walkAway) return fmtMoney(normalizeBid(walkAway));
 
-  const text = sc.bidStrategy.walkAwayPoint;
-  const match = text.match(/(\d[\d\s]{5,}|\d+[,.]?\d*)\s*(kr|mkr|Mkr)/i);
-  if (match) {
-    const raw = match[1].replace(/\s/g, "").replace(",", ".");
-    const n = Number(raw);
-    if (Number.isFinite(n) && n > 0) {
-      if (/mkr/i.test(match[2]) || n < 500) return fmtMoney(normalizeBid(n));
-      return fmtMoney(n);
-    }
-  }
-
   const ceiling = sc.bidIntervals.recommendedCeiling ?? sc.maxBidSuggestion;
   if (ceiling) return fmtMoney(normalizeBid(ceiling));
   return null;

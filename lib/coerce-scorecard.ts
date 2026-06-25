@@ -1,3 +1,4 @@
+import { alignBidConsistency, parseWalkAwayFromText } from "@/lib/bid-consistency";
 import type { Scorecard } from "@/lib/schemas";
 
 const RECOMMENDATIONS = ["Buda inte", "Buda försiktigt", "Buda", "Starkt case"] as const;
@@ -162,14 +163,10 @@ function normalizeBidIntervals(
   const raw = isRecord(value) ? value : {};
   const recommended =
     normalizeMaxBid(raw.recommendedCeiling) ?? maxBidSuggestion;
-  const walkAwayFromText = bidStrategy.walkAwayPoint.match(/(\d[\d\s]{5,}|\d+[,.]?\d*)\s*(kr|mkr|Mkr)/i);
+  const walkAwayFromText = parseWalkAwayFromText(bidStrategy.walkAwayPoint);
   let walkAway = normalizeMaxBid(raw.walkAwayLevel);
   if (!walkAway && walkAwayFromText) {
-    const rawNum = walkAwayFromText[1].replace(/\s/g, "").replace(",", ".");
-    const n = Number(rawNum);
-    if (Number.isFinite(n) && n > 0) {
-      walkAway = /mkr/i.test(walkAwayFromText[2]) || n < 500 ? Math.round(n * 1_000_000) : n;
-    }
+    walkAway = walkAwayFromText;
   }
   if (!walkAway && recommended) walkAway = recommended + 150_000;
 
@@ -346,13 +343,17 @@ export function coerceScorecardInput(raw: unknown): unknown {
   const bidStrategy = normalizeBidStrategy(raw.bidStrategy);
   const bidIntervals = normalizeBidIntervals(raw.bidIntervals, maxBidSuggestion, bidStrategy);
   const syncedMaxBid = bidIntervals.recommendedCeiling ?? maxBidSuggestion;
+  const aligned = alignBidConsistency(bidStrategy, {
+    ...bidIntervals,
+    recommendedCeiling: syncedMaxBid,
+  });
 
   return {
     score: Math.min(100, Math.max(0, toInt(raw.score, 50))),
     recommendation: normalizeRecommendation(raw.recommendation),
     riskLevel: normalizeRiskLevel(raw.riskLevel),
     maxBidSuggestion: syncedMaxBid,
-    bidIntervals: { ...bidIntervals, recommendedCeiling: syncedMaxBid },
+    bidIntervals: aligned.bidIntervals,
     priceAnalysis: normalizePriceAnalysis(raw.priceAnalysis, bidIntervals),
     bidArguments: normalizeBidArguments(raw.bidArguments, weaknesses, strengths),
     comparisonObjects: normalizeComparisonObjects(raw.comparisonObjects),
@@ -379,7 +380,7 @@ export function coerceScorecardInput(raw: unknown): unknown {
             "Är stambyte eller större renoveringar planerade?",
             "Hur ser föreningens skuldsättning och avgiftsutveckling ut?",
           ],
-    bidStrategy: normalizeBidStrategy(raw.bidStrategy),
+    bidStrategy: aligned.bidStrategy,
     categoryScores: normalizeCategoryScores(raw.categoryScores),
     disclaimer:
       typeof raw.disclaimer === "string" && raw.disclaimer.trim()
