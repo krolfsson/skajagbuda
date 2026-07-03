@@ -947,9 +947,21 @@ input[type="number"]::-webkit-outer-spin-button {
 }
 
 .testimonial-strip__author {
+  display: inline;
   font-style: normal;
   font-family: var(--font-sans);
   color: var(--muted-light);
+}
+
+@media (min-width: 769px) {
+  .testimonial-strip__quote p {
+    display: inline;
+  }
+
+  .testimonial-strip__author {
+    display: inline;
+    margin-left: 0.2em;
+  }
 }
 
 .testimonial-strip--hero {
@@ -965,6 +977,11 @@ input[type="number"]::-webkit-outer-spin-button {
 @media (max-width: 768px) {
   .testimonial-strip__quote {
     font-size: 12.5px;
+  }
+
+  .testimonial-strip__author {
+    display: block;
+    margin-top: 6px;
   }
 
   .testimonial-strip--hero {

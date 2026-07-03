@@ -18,8 +18,8 @@ export function TestimonialStrip({ className }: TestimonialStripProps) {
       <blockquote className="testimonial-strip__quote">
         <p>
           <em>&ldquo;{quote}&rdquo;</em>
-          <span className="testimonial-strip__author"> — {author}</span>
         </p>
+        <cite className="testimonial-strip__author">— {author}</cite>
       </blockquote>
     </figure>
   );
