@@ -956,22 +956,9 @@ input[type="number"]::-webkit-outer-spin-button {
   margin: 18px 0 20px;
 }
 
-.testimonial-strip--hero-secondary {
-  margin: 4px 0 18px;
-}
-
-.testimonial-strip--bottom-cta {
-  margin: 0 0 20px;
-  max-width: 34rem;
-}
-
 @media (min-width: 960px) {
   .home-hero--polish .testimonial-strip--hero {
     margin: 22px 0 24px;
-  }
-
-  .home-hero--polish .testimonial-strip--hero-secondary {
-    margin: 6px 0 20px;
   }
 }
 
@@ -982,10 +969,6 @@ input[type="number"]::-webkit-outer-spin-button {
 
   .testimonial-strip--hero {
     margin: 16px 0 18px;
-  }
-
-  .testimonial-strip--bottom-cta {
-    margin: 0 0 18px;
   }
 }
 

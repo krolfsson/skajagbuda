@@ -64,7 +64,7 @@ export function HomeHeroForm({ id, variant = "full" }: { id?: string; variant?: 
         </ul>
       )}
 
-      {variant === "full" && <TestimonialStrip index={0} className="testimonial-strip--hero" />}
+      {variant === "full" && <TestimonialStrip className="testimonial-strip--hero" />}
 
       {variant === "full" && (
         <a
@@ -76,8 +76,6 @@ export function HomeHeroForm({ id, variant = "full" }: { id?: string; variant?: 
           Se exempelanalys
         </a>
       )}
-
-      {variant === "full" && <TestimonialStrip index={1} className="testimonial-strip--hero-secondary" />}
 
       {variant === "compact" && (
         <p className="home-hero-beta-line">Gratis under beta · Ingen inloggning · Tar cirka 1 minut</p>

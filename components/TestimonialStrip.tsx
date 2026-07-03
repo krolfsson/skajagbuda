@@ -1,13 +1,11 @@
-import { pickTestimonial } from "@/lib/testimonials";
+import { HOME_TESTIMONIAL } from "@/lib/testimonials";
 
 type TestimonialStripProps = {
-  /** Vilket citat som visas (0–2). Olika index på olika platser ger variation utan slump. */
-  index?: number;
   className?: string;
 };
 
-export function TestimonialStrip({ index = 0, className }: TestimonialStripProps) {
-  const { quote, author } = pickTestimonial(index);
+export function TestimonialStrip({ className }: TestimonialStripProps) {
+  const { quote, author } = HOME_TESTIMONIAL;
 
   return (
     <figure
