@@ -52,6 +52,7 @@ export default async function ResultPage({
         aiRawJson: scorecard as object,
         aiRiskLevel: scorecard.riskLevel,
         freeRiskLevel: scorecard.riskLevel,
+        aiMaxBidSuggestion: scorecard.maxBidSuggestion,
       },
     });
   }

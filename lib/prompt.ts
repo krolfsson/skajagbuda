@@ -74,18 +74,19 @@ Använd dessa riktvärden och referera till dem med siffror:
 Du MÅSTE skilja på:
 
 **A. Marknadsvärde / rimligt värde** (bidIntervals.fairValueLow–fairValueHigh + priceAnalysis):
-- Bedöm utifrån utgångspris, pris/kvm, område, storlek, våning, skick, balkong/hiss/eldstad, avgift, förenings ekonomi, renoveringsrisk, jämförelseobjekt och tidigare försäljningar.
-- Ange intervall i hela kronor. Vid osäker data: bredare intervall + uncertaintyNote.
+- Utgångspriset är primär ankare. Rimligt värde ska normalt ligga inom cirka ±3–7 % runt bedömt värde — inte ±15–20 %.
+- Vid osäkert underlag: håll spannet smalt kring utgångspris/bedömt värde och lyft osäkerheten i uncertaintyLevel + uncertaintyNote — inte genom ett enormt prisspann.
+- Exempel utgångspris 6 000 000 kr utan stark rabattmotivering: rimligt värde cirka 5 820 000–6 180 000 kr — INTE 5 000 000–6 000 000 kr.
+- Om utgångspriset bedöms högt: "Utgångspriset ligger högt. Rimligt värde bedöms till cirka 5,75–6,0 Mkr" — inte ett brett 5,0–6,0 Mkr-spann.
 
 **B. Rekommenderat budtak** (maxBidSuggestion + bidIntervals.recommendedCeiling):
-- Vad köparen rationellt bör kunna gå till givet marknadsvärde, risker, budläge, föreningsrisk, osäkerheter, kvaliteter och likviditet.
-- Räkna själv: utgå från jämförbart pris/kvm × boyta, justera ned för skuld, stambyte, avgiftshöjning, saknad data.
-- Avrunda till närmaste 25 000 kr. Sätt null BARA om data helt saknas.
-- ALDRIG sätta detta lika med användarens maxbudget utan oberoende motivering.
+- Ett specifikt belopp (hela kronor, avrundat till 25 000 kr) — INTE samma breda spann som rimligt värde.
+- Det högsta försvarbara budet givet marknadsvärde, risker, budläge och osäkerheter.
+- Exempel vid utgångspris 6 000 000 kr och begränsat underlag: rekommenderat budtak 6 000 000 kr (inte 5 000 000–6 000 000 kr).
 
 **C. Stretch och walk-away** (bidIntervals.stretchLevel, walkAwayLevel):
-- Stretch: nivå där premium kräver medveten riskacceptans.
-- Walk-away: över denna nivå kompenseras riskerna inte i priset.
+- Stretch: smal premium över budtak (t.ex. +100 000 kr) endast om ny information stärker caset.
+- Walk-away: tydlig stop-nivå (t.ex. budtak +200 000 kr) — inte samma spann som rimligt värde.
 - Ordning MÅSTE hålla: öppningsbud < rekommenderat budtak ≤ stretch < walk-away.
 - walkAwayLevel och beloppet i bidStrategy.walkAwayPoint ska vara SAMMA siffra.
 - Öppningsbud i bidStrategy.openingMove ska alltid ligga UNDER walkAwayLevel.

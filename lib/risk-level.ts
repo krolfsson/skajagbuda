@@ -1,6 +1,7 @@
 import type { Scorecard } from "@/lib/schemas";
 import { ScorecardSchema } from "@/lib/schemas";
 import { coerceScorecardInput } from "@/lib/coerce-scorecard";
+import { bidIntervalsDiffer, normalizeScorecardBidIntervals } from "@/lib/normalize-bid-intervals";
 
 export const RISK_LEVELS = ["Låg", "Medel", "Hög", "Mycket hög"] as const;
 export type RiskLevel = (typeof RISK_LEVELS)[number];
@@ -185,6 +186,7 @@ export function normalizeScorecardRisk(scorecard: Scorecard): Scorecard {
 
 export function resolveScorecardForAnalysis(analysis: {
   aiRawJson: unknown;
+  askingPrice?: number | null;
 }): Scorecard | null {
   if (analysis.aiRawJson == null || typeof analysis.aiRawJson !== "object") {
     return null;
@@ -194,13 +196,18 @@ export function resolveScorecardForAnalysis(analysis: {
   if (!parsed.success) {
     const fallback = ScorecardSchema.safeParse(analysis.aiRawJson);
     if (!fallback.success) return null;
-    return normalizeScorecardRisk(fallback.data);
+    return normalizeScorecardBidIntervals(normalizeScorecardRisk(fallback.data), {
+      askingPrice: analysis.askingPrice ?? null,
+    });
   }
-  return normalizeScorecardRisk(parsed.data);
+  return normalizeScorecardBidIntervals(normalizeScorecardRisk(parsed.data), {
+    askingPrice: analysis.askingPrice ?? null,
+  });
 }
 
 export function scorecardNeedsRiskSync(analysis: {
   aiRawJson: unknown;
+  askingPrice?: number | null;
 }): boolean {
   const normalized = resolveScorecardForAnalysis(analysis);
   if (!normalized || analysis.aiRawJson == null || typeof analysis.aiRawJson !== "object") {
@@ -210,7 +217,9 @@ export function scorecardNeedsRiskSync(analysis: {
   return (
     raw.riskLevel !== normalized.riskLevel ||
     raw.uncertaintyLevel !== normalized.uncertaintyLevel ||
-    raw.redFlags.length !== normalized.redFlags.length
+    raw.redFlags.length !== normalized.redFlags.length ||
+    raw.maxBidSuggestion !== normalized.maxBidSuggestion ||
+    bidIntervalsDiffer(raw.bidIntervals, normalized.bidIntervals)
   );
 }
 

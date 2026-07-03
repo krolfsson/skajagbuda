@@ -6,6 +6,7 @@ import { buildUserPrompt, SYSTEM_PROMPT } from "@/lib/prompt";
 import { ScorecardSchema, type Scorecard } from "@/lib/schemas";
 import { fetchEnrichmentForAnalysis } from "@/lib/fetch-enrichment";
 import { normalizeScorecardRisk } from "@/lib/risk-level";
+import { normalizeScorecardBidIntervals } from "@/lib/normalize-bid-intervals";
 import type { AiMessage } from "@/lib/ai";
 
 function tryParseJson(raw: string): unknown {
@@ -139,6 +140,9 @@ export async function runPropertyAnalysis(
   }
 
   scorecard = normalizeScorecardRisk(scorecard);
+  scorecard = normalizeScorecardBidIntervals(scorecard, {
+    askingPrice: analysis.askingPrice,
+  });
 
   if (analysis.userMaxBudget) {
     scorecard = {

@@ -193,8 +193,6 @@ export function FullAnalysisReport({
   const ceiling = intervals.recommendedCeiling ?? sc.maxBidSuggestion;
   const stretch = intervals.stretchLevel;
   const walkAway = intervals.walkAwayLevel;
-  const ceilingLow = fairLow ?? (ceiling ? ceiling - 250_000 : null);
-  const ceilingHigh = ceiling ?? stretch ?? fairHigh;
 
   const conclusion = conclusionLine ?? deriveConclusionBox(sc);
   const nextSteps = deriveNextSteps(sc);
@@ -289,13 +287,14 @@ export function FullAnalysisReport({
                   <div className="far-bid-card far-bid-card--primary">
                     <p className="far-bid-card__label">Rekommenderat budtak</p>
                     <p className="far-bid-card__value">
-                      {ceilingLow && ceilingHigh
-                        ? `${fmtMoney(normalizeBid(ceilingLow))} – ${fmtMoney(normalizeBid(ceilingHigh))}`
-                        : ceiling
-                          ? fmtMoney(normalizeBid(ceiling))
-                          : "–"}
+                      {ceiling ? fmtMoney(normalizeBid(ceiling)) : "–"}
                     </p>
-                    <p className="far-bid-card__sub">{fmtPricePerSqmRange(ceilingLow, ceilingHigh, sqm)}</p>
+                    <p className="far-bid-card__sub">{fmtPricePerSqm(ceiling, sqm)}</p>
+                    {stretch && ceiling && stretch > ceiling && (
+                      <p className="far-bid-card__sub far-bid-card__sub--hint">
+                        Stretch: {fmtMoney(normalizeBid(stretch))} om caset stärks
+                      </p>
+                    )}
                   </div>
 
                   <div className="far-bid-card">
@@ -322,10 +321,15 @@ export function FullAnalysisReport({
                 />
 
                 <p className="far-bid-footnote">
-                  Intervallet baseras på jämförelser, föreningens ekonomi och marknadsläget just nu.
+                  Rimligt värde är marknadsbedömningen. Rekommenderat budtak är det högsta försvarbara — inte samma spann.
                 </p>
                 {budget && <p className="far-budget-note">{budgetNote}</p>}
-                {intervals.uncertaintyNote && (
+                {sc.uncertaintyLevel && sc.uncertaintyLevel !== "Låg" && (
+                  <p className="far-bid-uncertainty">
+                    <strong>Osäkerhet i underlaget:</strong> {uncertaintyNote}
+                  </p>
+                )}
+                {intervals.uncertaintyNote && sc.uncertaintyLevel === "Låg" && (
                   <p className="far-bid-uncertainty">{intervals.uncertaintyNote}</p>
                 )}
               </FarCard>
