@@ -2,6 +2,7 @@ import Link from "next/link";
 import { LandingExampleReport } from "@/components/LandingExampleReport";
 import { HomeAnalytics } from "@/components/HomeAnalytics";
 import { HomeHeroForm } from "@/components/HomeHeroForm";
+import { HomeHeroIllustration } from "@/components/HomeHeroIllustration";
 import { BETA_TRUST_EXTENDED } from "@/lib/brand";
 
 const ANSWER_ITEMS = [
@@ -77,18 +78,32 @@ export default function HomePage() {
     <div className="home-page">
       <HomeAnalytics />
 
-      <section className="home-hero home-hero--solo home-hero--editorial">
-        <div className="home-hero-copy">
-          <p className="home-eyebrow">Beslutsstöd inför budgivning</p>
-          <h1 className="home-h1">Osäker på om du ska buda?</h1>
-          <p className="home-lead">
-            Klistra in objektlänken och få en genomgång av pris, förening, risker och rimligt
-            budintervall — innan du höjer.
-          </p>
-          <p className="home-human-note">
-            Byggd efter en ganska jobbig bostadsresa. Gratis under beta — vi lär oss av feedback.
-          </p>
-          <HomeHeroForm id="hero-analys" />
+      <section className="home-hero home-hero--editorial home-hero--polish">
+        <div className="home-hero-inner">
+          <div className="home-hero-copy">
+            <p className="home-hero-badge">
+              <HeroBadgeIcon />
+              Beslutsstöd inför budgivning
+            </p>
+            <h1 className="home-h1">
+              Osäker på om du ska <span className="home-h1-accent">buda?</span>
+            </h1>
+            <p className="home-lead">
+              Klistra in objektlänken och få en genomgång av pris, förening, risker och rimligt
+              budintervall — innan du höjer.
+            </p>
+            <div className="home-hero-callout">
+              <HeroSparkIcon />
+              <p>
+                Byggd efter en ganska jobbig bostadsresa.{" "}
+                <strong>Gratis under beta</strong> — vi lär oss av feedback.
+              </p>
+            </div>
+            <HomeHeroForm id="hero-analys" />
+          </div>
+          <div className="home-hero-visual" aria-hidden="true">
+            <HomeHeroIllustration />
+          </div>
         </div>
       </section>
 
@@ -181,5 +196,32 @@ export default function HomePage() {
         </div>
       </section>
     </div>
+  );
+}
+
+function HeroBadgeIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path
+        d="M12 3 5 6v5c0 4.4 3 8 7 9 4-1 7-4.6 7-9V6z"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinejoin="round"
+      />
+      <path d="m9 12 2 2 4-4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function HeroSparkIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path
+        d="M12 3l1.4 4.6L18 9l-4.6 1.4L12 15l-1.4-4.6L6 9l4.6-1.4L12 3z"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinejoin="round"
+      />
+    </svg>
   );
 }

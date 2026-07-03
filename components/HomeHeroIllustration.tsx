@@ -1,0 +1,133 @@
+/** Dekorativ linjeillustration — desktop hero, dold på mobil. */
+export function HomeHeroIllustration() {
+  return (
+    <div className="home-hero-visual-art">
+      <div className="home-hero-visual-blob home-hero-visual-blob--1" />
+      <div className="home-hero-visual-blob home-hero-visual-blob--2" />
+      <svg
+        className="home-hero-visual-svg"
+        viewBox="0 0 420 480"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        aria-hidden="true"
+      >
+        <path
+          d="M72 420V180l138-72 138 72v240"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M210 108v312M72 420h276"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+        />
+        <rect
+          x="98"
+          y="228"
+          width="52"
+          height="36"
+          rx="2"
+          stroke="currentColor"
+          strokeWidth="1.3"
+        />
+        <rect
+          x="98"
+          y="288"
+          width="52"
+          height="36"
+          rx="2"
+          stroke="currentColor"
+          strokeWidth="1.3"
+        />
+        <rect
+          x="98"
+          y="348"
+          width="52"
+          height="36"
+          rx="2"
+          stroke="currentColor"
+          strokeWidth="1.3"
+        />
+        <rect
+          x="184"
+          y="228"
+          width="52"
+          height="36"
+          rx="2"
+          stroke="currentColor"
+          strokeWidth="1.3"
+        />
+        <rect
+          x="184"
+          y="288"
+          width="52"
+          height="36"
+          rx="2"
+          stroke="currentColor"
+          strokeWidth="1.3"
+        />
+        <rect
+          x="184"
+          y="348"
+          width="52"
+          height="36"
+          rx="2"
+          stroke="currentColor"
+          strokeWidth="1.3"
+        />
+        <rect
+          x="270"
+          y="228"
+          width="52"
+          height="36"
+          rx="2"
+          stroke="currentColor"
+          strokeWidth="1.3"
+        />
+        <rect
+          x="270"
+          y="288"
+          width="52"
+          height="36"
+          rx="2"
+          stroke="currentColor"
+          strokeWidth="1.3"
+        />
+        <rect
+          x="270"
+          y="348"
+          width="52"
+          height="36"
+          rx="2"
+          stroke="currentColor"
+          strokeWidth="1.3"
+        />
+        <path
+          d="M168 420v-88h84v88"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M120 180h24M276 180h24"
+          stroke="currentColor"
+          strokeWidth="1.2"
+          strokeLinecap="round"
+          opacity="0.6"
+        />
+        <ellipse
+          cx="210"
+          cy="420"
+          rx="160"
+          ry="12"
+          stroke="currentColor"
+          strokeWidth="1"
+          opacity="0.35"
+        />
+      </svg>
+    </div>
+  );
+}
