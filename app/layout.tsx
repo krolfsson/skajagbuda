@@ -1,15 +1,22 @@
 import type { Metadata } from "next";
-import { Barlow, Instrument_Sans } from "next/font/google";
+import { Instrument_Sans, Source_Sans_3, Source_Serif_4 } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
 import "./globals.css";
 import { SiteChrome } from "@/components/SiteChrome";
 import { PRODUCT_DOMAIN, PRODUCT_TAGLINE, SITE_URL, SEO_KEYWORDS, OG_TITLE, OG_DESCRIPTION, OG_IMAGE_ALT, OG_IMAGE_PATH, OG_IMAGE_SIZE } from "@/lib/brand";
 import { getSiteVerification, INDEX_ROBOTS } from "@/lib/seo";
 
-const barlow = Barlow({
+const sourceSans = Source_Sans_3({
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700", "800"],
-  variable: "--font-barlow",
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-body",
+  display: "swap",
+});
+
+const sourceSerif = Source_Serif_4({
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
+  variable: "--font-serif",
   display: "swap",
 });
 
@@ -87,8 +94,8 @@ const WEBSITE_JSONLD = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="sv" className={`${barlow.variable} ${wordmark.variable}`}>
-      <body className={barlow.className} style={{ minHeight: "100vh", background: "var(--bg)" }}>
+    <html lang="sv" className={`${sourceSans.variable} ${sourceSerif.variable} ${wordmark.variable}`}>
+      <body className={sourceSans.className} style={{ minHeight: "100vh", background: "var(--bg)" }}>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify([ORG_JSONLD, WEBSITE_JSONLD]) }}

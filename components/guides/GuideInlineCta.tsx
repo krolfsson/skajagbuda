@@ -7,8 +7,8 @@ export function GuideInlineCta({ compact = false }: { compact?: boolean }) {
     <div className={`guide-inline-cta${compact ? " guide-inline-cta--compact" : ""}`}>
       <h2>Vill du kontrollera ett konkret objekt?</h2>
       <p>
-        Klistra in objektlänken. Vi hämtar underlaget där det går och låter AI hjälpa dig väga
-        pris, förening och risk.
+        Klistra in objektlänken. Vi hämtar underlaget där det går och strukturerar pris, förening
+        och risk så att du kan jämföra mot ditt eget budtak.
       </p>
       <div className="guide-cta-actions">
         <GuideCtaButton href="/new" event="guide_cta_click" label={CTA_START_ANALYSIS_ARROW} primary />

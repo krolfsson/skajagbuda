@@ -38,14 +38,12 @@ function FarCard({
 
 function FarSectionTitle({
   children,
-  icon,
 }: {
   children: ReactNode;
   icon?: ReactNode;
 }) {
   return (
     <div className="far-section-title">
-      {icon && <span className="far-section-title__icon">{icon}</span>}
       <h2 className="far-section-title__text">{children}</h2>
     </div>
   );

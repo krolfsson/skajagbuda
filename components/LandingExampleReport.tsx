@@ -13,24 +13,29 @@ export function LandingExampleReport() {
   return (
     <section id="exempelanalys" className="home-example-proof-section" aria-labelledby="example-analysis-heading">
       <div className="home-example-proof-inner">
-        <header className="home-example-section-head">
+        <header className="home-example-section-head home-section-intro">
           <p className="home-section-eyebrow">Exempelanalys</p>
-          <h2 id="example-analysis-heading" className="home-example-section-title">
+          <h2 id="example-analysis-heading" className="home-section-title">
             Så ser en objektspecifik analys ut
           </h2>
-          <p className="home-example-section-lead">
-            Inte en generell guide — utan en genomgång av ett konkret objekt med pris, förening,
-            risker och budstrategi.
+          <p className="home-section-kicker">
+            Ett riktigt objekt — med slutsats, prisbild, föreningsrisk och budintervall. Inte en
+            generell guide.
           </p>
         </header>
 
-        <ul className="home-example-highlights" aria-label="Det här ingår i analysen">
-          {PREVIEW_HIGHLIGHTS.map((item) => (
-            <li key={item}>{item}</li>
+        <ol className="home-example-checklist" aria-label="Det här ingår i analysen">
+          {PREVIEW_HIGHLIGHTS.map((item, index) => (
+            <li key={item}>
+              <span className="home-example-checklist-index" aria-hidden="true">
+                {index + 1}
+              </span>
+              {item}
+            </li>
           ))}
-        </ul>
+        </ol>
 
-        <div className="analysis-report-shell analysis-report-shell--full home-example-report-wrap">
+        <div className="analysis-report-shell analysis-report-shell--full home-example-report-wrap home-example-report-document">
           <AnalysisPreview />
         </div>
       </div>

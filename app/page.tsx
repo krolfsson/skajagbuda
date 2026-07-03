@@ -4,7 +4,7 @@ import { HomeAnalytics } from "@/components/HomeAnalytics";
 import { HomeHeroForm } from "@/components/HomeHeroForm";
 import { BETA_TRUST_EXTENDED } from "@/lib/brand";
 
-const ANSWER_CARDS = [
+const ANSWER_ITEMS = [
   {
     title: "Verkar priset rimligt?",
     desc: "Jämförelse mot utgångspris, pris/kvm och liknande objekt i området.",
@@ -74,16 +74,19 @@ const TOPICS = [
 
 export default function HomePage() {
   return (
-    <div style={{ background: "var(--bg)" }} className="home-page">
+    <div className="home-page">
       <HomeAnalytics />
 
-      <section className="home-hero home-hero--solo home-hero--tool">
+      <section className="home-hero home-hero--solo home-hero--editorial">
         <div className="home-hero-copy">
           <p className="home-eyebrow">Beslutsstöd inför budgivning</p>
           <h1 className="home-h1">Osäker på om du ska buda?</h1>
           <p className="home-lead">
-            Klistra in objektlänken och få en snabb analys av pris, förening, risker och rimligt
-            budintervall innan du höjer.
+            Klistra in objektlänken och få en genomgång av pris, förening, risker och rimligt
+            budintervall — innan du höjer.
+          </p>
+          <p className="home-human-note">
+            Byggd efter en ganska jobbig bostadsresa. Gratis under beta — vi lär oss av feedback.
           </p>
           <HomeHeroForm id="hero-analys" />
         </div>
@@ -91,20 +94,28 @@ export default function HomePage() {
 
       <LandingExampleReport />
 
-      <section className="home-answers" aria-labelledby="answers-heading">
-        <div className="home-report-section-head home-report-section-head--center">
-          <h2 id="answers-heading" className="home-report-section-title">
+      <section className="home-answers home-answers--editorial" aria-labelledby="answers-heading">
+        <div className="home-section-intro">
+          <h2 id="answers-heading" className="home-section-title">
             Det här får du svar på innan du budar
           </h2>
+          <p className="home-section-kicker">
+            Sex frågor de flesta vill ha klarhet i innan budgivningen drar iväg.
+          </p>
         </div>
-        <div className="home-answers-grid">
-          {ANSWER_CARDS.map((item) => (
-            <article key={item.title} className="home-answers-card">
-              <h3 className="home-answers-card-title">{item.title}</h3>
-              <p className="home-answers-card-desc">{item.desc}</p>
-            </article>
+        <ol className="home-answers-list">
+          {ANSWER_ITEMS.map((item, index) => (
+            <li key={item.title} className="home-answers-item">
+              <span className="home-answers-index" aria-hidden="true">
+                {String(index + 1).padStart(2, "0")}
+              </span>
+              <div className="home-answers-body">
+                <h3 className="home-answers-q">{item.title}</h3>
+                <p className="home-answers-a">{item.desc}</p>
+              </div>
+            </li>
           ))}
-        </div>
+        </ol>
       </section>
 
       <section className="home-when" aria-labelledby="when-heading">
@@ -131,46 +142,31 @@ export default function HomePage() {
       </section>
 
       <section className="home-topics home-topics--secondary" aria-labelledby="topics-heading">
-        <div className="home-report-section-head home-report-section-head--center">
+        <div className="home-section-intro home-section-intro--center">
           <p className="home-section-eyebrow">Guider och fördjupning</p>
-          <h2 id="topics-heading" className="home-report-section-title">
+          <h2 id="topics-heading" className="home-section-title">
             Vill du läsa mer innan budgivningen?
           </h2>
-          <p className="home-report-section-lead">
-            Guiderna finns kvar för dig som vill fördjupa dig — men börja gärna med en
-            objektanalys om du står inför ett konkret bud.
+          <p className="home-section-kicker">
+            Guiderna finns kvar för dig som vill fördjupa dig — börja gärna med en objektanalys om
+            du står inför ett konkret bud.
           </p>
         </div>
-        <div className="home-topics-grid">
+        <ul className="home-topics-editorial">
           {TOPICS.map((topic) => (
-            <Link key={topic.href} href={topic.href} className="home-topic-chip">
-              <span className="home-topic-chip-head">
-                <span className="home-topic-chip-title">{topic.title}</span>
-                <svg
-                  className="home-topic-chip-arrow"
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  aria-hidden="true"
-                >
-                  <path d="M5 12h14" />
-                  <path d="m13 6 6 6-6 6" />
-                </svg>
-              </span>
-              <span className="home-topic-chip-desc">{topic.desc}</span>
-            </Link>
+            <li key={topic.href}>
+              <Link href={topic.href} className="home-topics-editorial-link">
+                <span className="home-topics-editorial-title">{topic.title}</span>
+                <span className="home-topics-editorial-desc">{topic.desc}</span>
+              </Link>
+            </li>
           ))}
-        </div>
-        <div style={{ textAlign: "center" }}>
+        </ul>
+        <p className="home-topics-more">
           <Link href="/guider" className="home-topics-link">
             Se alla guider →
           </Link>
-        </div>
+        </p>
       </section>
 
       <section className="home-bottom-cta" aria-labelledby="bottom-cta-heading">
