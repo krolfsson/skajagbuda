@@ -32,6 +32,7 @@ export const EXAMPLE_SCORECARD: Scorecard = {
   score: 68,
   recommendation: "Buda försiktigt",
   riskLevel: "Medel",
+  uncertaintyLevel: "Medel",
   maxBidSuggestion: 8150000,
   bidIntervals: {
     fairValueLow: 7900000,

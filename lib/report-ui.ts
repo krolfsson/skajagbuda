@@ -1,5 +1,6 @@
 import { summaryToBullets } from "@/lib/format-summary";
 import type { Scorecard } from "@/lib/schemas";
+import { deriveUncertaintyLevel, hasSeriousRedFlags } from "@/lib/risk-level";
 
 export function fmtMoney(v: number | null | undefined) {
   if (!v) return "–";
@@ -57,10 +58,19 @@ function firstSentence(text: string, max = 120): string {
 }
 
 export function deriveScoreInterpretation(sc: Scorecard): string {
-  if (sc.score >= 78) return "Starkt case";
-  if (sc.score >= 66) return "Medelstarkt case";
-  if (sc.score >= 52) return "Blandat case";
-  return "Svagt case";
+  if (sc.score >= 75) return "Starkt case";
+  if (sc.score >= 60) return "Medelstarkt case";
+  if (sc.score >= 45) return "Blandat case — kontrollera frågetecken";
+  return "Svagt case — kräver noggrann genomgång";
+}
+
+export function deriveUncertaintyExplanation(sc: Scorecard): string | null {
+  const level = sc.uncertaintyLevel ?? deriveUncertaintyLevel(sc);
+  if (level === "Låg") return null;
+  if (level === "Medel") {
+    return "Viss data saknas eller bör verifieras innan du höjer budet.";
+  }
+  return "Osäkerheten i underlaget är förhöjd — flera viktiga uppgifter saknas eller är oklara.";
 }
 
 export function deriveScoreSubtext(sc: Scorecard): string {
@@ -97,6 +107,19 @@ export function deriveScoreSubtext(sc: Scorecard): string {
 }
 
 export function deriveRiskExplanation(sc: Scorecard): string {
+  const uncertainty = sc.uncertaintyLevel ?? deriveUncertaintyLevel(sc);
+
+  if (uncertainty === "Hög" && sc.riskLevel === "Medel") {
+    return "Medel risk — främst på grund av osäkerhet i underlaget, inte nödvändigtvis allvarliga problem.";
+  }
+
+  if (!hasSeriousRedFlags(sc) && (sc.riskLevel === "Medel" || sc.riskLevel === "Låg")) {
+    if (sc.weaknesses[0]) {
+      return `${sc.riskLevel} — ${firstSentence(sc.weaknesses[0], 90).replace(/\.$/, "")}, men inga tydliga allvarliga röda flaggor.`;
+    }
+    return `${sc.riskLevel} — inga tydliga allvarliga röda flaggor utifrån underlaget.`;
+  }
+
   const reason =
     sc.redFlags[0] ??
     sc.weaknesses[0] ??
@@ -106,7 +129,7 @@ export function deriveRiskExplanation(sc: Scorecard): string {
     return `${sc.riskLevel} — främst på grund av ${firstSentence(reason, 90).toLowerCase()}.`;
   }
 
-  return `${sc.riskLevel} — ingen enskild risk dominerar, men kontrollera underlaget innan nästa bud.`;
+  return `${sc.riskLevel} — kontrollera underlaget innan nästa bud.`;
 }
 
 export function deriveConclusion(sc: Scorecard): string {
@@ -118,7 +141,7 @@ export function deriveConclusion(sc: Scorecard): string {
 
   if (sc.priceAnalysis.conclusion) return sc.priceAnalysis.conclusion;
 
-  return `${sc.recommendation}. Granska prisbilden, röda flaggor och frågor innan slutbud.`;
+  return `${sc.recommendation}. Granska prisbilden och frågorna till mäklaren innan slutbud.`;
 }
 
 export function deriveConclusionBox(sc: Scorecard): string {

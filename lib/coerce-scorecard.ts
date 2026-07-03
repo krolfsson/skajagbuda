@@ -324,6 +324,15 @@ function normalizeCategoryScores(value: unknown): Scorecard["categoryScores"] {
   };
 }
 
+function normalizeUncertaintyLevel(value: unknown): Scorecard["uncertaintyLevel"] | undefined {
+  if (typeof value !== "string") return undefined;
+  const v = value.trim();
+  if (v === "Låg" || v === "Medel" || v === "Hög") return v;
+  if (/hög|high/i.test(v)) return "Hög";
+  if (/låg|low/i.test(v)) return "Låg";
+  return "Medel";
+}
+
 /** Rätta vanliga AI-avvikelser innan Zod-validering. */
 export function coerceScorecardInput(raw: unknown): unknown {
   if (!isRecord(raw)) return raw;
@@ -352,6 +361,7 @@ export function coerceScorecardInput(raw: unknown): unknown {
     score: Math.min(100, Math.max(0, toInt(raw.score, 50))),
     recommendation: normalizeRecommendation(raw.recommendation),
     riskLevel: normalizeRiskLevel(raw.riskLevel),
+    uncertaintyLevel: normalizeUncertaintyLevel(raw.uncertaintyLevel),
     maxBidSuggestion: syncedMaxBid,
     bidIntervals: aligned.bidIntervals,
     priceAnalysis: normalizePriceAnalysis(raw.priceAnalysis, bidIntervals),

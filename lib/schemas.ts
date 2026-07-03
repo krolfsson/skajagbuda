@@ -108,6 +108,7 @@ export const ScorecardSchema = z.object({
   score: z.number().int().min(0).max(100),
   recommendation: z.enum(["Buda inte", "Buda försiktigt", "Buda", "Starkt case"]),
   riskLevel: z.enum(["Låg", "Medel", "Hög", "Mycket hög"]),
+  uncertaintyLevel: z.enum(["Låg", "Medel", "Hög"]).optional(),
   /** Rekommenderat budtak — oberoende marknadsbedömning, inte användarens budget. */
   maxBidSuggestion: z.number().int().positive().nullable(),
   bidIntervals: BidIntervalsSchema,

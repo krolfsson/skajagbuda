@@ -120,7 +120,7 @@ ${RISK_ASSESSMENT_CRITERIA}
 
 ${SCORE_TO_RISK_GUIDANCE}
 
-riskLevel MÅSTE följa score enligt tabellen ovan. score och riskLevel ska alltid vara konsekventa.
+riskLevel och uncertaintyLevel ska vara konsekventa med score, redFlags och weaknesses enligt reglerna ovan — men sätt inte Hög risk bara för att data saknas.
 
 Returnera ALLTID ett strikt JSON-objekt med exakt denna struktur:
 
@@ -128,6 +128,7 @@ Returnera ALLTID ett strikt JSON-objekt med exakt denna struktur:
   "score": <heltal 0-100>,
   "recommendation": <"Buda inte" | "Buda försiktigt" | "Buda" | "Starkt case">,
   "riskLevel": <"Låg" | "Medel" | "Hög" | "Mycket hög">,
+  "uncertaintyLevel": <"Låg" | "Medel" | "Hög" — osäkerhet i underlaget, separat från riskLevel>,
   "maxBidSuggestion": <rekommenderat budtak B — heltal i HELA kronor. Oberoende av användarens budget. null om ej möjligt>,
   "bidIntervals": {
     "fairValueLow": <marknadsvärde A, lägre gräns i hela kronor eller null>,

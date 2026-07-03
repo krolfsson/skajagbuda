@@ -81,6 +81,8 @@ model PropertyAnalysis {
   aiSummary          String?
   aiRawJson          Json?
 
+  feedback AnalysisFeedback[]
+
   // Future: userId String?
 
   @@index([analysisStatus])
@@ -115,4 +117,26 @@ enum AnalysisStatus {
   RUNNING
   COMPLETED
   FAILED
+}
+
+enum FeedbackValue {
+  YES
+  PARTIAL
+  NO
+}
+
+model AnalysisFeedback {
+  id               String           @id @default(cuid())
+  createdAt        DateTime         @default(now())
+  analysisId       String
+  analysis         PropertyAnalysis @relation(fields: [analysisId], references: [id], onDelete: Cascade)
+  value            FeedbackValue
+  comment          String?
+  objectAddress    String?
+  score            Int?
+  riskLevel        String?
+  uncertaintyLevel String?
+
+  @@index([analysisId])
+  @@index([createdAt])
 }

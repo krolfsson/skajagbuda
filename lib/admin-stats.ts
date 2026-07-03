@@ -35,6 +35,16 @@ export type AdminRecentPayment = {
   amountSek: number;
 };
 
+export type AdminRecentFeedback = {
+  id: string;
+  createdAt: string;
+  objectAddress: string | null;
+  value: "Ja" | "Delvis" | "Nej";
+  comment: string | null;
+  score: number | null;
+  riskLevel: string | null;
+};
+
 export type AdminStats = {
   summary: {
     revenueSek: number;
@@ -45,10 +55,14 @@ export type AdminStats = {
     pendingCheckouts: number;
     conversionRate: number;
     checkoutConversionRate: number;
+    averageScore: number | null;
+    riskDistribution: Record<string, number>;
+    feedbackCounts: { yes: number; partial: number; no: number; total: number };
   };
   series: AdminTimeSeriesPoint[];
   recentAnalyses: AdminRecentAnalysis[];
   recentPayments: AdminRecentPayment[];
+  recentFeedback: AdminRecentFeedback[];
   range: AdminRange;
   granularity: AdminGranularity;
 };
@@ -132,6 +146,12 @@ export function deriveAnalysisStatus(row: {
   return "Påbörjad";
 }
 
+const FEEDBACK_LABELS = {
+  YES: "Ja",
+  PARTIAL: "Delvis",
+  NO: "Nej",
+} as const;
+
 export async function getAdminStats(
   range: AdminRange,
   granularity?: AdminGranularity,
@@ -140,7 +160,8 @@ export async function getAdminStats(
   const bucketGranularity = granularity ?? defaultGranularity(range);
   const dateFilter = since ? { createdAt: { gte: since } } : undefined;
 
-  const [summaryCounts, buckets, recentAnalysesRows, recentPaid] = await Promise.all([
+  const [summaryCounts, buckets, recentAnalysesRows, recentPaid, riskRows, feedbackRows, recentFeedbackRows, scoreAgg] =
+    await Promise.all([
     Promise.all([
       prisma.propertyAnalysis.count({ where: dateFilter }),
       prisma.propertyAnalysis.count({
@@ -185,10 +206,63 @@ export async function getAdminStats(
         updatedAt: true,
       },
     }),
+    prisma.propertyAnalysis.groupBy({
+      by: ["aiRiskLevel"],
+      where: {
+        ...dateFilter,
+        freeAnalysisStatus: "COMPLETED",
+        aiRiskLevel: { not: null },
+      },
+      _count: { _all: true },
+    }),
+    prisma.analysisFeedback.groupBy({
+      by: ["value"],
+      where: since ? { createdAt: { gte: since } } : undefined,
+      _count: { _all: true },
+    }),
+    prisma.analysisFeedback.findMany({
+      where: since ? { createdAt: { gte: since } } : undefined,
+      orderBy: { createdAt: "desc" },
+      take: 15,
+      select: {
+        id: true,
+        createdAt: true,
+        objectAddress: true,
+        value: true,
+        comment: true,
+        score: true,
+        riskLevel: true,
+      },
+    }),
+    prisma.propertyAnalysis.aggregate({
+      where: {
+        ...dateFilter,
+        freeAnalysisStatus: "COMPLETED",
+        aiScore: { not: null },
+      },
+      _avg: { aiScore: true },
+    }),
   ]);
 
   const [totalStarted, freeCompleted, checkoutsStarted, paid, pendingCheckouts] = summaryCounts;
   const revenueSek = paid * FULL_ANALYSIS_PRICE_SEK;
+
+  const riskDistribution: Record<string, number> = {};
+  for (const row of riskRows) {
+    if (row.aiRiskLevel) riskDistribution[row.aiRiskLevel] = row._count._all;
+  }
+
+  const feedbackCounts = { yes: 0, partial: 0, no: 0, total: 0 };
+  for (const row of feedbackRows) {
+    const count = row._count._all;
+    feedbackCounts.total += count;
+    if (row.value === "YES") feedbackCounts.yes = count;
+    if (row.value === "PARTIAL") feedbackCounts.partial = count;
+    if (row.value === "NO") feedbackCounts.no = count;
+  }
+
+  const averageScore =
+    scoreAgg._avg.aiScore != null ? Math.round(scoreAgg._avg.aiScore * 10) / 10 : null;
 
   const series: AdminTimeSeriesPoint[] = buckets.map((row) => ({
     period: row.period.toISOString(),
@@ -210,6 +284,9 @@ export async function getAdminStats(
       pendingCheckouts,
       conversionRate: pct(paid, totalStarted),
       checkoutConversionRate: pct(paid, checkoutsStarted),
+      averageScore,
+      riskDistribution,
+      feedbackCounts,
     },
     series,
     recentAnalyses: recentAnalysesRows.map((row) => ({
@@ -228,6 +305,15 @@ export async function getAdminStats(
       city: row.city,
       paidAt: row.updatedAt.toISOString(),
       amountSek: FULL_ANALYSIS_PRICE_SEK,
+    })),
+    recentFeedback: recentFeedbackRows.map((row) => ({
+      id: row.id,
+      createdAt: row.createdAt.toISOString(),
+      objectAddress: row.objectAddress,
+      value: FEEDBACK_LABELS[row.value],
+      comment: row.comment,
+      score: row.score,
+      riskLevel: row.riskLevel,
     })),
     range,
     granularity: bucketGranularity,

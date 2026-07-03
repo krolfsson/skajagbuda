@@ -1,11 +1,30 @@
-export const RISK_ASSESSMENT_CRITERIA = `## Risknivå — använd samma skala i hela produkten
+export const RISK_ASSESSMENT_CRITERIA = `## Risknivå och osäkerhet — använd samma skala i hela produkten
 
-Klassificera som:
-- **Låg**: Föreningen ser sund ut, inga stora planerade renoveringar, pris rimligt, tunt med röda flaggor.
-- **Medel**: Standardnivå för de flesta objekt — blandat underlag med vissa varningsflaggor (t.ex. måttlig avgiftshöjning, oklar föreningsinfo, planerat underhåll med oklar kostnadsbild) men inget som ensamt motiverar hög risk.
-- **Hög**: Reserveras för tydliga allvarliga signaler — t.ex. planerat stambyte utan finansiering, hög skuld/kvm kombinerat med kommande kostnader, eller kraftig avgiftshöjning (>8%).
-- **Mycket hög**: Flera allvarliga risker samtidigt, eller uppenbart osunt underlag som motiverar att avstå budgivning.
+### riskLevel (objektets risk)
 
-Kalibrering: välj **Medel** om du tvekar mellan Medel och Hög. Hög ska inte användas bara för att underlaget är ofullständigt.
+- **Låg**: Föreningen ser stabil ut, avgift/skuld rimlig, inga tydliga röda flaggor, prisbilden ser rimlig ut.
+- **Medel**: Standardnivå när det finns frågetecken, viss saknad data eller normal försiktighet — men inga tydliga allvarliga problem. **Detta ska vara normalfallet.**
+- **Hög**: Endast vid tydliga allvarliga signaler — t.ex. planerat stambyte utan finansiering, hög skuld/kvm med kommande kostnader, tomträtt med avgäldsrisk, kraftig avgiftshöjning (>8%), flera allvarliga risker.
+- **Mycket hög**: Flera allvarliga risker samtidigt som motiverar att avstå budgivning.
 
-Var konsekvent: samma objekt och samma underlag ska alltid ge samma risknivå.`;
+Saknad data eller ofullständigt underlag ska **inte** automatiskt ge Hög risk. Välj Medel och sätt uncertaintyLevel högre i stället.
+
+### uncertaintyLevel (osäkerhet i underlaget)
+
+- **Låg**: Tillräckligt underlag för en rimlig bedömning.
+- **Medel**: Viss data saknas eller kräver verifiering.
+- **Hög**: Betydande luckor — t.ex. ingen årsredovisning, inga jämförelseobjekt, osäker prisbild.
+
+### redFlags vs weaknesses
+
+- **redFlags**: Endast tydliga, allvarliga problem med konkret belägg i underlaget.
+- **weaknesses**: Frågetecken, saknad data, saker att kontrollera — inte automatiska röda flaggor.
+
+### Ton
+
+Skriv lugnare och mer rådgivande. Undvik alarmism om det inte finns starka skäl. Exempel:
+- "Buda med viss försiktighet."
+- "Underlaget ger frågetecken, men inga tydliga allvarliga röda flaggor."
+- "Risknivån är medel, främst på grund av osäkerhet kring underlaget."
+
+Var konsekvent: samma objekt och samma underlag ska ge samma bedömning.`;

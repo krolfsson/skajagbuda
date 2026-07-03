@@ -11,6 +11,7 @@ import {
   deriveNextSteps,
   deriveRiskExplanation,
   deriveScoreInterpretation,
+  deriveUncertaintyExplanation,
   deriveWalkAwayAmount,
   fmtMoney,
   fmtPricePerSqm,
@@ -20,6 +21,8 @@ import {
 import type { Scorecard } from "@/lib/schemas";
 import { REC_COLORS, RISK_DOT, BRAND } from "@/lib/ui-colors";
 import { PreviewIcon } from "@/components/preview/PreviewIcon";
+import { AnalysisFeedback } from "@/components/AnalysisFeedback";
+import { hasSeriousRedFlags } from "@/lib/risk-level";
 
 const PREVIEW_LIMIT = 3;
 const LIST_LIMIT = 5;
@@ -163,6 +166,8 @@ export type FullAnalysisReportProps = {
   conclusionLine?: string;
   showBetaBadge?: boolean;
   showFooterCta?: boolean;
+  analysisId?: string;
+  showFeedback?: boolean;
 };
 
 export function FullAnalysisReport({
@@ -171,6 +176,8 @@ export function FullAnalysisReport({
   conclusionLine,
   showBetaBadge = true,
   showFooterCta = true,
+  analysisId,
+  showFeedback = false,
 }: FullAnalysisReportProps) {
   const [showAllSteps, setShowAllSteps] = useState(false);
   const [showAllComps, setShowAllComps] = useState(false);
@@ -192,12 +199,17 @@ export function FullAnalysisReport({
   const conclusion = conclusionLine ?? deriveConclusionBox(sc);
   const nextSteps = deriveNextSteps(sc);
   const visibleSteps = showAllSteps ? nextSteps : nextSteps.slice(0, PREVIEW_LIMIT);
-  const hasRedFlags = sc.redFlags.length > 0;
+  const hasRedFlags = hasSeriousRedFlags(sc);
+  const questionPoints =
+    !hasRedFlags && sc.weaknesses.length > 0
+      ? sc.weaknesses.slice(0, 6)
+      : [];
   const comps = sc.comparisonObjects;
   const visibleComps = showAllComps ? comps : comps.slice(0, PREVIEW_LIMIT);
   const visibleQuestions = showAllQuestions ? sc.questionsToAsk : sc.questionsToAsk.slice(0, PREVIEW_LIMIT);
   const budgetNote = deriveBudgetNote(sc, budget);
   const walkAwayAmount = deriveWalkAwayAmount(sc);
+  const uncertaintyNote = deriveUncertaintyExplanation(sc);
 
   const strengths = sc.strengths.slice(0, 6);
   const weaknesses = sc.weaknesses.slice(0, 6);
@@ -378,15 +390,27 @@ export function FullAnalysisReport({
           {/* 6. Tri cards */}
           <div className="far-tri-row">
           <section className="far-section far-section--redflags">
-            <FarCard tone={hasRedFlags ? "danger" : "good"}>
+            <FarCard tone={hasRedFlags ? "danger" : questionPoints.length > 0 ? "caution" : "good"}>
               <FarSectionTitle icon={<PreviewIcon name="flag" />}>
-                {hasRedFlags ? "Röda flaggor" : "Inga tydliga röda flaggor hittades"}
+                {hasRedFlags
+                  ? "Röda flaggor"
+                  : questionPoints.length > 0
+                    ? "Frågetecken att kontrollera"
+                    : "Inga tydliga röda flaggor hittades"}
               </FarSectionTitle>
               {hasRedFlags ? (
                 <FarList items={redFlags} variant="danger" />
+              ) : questionPoints.length > 0 ? (
+                <>
+                  <FarList items={questionPoints} variant="caution" />
+                  <p className="far-empty-inline">
+                    Det finns däremot punkter du bör kontrollera innan du höjer budet.
+                  </p>
+                </>
               ) : (
                 <p className="far-empty-inline">
-                  Kontrollera ändå budhistorik, underhållsplan och eventuella kommande avgiftshöjningar.
+                  Det finns däremot några punkter du bör kontrollera innan du höjer budet — se
+                  svagheter och frågor nedan.
                 </p>
               )}
             </FarCard>
@@ -482,6 +506,8 @@ export function FullAnalysisReport({
               </div>
             </section>
           )}
+
+          {showFeedback && analysisId && <AnalysisFeedback analysisId={analysisId} />}
         </div>
 
         <aside className="far-sidebar">
@@ -512,6 +538,16 @@ export function FullAnalysisReport({
                   </div>
                   <p className="far-metric-hint">{deriveRiskExplanation(sc)}</p>
                 </div>
+                {sc.uncertaintyLevel && sc.uncertaintyLevel !== "Låg" && (
+                  <div>
+                    <p className="far-metric-label">Osäkerhet i underlaget</p>
+                    <div className="far-risk">
+                      <span className="far-risk-dot far-risk-dot--muted" />
+                      <span>{sc.uncertaintyLevel}</span>
+                    </div>
+                    {uncertaintyNote && <p className="far-metric-hint">{uncertaintyNote}</p>}
+                  </div>
+                )}
                 {ceiling && (
                   <div>
                     <p className="far-metric-label">Rekommenderat budtak</p>

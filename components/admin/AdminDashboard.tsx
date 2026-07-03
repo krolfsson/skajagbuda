@@ -10,6 +10,7 @@ import { AdminSimpleChart } from "@/components/admin/AdminSimpleChart";
 import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
 import { AdminRecentAnalyses } from "@/components/admin/AdminRecentAnalyses";
 import { AdminRecentPayments } from "@/components/admin/AdminRecentPayments";
+import { AdminInsightsSection } from "@/components/admin/AdminInsights";
 
 const RANGES: { value: AdminRange; label: string }[] = [
   { value: "7d", label: "7d" },
@@ -209,10 +210,11 @@ export function AdminDashboard() {
             <section className="admin-card admin-card--table-section">
               <div className="admin-card-head">
                 <h2 className="admin-card-title">Senaste analyser</h2>
-                <span className="admin-link-muted">Visa alla →</span>
               </div>
               <AdminRecentAnalyses analyses={stats.recentAnalyses} />
             </section>
+
+            <AdminInsightsSection stats={stats} />
           </div>
         )}
       </div>

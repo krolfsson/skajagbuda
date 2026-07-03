@@ -54,6 +54,8 @@ export function FullScorecard({
               scorecard={sc}
               showBetaBadge
               showFooterCta={false}
+              analysisId={analysis.id}
+              showFeedback
             />
           </div>
 
