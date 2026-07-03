@@ -29,10 +29,9 @@ Kopiera `.env.example` till `.env` och fyll i värdena:
 cp .env.example .env
 ```
 
-| Variabel                | Beskrivning                                                                 |
-|-------------------------|-----------------------------------------------------------------------------|
-| `DATABASE_URL`          | PostgreSQL connection string (runtime; pooler OK on Supabase)               |
-| `DIRECT_DATABASE_URL`   | Direct Postgres URL for `prisma migrate deploy` (Supabase/Vercel: port 5432) |
+| Variabel       | Beskrivning                          |
+|----------------|--------------------------------------|
+| `DATABASE_URL` | PostgreSQL connection string         |
 | `AI_API_KEY`   | API-nyckel till din AI-provider                         |
 | `AI_BASE_URL`  | Base URL (default: `https://api.openai.com/v1`)         |
 | `AI_MODEL`     | Modell att använda (default: `gpt-4o`)                  |
