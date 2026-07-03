@@ -799,6 +799,12 @@ input[type="number"]::-webkit-outer-spin-button {
   gap: 32px;
   align-items: start;
   background: var(--bg);
+  box-sizing: border-box;
+}
+
+.home-hero.home-hero--polish {
+  max-width: none;
+  width: 100%;
 }
 
 .home-hero--solo {
@@ -815,6 +821,7 @@ input[type="number"]::-webkit-outer-spin-button {
 
 .home-hero-form {
   max-width: 100%;
+  min-width: 0;
   margin-bottom: 4px;
 }
 
@@ -918,7 +925,8 @@ input[type="number"]::-webkit-outer-spin-button {
 .testimonial-strip {
   margin: 0;
   padding: 0;
-  max-width: 38rem;
+  max-width: 100%;
+  min-width: 0;
 }
 
 .testimonial-strip__quote {
@@ -4402,11 +4410,23 @@ h1.analysis-preview__title {
   margin-top: 36px;
 }
 
+@media (max-width: 959px) {
+  .home-hero.home-hero--polish {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+}
+
 @media (max-width: 768px) {
   .home-hero {
     grid-template-columns: 1fr;
     gap: 0;
     padding: 24px 20px 22px;
+  }
+
+  .home-hero.home-hero--polish {
+    padding-left: 20px;
+    padding-right: 20px;
   }
 
   .home-eyebrow {
@@ -7928,10 +7948,12 @@ h1.analysis-preview__title {
 
 .home-hero--polish {
   display: block;
-  max-width: 1320px;
-  margin: 0 auto;
-  padding-left: clamp(24px, 4vw, 48px);
-  padding-right: clamp(24px, 4vw, 48px);
+  box-sizing: border-box;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding-left: 24px;
+  padding-right: 24px;
 }
 
 .home-hero--polish .home-hero-inner {
@@ -7940,10 +7962,15 @@ h1.analysis-preview__title {
   gap: 0;
   align-items: center;
   width: 100%;
+  max-width: 1180px;
+  margin: 0 auto;
+  min-width: 0;
 }
 
 .home-hero--polish .home-hero-copy {
-  max-width: 640px;
+  max-width: none;
+  min-width: 0;
+  width: 100%;
 }
 
 .home-hero-visual {
@@ -8075,12 +8102,13 @@ h1.analysis-preview__title {
 
   .home-hero--polish .home-hero-inner {
     grid-template-columns: minmax(0, 1.45fr) minmax(300px, 0.72fr);
-    gap: clamp(48px, 5vw, 80px);
+    gap: clamp(40px, 4vw, 72px);
   }
 
   .home-hero--polish .home-hero-copy {
     max-width: none;
     width: 100%;
+    min-width: 0;
   }
 
   .home-hero--polish .home-hero-badge {
@@ -8116,6 +8144,7 @@ h1.analysis-preview__title {
     align-items: stretch;
     gap: 12px;
     margin-bottom: 20px;
+    min-width: 0;
   }
 
   .home-hero--polish .home-hero-input-wrap {
@@ -8198,6 +8227,7 @@ h1.analysis-preview__title {
     display: block;
     justify-self: center;
     width: 100%;
+    min-width: 0;
   }
 
   .home-hero-visual-art {
