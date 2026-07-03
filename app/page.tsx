@@ -92,13 +92,6 @@ export default function HomePage() {
               Klistra in objektlänken och få en genomgång av pris, förening, risker och rimligt
               budintervall — innan du höjer.
             </p>
-            <div className="home-hero-callout">
-              <HeroSparkIcon />
-              <p>
-                Byggd efter en ganska jobbig bostadsresa.{" "}
-                <strong>Gratis under beta</strong> — vi lär oss av feedback.
-              </p>
-            </div>
             <HomeHeroForm id="hero-analys" />
           </div>
           <div className="home-hero-visual" aria-hidden="true">
@@ -209,19 +202,6 @@ function HeroBadgeIcon() {
         strokeLinejoin="round"
       />
       <path d="m9 12 2 2 4-4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-    </svg>
-  );
-}
-
-function HeroSparkIcon() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path
-        d="M12 3l1.4 4.6L18 9l-4.6 1.4L12 15l-1.4-4.6L6 9l4.6-1.4L12 3z"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinejoin="round"
-      />
     </svg>
   );
 }
