@@ -3,6 +3,7 @@ import { LandingExampleReport } from "@/components/LandingExampleReport";
 import { HomeAnalytics } from "@/components/HomeAnalytics";
 import { HomeHeroForm } from "@/components/HomeHeroForm";
 import { HomeHeroIllustration } from "@/components/HomeHeroIllustration";
+import { TestimonialStrip } from "@/components/TestimonialStrip";
 import { BETA_TRUST_EXTENDED } from "@/lib/brand";
 
 const ANSWER_ITEMS = [
@@ -192,6 +193,7 @@ export default function HomePage() {
           <p className="home-bottom-cta-lead">
             Klistra in länken nu — analysen tar cirka en minut och kräver ingen inloggning.
           </p>
+          <TestimonialStrip index={2} className="testimonial-strip--bottom-cta" />
           <HomeHeroForm id="bottom-analys" variant="compact" />
         </div>
       </section>
