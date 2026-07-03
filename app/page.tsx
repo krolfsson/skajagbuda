@@ -2,7 +2,6 @@ import Link from "next/link";
 import { LandingExampleReport } from "@/components/LandingExampleReport";
 import { HomeAnalytics } from "@/components/HomeAnalytics";
 import { HomeHeroForm } from "@/components/HomeHeroForm";
-import { HomeHeroIllustration } from "@/components/HomeHeroIllustration";
 import { BETA_TRUST_EXTENDED } from "@/lib/brand";
 
 const ANSWER_ITEMS = [
@@ -93,9 +92,6 @@ export default function HomePage() {
               budintervall — innan du höjer.
             </p>
             <HomeHeroForm id="hero-analys" />
-          </div>
-          <div className="home-hero-visual" aria-hidden="true">
-            <HomeHeroIllustration />
           </div>
         </div>
       </section>
