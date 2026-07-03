@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { trackEvent } from "@/lib/analytics";
 import { CTA_START_ANALYSIS } from "@/lib/brand";
 import type { BrokerScrapeResponse, FieldFillStatus, ScrapeFieldKey } from "@/lib/broker-scrape-types";
@@ -277,6 +277,7 @@ function ScrapeField({
 
 export default function NewAnalysisFlow() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [form, setForm] = useState<FormData>(INITIAL);
   const [fieldStatus, setFieldStatus] = useState<Partial<Record<ScrapeFieldKey, FieldFillStatus>>>({});
   const [scrapeResult, setScrapeResult] = useState<BrokerScrapeResponse | null>(null);
@@ -291,6 +292,19 @@ export default function NewAnalysisFlow() {
   const [analyzeTitle, setAnalyzeTitle] = useState("");
   const [error, setError] = useState<string | null>(null);
   const flowTopRef = useRef<HTMLDivElement>(null);
+  const queryUrlRef = useRef<string | null>(null);
+  const pendingAutoStartRef = useRef(false);
+
+  useEffect(() => {
+    const urlParam = searchParams.get("url")?.trim();
+    if (!urlParam) return;
+
+    queryUrlRef.current = urlParam;
+    setForm((prev) => (prev.listingUrl.trim() ? prev : { ...prev, listingUrl: urlParam }));
+    if (searchParams.get("autostart") === "1") {
+      pendingAutoStartRef.current = true;
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     const id = requestAnimationFrame(() => {
@@ -356,6 +370,14 @@ export default function NewAnalysisFlow() {
       setScraping(false);
     }
   }
+
+  useEffect(() => {
+    if (!pendingAutoStartRef.current || step !== 1 || scraping) return;
+    if (!queryUrlRef.current || form.listingUrl.trim() !== queryUrlRef.current) return;
+
+    pendingAutoStartRef.current = false;
+    void startScrape();
+  }, [form.listingUrl, scraping, step]);
 
   function skipScrape() {
     scrapeAbortRef.current?.abort();
@@ -441,6 +463,7 @@ export default function NewAnalysisFlow() {
       if (!runRes.ok) throw new Error(runJson.error ?? "Analysen misslyckades.");
 
       trackEvent("free_risk_completed", { analysisId: createJson.id });
+      trackEvent("analysis_completed", { analysisId: createJson.id, stage: "free_risk" });
       router.push(`/result/${createJson.id}`);
     } catch (err) {
       setAnalyzing(false);

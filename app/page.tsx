@@ -1,62 +1,42 @@
 import Link from "next/link";
 import { LandingExampleReport } from "@/components/LandingExampleReport";
-import { HomeAnalytics, HomeAnchorCta, HomeCtaLink } from "@/components/HomeAnalytics";
-import { TrustSignals } from "@/components/TrustSignals";
-import { CTA_START_ANALYSIS_ARROW } from "@/lib/brand";
+import { HomeAnalytics } from "@/components/HomeAnalytics";
+import { HomeHeroForm } from "@/components/HomeHeroForm";
+import { BETA_TRUST_EXTENDED } from "@/lib/brand";
 
-const REPORT_ITEMS = [
+const ANSWER_CARDS = [
   {
-    title: "Prisbild",
-    desc: "AI väger pris, avgift och budläge mot objektets förutsättningar.",
-    icon: (
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-        <path d="M3 10.5 12 4l9 6.5" />
-        <path d="M5 9.5V20h14V9.5" />
-        <path d="M9.5 20v-5h5v5" />
-      </svg>
-    ),
+    title: "Verkar priset rimligt?",
+    desc: "Jämförelse mot utgångspris, pris/kvm och liknande objekt i området.",
   },
   {
-    title: "Föreningsrisk",
-    desc: "Förening, årsredovisning och kända risker analyseras där underlag finns.",
-    icon: (
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-        <path d="M12 3 5 6v5c0 4.4 3 8 7 9 4-1 7-4.6 7-9V6z" />
-        <path d="m9 12 2 2 4-4" />
-      </svg>
-    ),
+    title: "Finns risker i föreningen?",
+    desc: "Skuld, avgift, stambyte och andra varningssignaler i årsredovisningen.",
   },
   {
-    title: "Budstrategi",
-    desc: "Öppningsbud, nästa steg och walk-away-nivå.",
-    icon: (
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-        <path d="M3 17l5-5 3 3 7-7" />
-        <path d="M16 8h5v5" />
-      </svg>
-    ),
+    title: "Vad bör du fråga mäklaren?",
+    desc: "Konkreta frågor innan du höjer — sådant som annonsen sällan svarar på.",
   },
   {
-    title: "Frågor att ställa",
-    desc: "Konkreta frågor till mäklare och förening.",
-    icon: (
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-        <path d="M4 5h16v11H8l-4 4z" />
-        <path d="M9.2 9a2.8 2.8 0 0 1 5.3 1c0 1.5-2 1.8-2 3.2" />
-        <path d="M12 15.5h.01" />
-      </svg>
-    ),
+    title: "Vad talar för eller emot att höja budet?",
+    desc: "Styrkor, svagheter och om priset motiveras av underlaget.",
   },
   {
-    title: "Röda flaggor",
-    desc: "Risker som kan påverka kostnad och framtida värde.",
-    icon: (
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-        <path d="M5 21V4" />
-        <path d="M5 4h11l-1.5 3.5L16 11H5" />
-      </svg>
-    ),
+    title: "Vilket budintervall verkar rimligt?",
+    desc: "Rekommenderat budtak, stretch och walk-away utifrån objektets risker.",
   },
+  {
+    title: "När bör du vara försiktig?",
+    desc: "Röda flaggor och osäkerheter som bör stoppa eller sakta ner budgivningen.",
+  },
+];
+
+const WHEN_TO_USE = [
+  "När du har hittat en bostadsrätt du överväger att buda på.",
+  "När budgivningen är igång eller nära att starta.",
+  "När du vill förstå pris, avgift och förening snabbt.",
+  "När årsredovisningen känns svår att tolka.",
+  "När du vill sätta ett budtak innan känslorna tar över.",
 ];
 
 const TOPICS = [
@@ -96,50 +76,76 @@ export default function HomePage() {
   return (
     <div style={{ background: "var(--bg)" }} className="home-page">
       <HomeAnalytics />
-      {/* Hero */}
-      <section className="home-hero home-hero--solo">
+
+      <section className="home-hero home-hero--solo home-hero--tool">
         <div className="home-hero-copy">
-          <p className="home-eyebrow">Beslutsstöd för bostadsköp</p>
-          <h1 className="home-h1">Få koll innan du budar.</h1>
-          <p className="home-lead home-lead--desktop">
-            Klistra in objektlänken. Vi hämtar underlaget där det går och låter AI strukturera och
-            analysera pris, förening och risk — så att du får en preliminär risknivå gratis innan du
-            budar.
+          <p className="home-eyebrow">Beslutsstöd inför budgivning</p>
+          <h1 className="home-h1">Osäker på om du ska buda?</h1>
+          <p className="home-lead">
+            Klistra in objektlänken och få en snabb analys av pris, förening, risker och rimligt
+            budintervall innan du höjer.
           </p>
-          <p className="home-lead home-lead--mobile">
-            Klistra in objektlänken. AI hjälper dig väga pris, förening och risk — så att du får en
-            preliminär risknivå gratis innan du budar.
-          </p>
-          <div className="home-hero-ctas">
-            <HomeCtaLink href="/new" event="click_start_analysis" className="home-btn-primary">
-              {CTA_START_ANALYSIS_ARROW}
-            </HomeCtaLink>
-            <HomeAnchorCta href="#exempelanalys" event="click_example_analysis" className="home-btn-secondary">
-              Se exempelanalys
-            </HomeAnchorCta>
-          </div>
-          <p className="home-hero-disclaimer">
-            <InfoIcon />
-            Inte finansiell rådgivning. Bara bättre underlag inför nästa steg.
-          </p>
+          <HomeHeroForm id="hero-analys" />
         </div>
       </section>
 
       <LandingExampleReport />
 
-      {/* Popular topics → guide (SEO internal linking) */}
-      <section className="home-topics" aria-labelledby="topics-heading">
+      <section className="home-answers" aria-labelledby="answers-heading">
         <div className="home-report-section-head home-report-section-head--center">
-          <p className="home-section-eyebrow">Att tänka på inför budgivningen</p>
-          <h2 id="topics-heading" className="home-report-section-title">
-            Det mesta avgörande står inte i annonsen
+          <h2 id="answers-heading" className="home-report-section-title">
+            Det här får du svar på innan du budar
           </h2>
         </div>
+        <div className="home-answers-grid">
+          {ANSWER_CARDS.map((item) => (
+            <article key={item.title} className="home-answers-card">
+              <h3 className="home-answers-card-title">{item.title}</h3>
+              <p className="home-answers-card-desc">{item.desc}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="home-when" aria-labelledby="when-heading">
+        <div className="home-when-inner">
+          <h2 id="when-heading" className="home-when-title">
+            När passar skajagbuda.se?
+          </h2>
+          <ul className="home-when-list">
+            {WHEN_TO_USE.map((item) => (
+              <li key={item}>{item}</li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
+      <section className="home-trust" aria-label="Beta och ansvarsfriskrivning">
+        <div className="home-trust-inner">
+          <p className="home-trust-beta">{BETA_TRUST_EXTENDED}</p>
+          <p className="home-trust-disclaimer">
+            Analysen är ett beslutsstöd, inte finansiell rådgivning. Kontrollera alltid uppgifter
+            med mäklare, förening och bank innan du budar.
+          </p>
+        </div>
+      </section>
+
+      <section className="home-topics home-topics--secondary" aria-labelledby="topics-heading">
+        <div className="home-report-section-head home-report-section-head--center">
+          <p className="home-section-eyebrow">Guider och fördjupning</p>
+          <h2 id="topics-heading" className="home-report-section-title">
+            Vill du läsa mer innan budgivningen?
+          </h2>
+          <p className="home-report-section-lead">
+            Guiderna finns kvar för dig som vill fördjupa dig — men börja gärna med en
+            objektanalys om du står inför ett konkret bud.
+          </p>
+        </div>
         <div className="home-topics-grid">
-          {TOPICS.map((t) => (
-            <Link key={t.href} href={t.href} className="home-topic-chip">
+          {TOPICS.map((topic) => (
+            <Link key={topic.href} href={topic.href} className="home-topic-chip">
               <span className="home-topic-chip-head">
-                <span className="home-topic-chip-title">{t.title}</span>
+                <span className="home-topic-chip-title">{topic.title}</span>
                 <svg
                   className="home-topic-chip-arrow"
                   width="16"
@@ -156,7 +162,7 @@ export default function HomePage() {
                   <path d="m13 6 6 6-6 6" />
                 </svg>
               </span>
-              <span className="home-topic-chip-desc">{t.desc}</span>
+              <span className="home-topic-chip-desc">{topic.desc}</span>
             </Link>
           ))}
         </div>
@@ -167,65 +173,17 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* What you get */}
-      <section className="home-bottom">
-        <div className="home-report-section-head home-report-section-head--center">
-          <p className="home-section-eyebrow">Vad du får i analysen</p>
-          <h2 className="home-report-section-title">Tydligt underlag — inte gissningar</h2>
-          <p className="home-report-section-lead">
-            Klistra in objektlänken. Vi hämtar annons, pris, avgift, förening och årsredovisning där
-            det går — du kontrollerar och kompletterar det som saknas. AI strukturerar underlaget och
-            hjälper till att identifiera prisbild, föreningsrisk, röda flaggor och frågor att ställa.
+      <section className="home-bottom-cta" aria-labelledby="bottom-cta-heading">
+        <div className="home-bottom-cta-inner">
+          <h2 id="bottom-cta-heading" className="home-bottom-cta-title">
+            Har du objektet framför dig?
+          </h2>
+          <p className="home-bottom-cta-lead">
+            Klistra in länken nu — analysen tar cirka en minut och kräver ingen inloggning.
           </p>
-        </div>
-
-        <div className="home-report-grid">
-          {REPORT_ITEMS.map((item) => (
-            <div key={item.title} className="home-report-card">
-              <span className="home-report-icon">{item.icon}</span>
-              <h3 className="home-report-card-title">{item.title}</h3>
-              <p className="home-report-card-desc">{item.desc}</p>
-            </div>
-          ))}
-        </div>
-
-        <div className="home-cta">
-          <div className="home-cta-main">
-            <span className="home-cta-icon" aria-hidden="true">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M3 10.5 12 4l9 6.5" />
-                <path d="M5 9.5V20h14V9.5" />
-                <path d="M9.5 20v-5h5v5" />
-              </svg>
-            </span>
-            <div className="home-cta-copy">
-              <h2 className="home-cta-title">Redo att gå igenom objektet?</h2>
-              <p className="home-cta-text">
-                Få en preliminär risknivå gratis. Lås upp hela analysen när du vill gå vidare.
-              </p>
-              <p className="home-cta-subtext">
-                AI hjälper dig strukturera underlaget och hitta sådant som annars är lätt att missa.
-              </p>
-            </div>
-          </div>
-          <div className="home-cta-actions">
-            <HomeCtaLink href="/new" event="click_start_analysis" className="home-btn-primary home-cta-btn">
-              {CTA_START_ANALYSIS_ARROW}
-            </HomeCtaLink>
-            <TrustSignals variant="cta" />
-          </div>
+          <HomeHeroForm id="bottom-analys" variant="compact" />
         </div>
       </section>
     </div>
-  );
-}
-
-function InfoIcon() {
-  return (
-    <svg className="home-disclaimer-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <circle cx="12" cy="12" r="9" />
-      <path d="M12 11v5" />
-      <path d="M12 8h.01" />
-    </svg>
   );
 }

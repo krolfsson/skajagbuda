@@ -12,6 +12,9 @@ export function ResultAnalytics({
 }) {
   useEffect(() => {
     trackEvent(event, { analysisId });
+    if (event === "full_analysis_completed") {
+      trackEvent("analysis_completed", { analysisId, stage: "full" });
+    }
   }, [event, analysisId]);
   return null;
 }

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { InfoPageLayout } from "@/components/InfoPageLayout";
+import { KontaktFeedbackLink } from "@/components/KontaktFeedbackLink";
 import { CONTACT_EMAIL, PRODUCT_DOMAIN } from "@/lib/brand";
 import { buildPageMetadata } from "@/lib/seo";
 
@@ -17,9 +18,9 @@ export default function KontaktPage() {
     >
       <p>
         Mejla oss på{" "}
-        <a href={`mailto:${CONTACT_EMAIL}`} className="info-page-link">
+        <KontaktFeedbackLink email={CONTACT_EMAIL} className="info-page-link">
           {CONTACT_EMAIL}
-        </a>
+        </KontaktFeedbackLink>
         .
       </p>
       <p className="info-page-muted">
