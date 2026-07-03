@@ -12,14 +12,14 @@ export function TestimonialStrip({ className }: TestimonialStripProps) {
       className={["testimonial-strip", className].filter(Boolean).join(" ")}
       aria-label={`Omdöme från ${author}`}
     >
-      <div className="testimonial-strip__stars" aria-hidden="true">
-        ★★★★★
-      </div>
       <blockquote className="testimonial-strip__quote">
-        <p>
+        <span className="testimonial-strip__stars" aria-hidden="true">
+          ★★★★★
+        </span>
+        <span className="testimonial-strip__body">
           <em>&ldquo;{quote}&rdquo;</em>
-        </p>
-        <cite className="testimonial-strip__author">— {author}</cite>
+          <cite className="testimonial-strip__author"> — {author}</cite>
+        </span>
       </blockquote>
     </figure>
   );
