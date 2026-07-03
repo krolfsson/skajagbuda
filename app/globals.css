@@ -8097,6 +8097,8 @@ h1.analysis-preview__title {
     gap: 12px;
     margin-bottom: 20px;
     min-width: 0;
+    max-width: 38rem;
+    width: 100%;
   }
 
   .home-hero--polish .home-hero-input-wrap {
