@@ -25,6 +25,16 @@ function tryParseJson(raw: string): unknown {
   }
 }
 
+/** A run still "RUNNING" after this long was killed (timeout/deploy) and may be restarted. */
+export const STALE_RUN_MS = 6 * 60 * 1000;
+
+export function isStaleRun(analysis: { fullAnalysisStatus: string; updatedAt: Date }): boolean {
+  return (
+    analysis.fullAnalysisStatus === "RUNNING" &&
+    Date.now() - new Date(analysis.updatedAt).getTime() > STALE_RUN_MS
+  );
+}
+
 export class AnalysisRunError extends Error {
   constructor(
     message: string,
@@ -137,6 +147,24 @@ export async function runPropertyAnalysis(
       });
       throw retryErr;
     }
+  }
+
+  if (!enrichment.comparablesStructured && scorecard.comparisonObjects.length > 0) {
+    // No verified sold objects were supplied, so any listed here were produced by the model.
+    console.warn("[analysis] dropping unverified comparison objects", {
+      id: analysis.id,
+      count: scorecard.comparisonObjects.length,
+    });
+    scorecard = {
+      ...scorecard,
+      comparisonObjects: [],
+      priceAnalysis: {
+        ...scorecard.priceAnalysis,
+        missingComparablesNote:
+          scorecard.priceAnalysis.missingComparablesNote ??
+          "Vi saknar bekräftade jämförelseobjekt i underlaget. Därför bör prisbedömningen ses som mer osäker.",
+      },
+    };
   }
 
   scorecard = normalizeScorecardRisk(scorecard);

@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
-import { isAnalysisUnlocked, isPaywallBypassActive } from "@/lib/paywall";
+import { isAnalysisUnlocked } from "@/lib/paywall";
+import { isDevPaymentBypassEnabled } from "@/lib/dev-bypass";
 import {
   resolveScorecardForAnalysis,
   scorecardNeedsRiskSync,
@@ -9,9 +10,9 @@ import {
 import { FreeResultShell } from "@/components/FreeResultView";
 import { PaymentVerifier, AnalysisLoader } from "@/components/PaymentFlow";
 import { FullScorecard } from "@/components/FullScorecard";
-import { DevBypassBanner } from "@/components/DevBypassBanner";
 import { ResultAnalytics } from "@/components/ResultAnalytics";
 import { NOINDEX_ROBOTS } from "@/lib/seo";
+import { isStaleRun } from "@/lib/run-property-analysis";
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
@@ -38,7 +39,8 @@ export default async function ResultPage({
     <PaymentVerifier analysisId={id} sessionId={sessionId} />
   ) : null;
 
-  const paywallBypass = isPaywallBypassActive();
+  // PAYWALL_DISABLED is the intentional free beta; only the local dev bypass gets a banner.
+  const devBypass = isDevPaymentBypassEnabled();
   const isUnlocked = isAnalysisUnlocked(analysis);
 
   const scorecard = resolveScorecardForAnalysis(analysis);
@@ -58,7 +60,7 @@ export default async function ResultPage({
   }
 
   // ── Analysis in progress ────────────────────────────────────────────────────
-  if (analysis.fullAnalysisStatus === "RUNNING") {
+  if (analysis.fullAnalysisStatus === "RUNNING" && !isStaleRun(analysis)) {
     return (
       <>
         {paymentVerifier}
@@ -74,10 +76,10 @@ export default async function ResultPage({
         {paymentVerifier}
         <div style={{ padding: "80px 24px", textAlign: "center" }}>
           <p style={{ fontSize: "13px", color: "var(--danger)", marginBottom: "8px" }}>
-            Analysen misslyckades
+            Analysen kunde inte slutföras
           </p>
           <p style={{ fontSize: "13px", color: "var(--muted)", marginBottom: "20px" }}>
-            Kontrollera AI_API_KEY och försök igen.
+            Något gick fel hos oss när analysen skapades. Dina uppgifter är sparade — försök igen.
           </p>
           <AnalysisLoader analysisId={id} manual />
         </div>
@@ -101,7 +103,7 @@ export default async function ResultPage({
       <>
         {paymentVerifier}
         <ResultAnalytics event="full_analysis_completed" analysisId={id} />
-        <FullScorecard analysis={analysis} scorecard={scorecard!} devBypass={paywallBypass} />
+        <FullScorecard analysis={analysis} scorecard={scorecard!} devBypass={devBypass} />
       </>
     );
   }

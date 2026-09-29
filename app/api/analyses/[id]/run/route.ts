@@ -1,9 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
+import type { Scorecard } from "@/lib/schemas";
 import { prisma } from "@/lib/prisma";
 import { checkRateLimit } from "@/lib/rateLimit";
 import { isAnalysisUnlocked } from "@/lib/paywall";
 import { resolveScorecardForAnalysis } from "@/lib/risk-level";
-import { AnalysisRunError, runPropertyAnalysis } from "@/lib/run-property-analysis";
+import { AnalysisRunError, isStaleRun, runPropertyAnalysis } from "@/lib/run-property-analysis";
+
+// AI call (+ one retry) plus enrichment can exceed the platform default.
+export const maxDuration = 300;
 
 export async function POST(
   req: NextRequest,
@@ -29,37 +33,49 @@ export async function POST(
     return NextResponse.json({ error: "Analysen hittades inte." }, { status: 404 });
   }
 
-  if (analysis.fullAnalysisStatus === "RUNNING") {
+  const stale = isStaleRun(analysis);
+
+  if (analysis.fullAnalysisStatus === "RUNNING" && !stale) {
     return NextResponse.json({ error: "Analysen körs redan." }, { status: 409 });
   }
+
+  const unlocked = isAnalysisUnlocked(analysis);
 
   if (analysis.fullAnalysisStatus === "COMPLETED" && analysis.aiRawJson != null) {
     const scorecard = resolveScorecardForAnalysis(analysis);
     if (scorecard) {
-      return NextResponse.json({ analysis, scorecard, cached: true });
+      return NextResponse.json(runResponse(analysis.id, scorecard, unlocked, true));
     }
   }
 
   const isInitialRun =
-    analysis.fullAnalysisStatus === "LOCKED" || analysis.fullAnalysisStatus === "FAILED";
-  const isPaidRun = isAnalysisUnlocked(analysis);
-
-  if (!isInitialRun && !isPaidRun) {
+    analysis.fullAnalysisStatus === "LOCKED" ||
+    analysis.fullAnalysisStatus === "FAILED" ||
+    stale;
+  if (!isInitialRun && !unlocked) {
     return NextResponse.json({ error: "Analysen kräver betalning för omkörning." }, { status: 402 });
   }
 
   try {
     const result = await runPropertyAnalysis(analysis);
-    return NextResponse.json(result);
+    return NextResponse.json(runResponse(analysis.id, result.scorecard, unlocked, false));
   } catch (err) {
     if (err instanceof AnalysisRunError) {
-      const status = err.code === "VALIDATION_FAILED" ? 502 : 502;
-      return NextResponse.json(
-        { error: err.message, details: err.details },
-        { status }
-      );
+      return NextResponse.json({ error: err.message }, { status: 502 });
     }
     console.error("[run]", err);
     return NextResponse.json({ error: "Internt serverfel." }, { status: 500 });
   }
+}
+
+/** The client only needs to know the run finished; the report itself is rendered server-side behind the paywall. */
+function runResponse(
+  id: string,
+  scorecard: Scorecard,
+  unlocked: boolean,
+  cached: boolean
+) {
+  return unlocked
+    ? { id, status: "COMPLETED", cached, scorecard }
+    : { id, status: "COMPLETED", cached, riskLevel: scorecard.riskLevel };
 }

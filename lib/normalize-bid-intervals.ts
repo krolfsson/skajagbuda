@@ -26,14 +26,15 @@ function halfWidthFraction(
 
 function suggestsDiscount(scorecard: Scorecard): boolean {
   const verdict = scorecard.priceAnalysis.verdict;
-  if (verdict === "Pressat" || verdict === "Överprisat") return true;
+  if (verdict === "Överprisat") return true;
+  if (verdict === "Pressat") return false;
   const text = [
     ...scorecard.weaknesses,
     ...scorecard.redFlags,
     scorecard.priceAnalysis.conclusion,
     scorecard.priceAnalysis.askingPriceNote,
   ].join(" ");
-  return /överpris|dyrt|högt pris|pressat|för högt|sänk|rabatt/i.test(text);
+  return /överpris|dyrt|högt pris|för högt|sänk|rabatt/i.test(text);
 }
 
 function suggestsPremium(scorecard: Scorecard): boolean {
@@ -67,6 +68,34 @@ function buildUncertaintyNote(
   return existing;
 }
 
+export const MISSING_ASKING_PRICE_NOTE =
+  "Utgångspris saknas i underlaget, så vi anger inga budnivåer. Lägg till utgångspriset och kör en ny analys för rimligt värde, budtak och walk-away.";
+
+/**
+ * Without an asking price every bid level would rest on a number the model made up,
+ * so we show none rather than a precise-looking guess.
+ */
+function withoutBidLevels(scorecard: Scorecard): Scorecard {
+  return {
+    ...scorecard,
+    uncertaintyLevel: "Hög",
+    maxBidSuggestion: null,
+    bidIntervals: {
+      fairValueLow: null,
+      fairValueHigh: null,
+      recommendedCeiling: null,
+      stretchLevel: null,
+      walkAwayLevel: null,
+      uncertaintyNote: MISSING_ASKING_PRICE_NOTE,
+    },
+    priceAnalysis: {
+      ...scorecard.priceAnalysis,
+      estimatedFairRangeLow: null,
+      estimatedFairRangeHigh: null,
+    },
+  };
+}
+
 /**
  * Gör pris- och budintervall smalare, utgångsprisankrade och tydligt åtskilda.
  */
@@ -76,72 +105,48 @@ export function normalizeScorecardBidIntervals(
 ): Scorecard {
   const asking =
     context.askingPrice && context.askingPrice > 0 ? context.askingPrice : null;
+  if (!asking) return withoutBidLevels(scorecard);
   const hasComparables = scorecard.comparisonObjects.length >= 2;
   const uncertainty = scorecard.uncertaintyLevel ?? "Medel";
   const widthFrac = halfWidthFraction(uncertainty, hasComparables);
 
   const originalLow = scorecard.bidIntervals.fairValueLow;
   const originalHigh = scorecard.bidIntervals.fairValueHigh;
-  const anchor =
-    asking ??
-    scorecard.bidIntervals.recommendedCeiling ??
-    scorecard.maxBidSuggestion ??
-    (originalLow && originalHigh
-      ? roundBid((originalLow + originalHigh) / 2)
-      : originalHigh ?? originalLow);
-
-  if (!anchor) return scorecard;
-
   const wasVeryWide =
     !!originalLow &&
     !!originalHigh &&
-    (originalHigh - originalLow) / anchor > 0.12;
+    (originalHigh - originalLow) / asking > 0.12;
 
+  const discount = suggestsDiscount(scorecard);
   let fairLow: number;
   let fairHigh: number;
 
-  if (asking) {
-    if (suggestsDiscount(scorecard) || scorecard.priceAnalysis.verdict === "Överprisat") {
-      fairHigh = roundBid(asking);
-      fairLow = roundBid(asking * (1 - widthFrac * 1.25));
-    } else if (uncertainty === "Hög" || !hasComparables) {
-      fairLow = roundBid(asking * (1 - widthFrac * 1.25));
-      fairHigh = roundBid(asking * (1 + widthFrac * 0.35));
-    } else if (scorecard.priceAnalysis.verdict === "Pressat") {
-      fairHigh = roundBid(asking * (1 + widthFrac * 0.75));
-      fairLow = roundBid(asking * (1 - widthFrac));
-    } else {
-      fairLow = roundBid(asking * (1 - widthFrac));
-      fairHigh = roundBid(asking * (1 + widthFrac));
-    }
+  if (discount) {
+    fairHigh = roundBid(asking);
+    fairLow = roundBid(asking * (1 - widthFrac * 1.25));
+  } else if (scorecard.priceAnalysis.verdict === "Pressat") {
+    // "Pressat" = utgångspriset ligger lågt mot jämförelserna (lockpris).
+    fairHigh = roundBid(asking * (1 + widthFrac * 0.75));
+    fairLow = roundBid(asking * (1 - widthFrac));
+  } else if (uncertainty === "Hög" || !hasComparables) {
+    fairLow = roundBid(asking * (1 - widthFrac * 1.25));
+    fairHigh = roundBid(asking * (1 + widthFrac * 0.35));
   } else {
-    const center =
-      originalLow && originalHigh
-        ? roundBid((originalLow + originalHigh) / 2)
-        : anchor;
-    const half = roundBid(anchor * widthFrac);
-    fairLow = roundBid(center - half);
-    fairHigh = roundBid(center + half);
+    fairLow = roundBid(asking * (1 - widthFrac));
+    fairHigh = roundBid(asking * (1 + widthFrac));
   }
 
   if (fairHigh <= fairLow) {
-    fairHigh = fairLow + roundBid(anchor * 0.03);
+    fairHigh = fairLow + roundBid(asking * 0.03);
   }
 
-  let ceiling =
-    scorecard.bidIntervals.recommendedCeiling ?? scorecard.maxBidSuggestion ?? null;
-
-  if (asking) {
-    if (suggestsDiscount(scorecard) || scorecard.priceAnalysis.verdict === "Överprisat") {
-      const target = ceiling ? Math.min(ceiling, asking) : asking * 0.97;
-      ceiling = roundBid(clamp(target, fairLow, fairHigh));
-    } else {
-      ceiling = roundBid(clamp(asking, fairLow, fairHigh));
-    }
-  } else if (ceiling) {
-    ceiling = roundBid(clamp(ceiling, fairLow, fairHigh));
+  const aiCeiling = scorecard.bidIntervals.recommendedCeiling ?? scorecard.maxBidSuggestion ?? null;
+  let ceiling: number;
+  if (discount) {
+    const target = aiCeiling ? Math.min(aiCeiling, asking) : asking * 0.97;
+    ceiling = roundBid(clamp(target, fairLow, fairHigh));
   } else {
-    ceiling = roundBid((fairLow + fairHigh) / 2);
+    ceiling = roundBid(clamp(asking, fairLow, fairHigh));
   }
 
   let stretch = scorecard.bidIntervals.stretchLevel;
@@ -169,7 +174,7 @@ export function normalizeScorecardBidIntervals(
     uncertaintyNote,
   };
 
-  const aligned = alignBidConsistency(scorecard.bidStrategy, bidIntervals);
+  const aligned = alignBidConsistency(scorecard.bidStrategy, bidIntervals, { preferLevels: true });
 
   return {
     ...scorecard,

@@ -1,5 +1,6 @@
 /**
  * Fetches recently sold apartments near a given city/area using Booli's API or search page.
+ * Returns null when nothing verifiable was found (Booli's pages are usually bot-protected).
  */
 import { getBooliCredentials, searchBooliSold } from "@/lib/booli-api";
 
@@ -60,10 +61,7 @@ export async function fetchComparables(
 
     // Extract __NEXT_DATA__ — Booli is a Next.js app
     const nextMatch = html.match(/<script[^>]*id="__NEXT_DATA__"[^>]*>([\s\S]*?)<\/script>/);
-    if (!nextMatch) {
-      const fallback = buildFallbackComparableContext(query, city, sqm);
-      return { text: fallback, sales: [], structuredJson: "[]" };
-    }
+    if (!nextMatch) return null;
 
     const nextData = JSON.parse(nextMatch[1]);
     const listings: unknown[] =
@@ -72,25 +70,19 @@ export async function fetchComparables(
       nextData?.props?.pageProps?.listings ??
       [];
 
-    if (!Array.isArray(listings) || listings.length === 0) {
-      const fallback = buildFallbackComparableContext(query, city, sqm);
-      return { text: fallback, sales: [], structuredJson: "[]" };
-    }
+    if (!Array.isArray(listings) || listings.length === 0) return null;
 
     const sales = listings
       .slice(0, 20)
       .map((l: unknown) => parseBooliListing(l))
       .filter((s): s is ComparableSale => s !== null);
 
-    if (sales.length === 0) {
-      const fallback = buildFallbackComparableContext(query, city, sqm);
-      return { text: fallback, sales: [], structuredJson: "[]" };
-    }
+    if (sales.length === 0) return null;
 
     return buildComparablesResult(sales, query, targetAddress);
   } catch {
-    const fallback = buildFallbackComparableContext(query, city, sqm);
-    return { text: fallback, sales: [], structuredJson: "[]" };
+    // No comparables is reported to the model as missing data — never replaced by guesses.
+    return null;
   }
 }
 
@@ -203,16 +195,6 @@ function formatComparables(sales: ComparableSale[], area: string): string {
   }
 
   return lines.join("\n");
-}
-
-/** When scraping fails, return a context note so the AI knows to use its own knowledge */
-function buildFallbackComparableContext(query: string, city: string, sqm: number | null): string {
-  return (
-    `Jämförprisdata: Extern hämtning misslyckades. ` +
-    `Basera din pris/kvm-analys på din träningskunskap om typiska bostadspriser i ${city}${query !== city ? ` (${query})` : ""}.` +
-    (sqm ? ` Objektet är ${sqm} kvm.` : "") +
-    ` Ange om din marknadskunskap är begränsad eller osäker.`
-  );
 }
 
 function fmtSEK(v: number): string {

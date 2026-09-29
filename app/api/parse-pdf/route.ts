@@ -1,9 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import { extractTextFromUpload } from "@/lib/parse-pdf-file";
+import { checkRateLimit } from "@/lib/rateLimit";
 
 export const runtime = "nodejs";
+export const maxDuration = 60;
 
 export async function POST(req: NextRequest) {
+  const ip = req.headers.get("x-forwarded-for") ?? "unknown";
+  const rl = checkRateLimit(`pdf:${ip}`, { limit: 10, windowSec: 60 });
+  if (!rl.success) {
+    return NextResponse.json({ error: "För många uppladdningar. Vänta en stund." }, { status: 429 });
+  }
+
   let formData: FormData;
   try {
     formData = await req.formData();

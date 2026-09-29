@@ -3,6 +3,8 @@ import { z } from "zod";
 import { scrapeBrokerListing } from "@/lib/broker-scrape";
 import { checkRateLimit } from "@/lib/rateLimit";
 
+export const maxDuration = 60;
+
 const BodySchema = z.object({
   url: z.string().url("Ange en giltig http- eller https-länk."),
 });

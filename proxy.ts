@@ -3,7 +3,7 @@ import type { NextRequest } from "next/server";
 
 const PRODUCTION_HOST = "skajagbuda.se";
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const host = request.headers.get("host")?.split(":")[0]?.toLowerCase() ?? "";
 
   if (host.endsWith(".vercel.app") || host === `www.${PRODUCTION_HOST}`) {
@@ -17,5 +17,7 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico)$).*)"],
+  // /api is excluded: Stripe does not follow redirects, so a webhook endpoint registered on
+  // a *.vercel.app host must be answered directly.
+  matcher: ["/((?!api/|_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico)$).*)"],
 };

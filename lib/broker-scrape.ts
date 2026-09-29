@@ -1,15 +1,11 @@
 import { extractTextFromBuffer } from "@/lib/parse-pdf-file";
-import {
-  isAggregatorUrl,
-  resolveAggregatorListing,
-  type AggregatorResolveResult,
-} from "@/lib/aggregator-listing";
+import { isAggregatorUrl, resolveAggregatorListing } from "@/lib/aggregator-listing";
 import type {
   BrokerScrapeResponse,
   FieldFillStatus,
   ScrapeFieldKey,
 } from "@/lib/broker-scrape-types";
-import { SCRAPE_FIELD_KEYS } from "@/lib/broker-scrape-types";
+import { ESSENTIAL_FIELD_KEYS, SCRAPE_FIELD_KEYS, type ListingSource } from "@/lib/broker-scrape-types";
 import {
   decodeHtmlEntities,
   extractInlineJsonFragments,
@@ -539,66 +535,98 @@ function pageHasUsefulContent(html: string): boolean {
   );
 }
 
-function mergeScrapeResults(
-  originalUrl: string,
-  agg: AggregatorResolveResult,
-  broker: BrokerScrapeResponse
+/** Cloudflare-style interstitials ("Just a moment…") — treated as "no access", never worked around. */
+export function isBotChallenge(status: number, html: string): boolean {
+  if (![403, 429, 503].includes(status)) return false;
+  return /challenge-platform|cf-chl|Just a moment|Attention Required|captcha/i.test(html.slice(0, 20_000));
+}
+
+const SOURCE_LABEL: Record<ListingSource, string> = {
+  hemnet: "Hemnet",
+  booli: "Booli",
+  broker: "Mäklarsidan",
+};
+
+function finalizeResponse(
+  base: Omit<BrokerScrapeResponse, "ok" | "fieldStatus" | "missingEssentials">
 ): BrokerScrapeResponse {
-  const form: MutableFields = { ...broker.form };
-  for (const [key, value] of Object.entries(agg.fields)) {
-    if (value && !form[key as keyof MutableFields]) {
-      form[key as keyof MutableFields] = value;
-    }
-  }
-
-  const fieldStatus = buildFieldStatus(form);
-  const foundCount = SCRAPE_FIELD_KEYS.filter((k) => fieldStatus[k] === "found").length;
-  const ok =
-    foundCount >= 2 || !!form.listingText || !!form.annualReportText || broker.ok;
-
+  const fieldStatus = buildFieldStatus(base.form);
+  const missingEssentials = ESSENTIAL_FIELD_KEYS.filter((k) => fieldStatus[k] !== "found");
   return {
-    ...broker,
-    ok,
-    url: originalUrl,
-    form,
+    ...base,
+    ok: missingEssentials.length === 0,
     fieldStatus,
-    logs: [...agg.logs, ...broker.logs],
-    warnings: [...agg.warnings, ...broker.warnings],
+    missingEssentials,
   };
 }
 
-function buildAggregatorOnlyResponse(
-  agg: AggregatorResolveResult
-): BrokerScrapeResponse {
-  const fields = { ...agg.fields };
-  if (!fields.listingText && fields.address) {
-    fields.listingText = `Aggregerad annons (${agg.source}). Adress: ${fields.address}${fields.area ? `, ${fields.area}` : ""}.`;
+async function scrapeAggregatorListing(url: string): Promise<BrokerScrapeResponse> {
+  const source: ListingSource = new URL(url).hostname.replace(/^www\./, "") === "booli.se" ? "booli" : "hemnet";
+  const label = SOURCE_LABEL[source];
+
+  // The public listing page is tried once, like a normal visitor. If the site answers with a
+  // bot challenge we stop there — no retries, header tricks or headless browsers.
+  const [agg, direct] = await Promise.all([resolveAggregatorListing(url), scrapeListingPage(url)]);
+
+  const form: MutableFields = { ...agg.fields };
+  for (const key of SCRAPE_FIELD_KEYS) {
+    const value = direct.form[key];
+    if (value) form[key] = value;
   }
 
-  const fieldStatus = buildFieldStatus(fields);
-  const foundCount = SCRAPE_FIELD_KEYS.filter((k) => fieldStatus[k] === "found").length;
+  const logs = [...agg.logs];
+  const warnings = [...agg.warnings];
+  let documents = direct.documents;
 
-  return {
-    ok: foundCount >= 2 || !!fields.listingText,
-    url: agg.originalUrl,
-    form: fields,
-    fieldStatus,
-    logs: agg.logs,
-    warnings: agg.warnings,
-    documents: [],
-  };
+  if (direct.blocked) {
+    logs.push(`${label} tillåter inte automatisk hämtning av annonssidan.`);
+  } else {
+    logs.push(...direct.logs);
+    warnings.push(...direct.warnings.filter((w) => !/Få uppgifter kunde extraheras/i.test(w)));
+  }
+
+  if (agg.brokerUrl && !isAggregatorUrl(agg.brokerUrl)) {
+    const broker = await scrapeListingPage(agg.brokerUrl);
+    const roomsConflict =
+      !!form.rooms && !!broker.form.rooms && Number(form.rooms) !== Number(broker.form.rooms);
+    if (roomsConflict) {
+      // Same address, different apartment — using it would put someone else's price in the report.
+      warnings.push("Mäklarsidan vi hittade verkar gälla en annan lägenhet på samma adress och användes inte.");
+    } else {
+      for (const key of SCRAPE_FIELD_KEYS) {
+        if (!form[key] && broker.form[key]) form[key] = broker.form[key];
+      }
+      logs.push(...broker.logs);
+      documents = [...documents, ...broker.documents];
+    }
+  }
+
+  const result = finalizeResponse({
+    url,
+    source,
+    blocked: !!direct.blocked,
+    form,
+    logs,
+    warnings,
+    documents,
+  });
+
+  if (result.missingEssentials?.length) {
+    warnings.push(
+      direct.blocked
+        ? `${label} släpper inte igenom automatiska hämtningar, så pris, avgift och boarea kunde inte läsas. Klistra in annonstexten eller fyll i uppgifterna i nästa steg.`
+        : `Vi kunde inte läsa allt från ${label}. Klistra in annonstexten eller fyll i det som saknas i nästa steg.`
+    );
+  }
+  return result;
 }
 
 export async function scrapeBrokerListing(url: string): Promise<BrokerScrapeResponse> {
-  if (isAggregatorUrl(url)) {
-    const agg = await resolveAggregatorListing(url);
-    if (agg.brokerUrl && !isAggregatorUrl(agg.brokerUrl)) {
-      const brokerResult = await scrapeBrokerListing(agg.brokerUrl);
-      return mergeScrapeResults(url, agg, brokerResult);
-    }
-    return buildAggregatorOnlyResponse(agg);
-  }
+  if (isAggregatorUrl(url)) return scrapeAggregatorListing(url);
+  return scrapeListingPage(url);
+}
 
+async function scrapeListingPage(url: string): Promise<BrokerScrapeResponse> {
   const logs: string[] = [];
   const warnings: string[] = [];
   const fields: MutableFields = {};
@@ -643,35 +671,47 @@ export async function scrapeBrokerListing(url: string): Promise<BrokerScrapeResp
     httpStatus = res.status;
     html = await res.text();
 
+    if (isBotChallenge(httpStatus, html)) {
+      console.info("[scrape] bot challenge", { host: parsedUrl.hostname, status: httpStatus });
+      return finalizeResponse({
+        url: parsedUrl.toString(),
+        source: "broker",
+        blocked: true,
+        form: {},
+        logs,
+        warnings: [
+          "Sidan tillåter inte automatisk hämtning. Klistra in annonstexten eller fyll i uppgifterna i nästa steg.",
+        ],
+        documents: [],
+      });
+    }
+
     if (!res.ok && !(httpStatus === 404 && pageHasUsefulContent(html))) {
       warnings.push(`Sidan svarade med status ${res.status}.`);
-      return {
-        ok: false,
+      return finalizeResponse({
         url: parsedUrl.toString(),
+        source: "broker",
         form: {},
-        fieldStatus: emptyStatus(),
         logs,
         warnings,
         documents: [],
-      };
+      });
     }
 
     if (httpStatus === 404) {
       warnings.push("Objektet kan vara borttaget — försöker läsa kvarvarande data på sidan.");
     }
   } catch (err) {
-    warnings.push(
-      `Kunde inte hämta sidan: ${err instanceof Error ? err.message : "nätverksfel"}. Klistra in annonsen manuellt.`
-    );
-    return {
-      ok: false,
+    console.warn("[scrape] fetch failed", { host: parsedUrl.hostname, err: String(err) });
+    warnings.push("Kunde inte hämta sidan (tog för lång tid eller nätverksfel). Klistra in annonsen manuellt.");
+    return finalizeResponse({
       url: parsedUrl.toString(),
+      source: "broker",
       form: {},
-      fieldStatus: emptyStatus(),
       logs,
       warnings,
       documents: [],
-    };
+    });
   }
 
   logs.push("Analyserar sidans data…");
@@ -737,23 +777,16 @@ export async function scrapeBrokerListing(url: string): Promise<BrokerScrapeResp
     if (brfClean) fields.associationName = brfClean[1].trim();
   }
 
-  const fieldStatus = buildFieldStatus(fields);
-  const foundCount = SCRAPE_FIELD_KEYS.filter((k) => fieldStatus[k] === "found").length;
-  const ok = foundCount >= 2 || !!fields.listingText || !!fields.annualReportText;
-
-  if (!ok) {
-    warnings.push(
-      "Få uppgifter kunde extraheras automatiskt. Komplettera manuellt i nästa steg."
-    );
-  }
-
-  return {
-    ok,
+  const result = finalizeResponse({
     url: parsedUrl.toString(),
+    source: "broker",
     form: fields,
-    fieldStatus,
     logs,
     warnings,
     documents,
-  };
+  });
+  if (!result.ok) {
+    warnings.push("Få uppgifter kunde extraheras automatiskt. Komplettera manuellt i nästa steg.");
+  }
+  return result;
 }

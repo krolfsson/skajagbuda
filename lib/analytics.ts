@@ -17,7 +17,9 @@ export type AnalyticsEvent =
   | "paywall_viewed"
   | "checkout_clicked"
   | "purchase_completed"
-  | "full_analysis_completed";
+  | "full_analysis_completed"
+  | "listing_import_result"
+  | "import_fallback_used";
 
 export type AnalyticsPayload = Record<string, string | number | boolean | undefined>;
 

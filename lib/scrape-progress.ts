@@ -81,7 +81,10 @@ export function deriveScrapeSteps(
       /Analyserar sidans data/i,
     ]) || !pageFetchFailed;
 
-  if (pageFetched && !pageFetchFailed) {
+  if (result.blocked) {
+    steps[0].status = "skipped";
+    steps[0].note = "Sidan tillåter inte automatisk hämtning";
+  } else if (pageFetched && !pageFetchFailed) {
     steps[0].status = "done";
   } else if (pageFetchFailed) {
     steps[0].status = "skipped";
@@ -143,7 +146,24 @@ export type ScrapeSummary = {
   partial: boolean;
 };
 
+const SOURCE_NAME = { hemnet: "Hemnet", booli: "Booli", broker: "Mäklarsidan" } as const;
+
 export function buildScrapeSummary(result: BrokerScrapeResponse): ScrapeSummary {
+  if (result.missingEssentials && result.missingEssentials.length > 0) {
+    const site = SOURCE_NAME[result.source ?? "broker"];
+    const found = Object.values(result.fieldStatus).filter((s) => s === "found").length;
+    return {
+      headline: found > 0 ? "Vi fick med en del — resten fyller du i" : "Automatisk hämtning gick inte",
+      intro:
+        "Du kan fortsätta ändå: klistra in annonstexten, ladda upp prospektet eller fyll i de viktigaste uppgifterna i nästa steg.",
+      summaryLine: result.blocked
+        ? `${site} tillåter inte automatisk hämtning, så utgångspris och boarea kunde inte läsas.${found > 0 ? " Det vi kunde läsa från länken är ifyllt." : ""}`
+        : `Vi kunde inte läsa utgångspris och boarea från sidan.${found > 0 ? " Det vi hittade är ifyllt." : ""}`,
+      cta: "Komplettera uppgifter",
+      partial: true,
+    };
+  }
+
   const hasListing = hasListingData(result);
   const docCount = result.documents.length;
   const extractedCount = result.documents.filter((d) => d.extracted).length;

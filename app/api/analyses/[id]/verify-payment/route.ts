@@ -48,7 +48,6 @@ export async function POST(
     data: {
       paymentStatus: "PAID",
       analysisUnlocked: true,
-      fullAnalysisStatus: analysis.fullAnalysisStatus === "COMPLETED" ? "COMPLETED" : "LOCKED",
       stripeCheckoutSessionId: session.id,
       stripePaymentIntentId:
         typeof session.payment_intent === "string"

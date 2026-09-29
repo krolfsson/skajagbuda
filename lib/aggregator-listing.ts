@@ -37,6 +37,79 @@ export function isAggregatorUrl(url: string): boolean {
   }
 }
 
+/** ASCII slug (diacritics stripped by Hemnet) → display name for common municipalities. */
+const MUNICIPALITY_NAMES: Record<string, string> = {
+  goteborg: "Göteborg",
+  malmo: "Malmö",
+  linkoping: "Linköping",
+  norrkoping: "Norrköping",
+  jonkoping: "Jönköping",
+  orebro: "Örebro",
+  vasteras: "Västerås",
+  umea: "Umeå",
+  lulea: "Luleå",
+  gavle: "Gävle",
+  vaxjo: "Växjö",
+  boras: "Borås",
+  sodertalje: "Södertälje",
+  taby: "Täby",
+  jarfalla: "Järfälla",
+  lidingo: "Lidingö",
+  varmdo: "Värmdö",
+  tyreso: "Tyresö",
+  ekero: "Ekerö",
+  osteraker: "Österåker",
+  nynashamn: "Nynäshamn",
+  norrtalje: "Norrtälje",
+  molndal: "Mölndal",
+  upplands_vasby: "Upplands Väsby",
+  upplands_bro: "Upplands-Bro",
+};
+
+/** First word of two-word municipality names ("upplands-vasby-kommun"). */
+const MUNICIPALITY_PREFIXES = new Set(["upplands", "lilla", "dals", "ostra", "norra", "sodra", "vastra"]);
+
+const HEMNET_TYPES = /^(lagenhet|villa|radhus|fritidshus|parhus|kedjehus|tomt|gard|vinterbonat|andelsboende|agarlagenhet)$/i;
+
+function municipalityFromSlug(tokens: string[]): string {
+  // Hemnet uses the genitive ("stockholms-kommun"); keep native s-endings ("boras").
+  const last = tokens[tokens.length - 1];
+  const base = last.endsWith("s") && !/(as|nas|fors)$/.test(last) ? last.slice(0, -1) : last;
+  const key = [...tokens.slice(0, -1), base].join("_");
+  return MUNICIPALITY_NAMES[key] ?? capitalizeWords([...tokens.slice(0, -1), base].join(" "));
+}
+
+/**
+ * Current Hemnet slug: {typ}-{rum}rum-{område...}-{kommun}-kommun-{gata...}-{nr}-{id}.
+ * Hemnet strips å/ä/ö from slugs, so names may need a spelling check by the user.
+ */
+function parseHemnetSlugWithKommun(parts: string[], fields: MutableFields): boolean {
+  const kommunIdx = parts.lastIndexOf("kommun");
+  if (kommunIdx < 2) return false;
+
+  let i = 0;
+  if (HEMNET_TYPES.test(parts[i])) i++;
+  const roomsM = parts[i]?.match(/^(\d+(?:[.,]\d+)?)rum$/i);
+  if (roomsM) {
+    setField(fields, "rooms", roomsM[1].replace(",", "."), { overwrite: true });
+    i++;
+  }
+
+  let muniStart = kommunIdx - 1;
+  if (muniStart - 1 >= i && MUNICIPALITY_PREFIXES.has(parts[muniStart - 1])) muniStart--;
+  const muniTokens = parts.slice(muniStart, kommunIdx);
+  const areaTokens = parts.slice(i, muniStart);
+  if (muniTokens.length) setField(fields, "city", municipalityFromSlug(muniTokens), { overwrite: true });
+  if (areaTokens.length) setField(fields, "area", capitalizeWords(areaTokens.join(" ")), { overwrite: true });
+
+  const streetTokens = parts.slice(kommunIdx + 1);
+  if (streetTokens.length >= 2 && /^\d+[a-z]?$/i.test(streetTokens[streetTokens.length - 1])) {
+    const number = streetTokens.pop()!;
+    setField(fields, "address", `${capitalizeWords(streetTokens.join(" "))} ${number}`, { overwrite: true });
+  }
+  return true;
+}
+
 export function parseHemnetUrl(url: string): { hemnetId?: string; fields: MutableFields } {
   const fields: MutableFields = {};
 
@@ -48,6 +121,9 @@ export function parseHemnetUrl(url: string): { hemnetId?: string; fields: Mutabl
     const slug = m[1];
     const hemnetId = m[2];
     const parts = slug.split("-").filter(Boolean);
+    if (parseHemnetSlugWithKommun(parts, fields)) return { hemnetId, fields };
+
+    // Older slug format without "-kommun-".
     const rest: string[] = [];
 
     for (const part of parts) {
@@ -108,19 +184,16 @@ async function applyBooliListing(
 async function resolveViaBooliApi(
   booliId: string,
   fields: MutableFields,
-  logs: string[],
-  warnings: string[]
+  logs: string[]
 ): Promise<string | undefined> {
   if (!getBooliCredentials()) {
-    warnings.push(
-      "Booli API-nycklar saknas (BOOLI_CALLER_ID, BOOLI_API_KEY) — begränsad data från Booli."
-    );
+    console.info("[aggregator] Booli API credentials not configured — skipping API lookup.");
     return undefined;
   }
 
   const listing = await fetchBooliListing(booliId);
   if (!listing) {
-    warnings.push("Kunde inte hämta Booli-annons via API.");
+    console.warn("[aggregator] Booli API returned no listing", { booliId });
     return undefined;
   }
 
@@ -132,8 +205,7 @@ async function resolveViaBooliApi(
 
 async function resolveHemnetViaBooliSearch(
   fields: MutableFields,
-  logs: string[],
-  warnings: string[]
+  logs: string[]
 ): Promise<string | undefined> {
   if (!getBooliCredentials()) return undefined;
   const q = [fields.address, fields.area, fields.city].filter(Boolean).join(" ");
@@ -158,6 +230,12 @@ async function resolveHemnetViaBooliSearch(
   return brokerUrl;
 }
 
+/**
+ * Resolves what we legitimately can for a Hemnet/Booli link: data encoded in the URL,
+ * the Booli API when credentials are configured, and a likely broker page. The listing
+ * pages themselves are fetched separately (see scrapeBrokerListing) and are usually
+ * behind a bot challenge that we do not try to get around.
+ */
 export async function resolveAggregatorListing(url: string): Promise<AggregatorResolveResult> {
   const host = new URL(url).hostname.replace(/^www\./, "");
   const logs: string[] = [];
@@ -167,67 +245,36 @@ export async function resolveAggregatorListing(url: string): Promise<AggregatorR
   if (host === "hemnet.se") {
     const { hemnetId, fields: hemnetFields } = parseHemnetUrl(url);
     Object.assign(fields, hemnetFields);
-    logs.push(`Hemnet-annons ${hemnetId ?? ""} — grunddata från URL.`.trim());
-    logs.push("Hemnet skyddas av Cloudflare — kompletterar via Booli API om nycklar finns.");
+    if (Object.keys(hemnetFields).length > 0) {
+      logs.push("Hemnet: adress, område och rum lästa från länken.");
+    }
 
-    const brokerUrl = await resolveHemnetViaBooliSearch(fields, logs, warnings);
-    let resolvedBrokerUrl = brokerUrl;
-
-    if (!resolvedBrokerUrl && fields.address) {
+    let brokerUrl = await resolveHemnetViaBooliSearch(fields, logs);
+    if (!brokerUrl && fields.address) {
       const discovered = await discoverBrokerUrl(fields);
       if (discovered) {
-        resolvedBrokerUrl = discovered.url;
+        brokerUrl = discovered.url;
         logs.push(`Mäklarsökning: hittade sannolik länk → ${discovered.url}`);
       }
     }
 
-    if (!resolvedBrokerUrl && !getBooliCredentials()) {
-      warnings.push(
-        "För bästa Hemnet-data: lägg till BOOLI_CALLER_ID och BOOLI_API_KEY i .env, eller klistra in mäklarens direktlänk."
-      );
-    }
-
-    return {
-      source: "hemnet",
-      originalUrl: url,
-      brokerUrl: resolvedBrokerUrl,
-      hemnetId,
-      fields,
-      logs,
-      warnings,
-    };
+    return { source: "hemnet", originalUrl: url, brokerUrl, hemnetId, fields, logs, warnings };
   }
 
   if (host === "booli.se") {
-    const booliId = parseBooliUrl(url);
+    const booliId = parseBooliUrl(url) ?? undefined;
     if (!booliId) {
-      warnings.push("Kunde inte läsa Booli-annons-ID från URL.");
       return { source: "booli", originalUrl: url, fields, logs, warnings };
     }
 
     logs.push(`Booli-annons ${booliId}.`);
-    const brokerUrl = await resolveViaBooliApi(booliId, fields, logs, warnings);
-
+    let brokerUrl = await resolveViaBooliApi(booliId, fields, logs);
     if (!brokerUrl && fields.address) {
       const discovered = await discoverBrokerUrl(fields);
       if (discovered) {
+        brokerUrl = discovered.url;
         logs.push(`Mäklarsökning: hittade sannolik länk → ${discovered.url}`);
-        return {
-          source: "booli",
-          originalUrl: url,
-          brokerUrl: discovered.url,
-          booliId,
-          fields,
-          logs,
-          warnings,
-        };
       }
-    }
-
-    if (!brokerUrl && Object.keys(fields).length === 0) {
-      warnings.push(
-        "Booli skyddas av Cloudflare. Lägg till BOOLI_CALLER_ID och BOOLI_API_KEY i .env för full funktion."
-      );
     }
 
     return { source: "booli", originalUrl: url, brokerUrl, booliId, fields, logs, warnings };

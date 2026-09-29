@@ -8705,3 +8705,102 @@ h1.analysis-preview__title {
     grid-template-columns: 1fr;
   }
 }
+
+/* ─── Import fallback (paste text / upload PDF when automatic import is incomplete) ─── */
+.import-fallback {
+  padding: 14px 16px;
+  margin-bottom: 16px;
+  background: var(--brand-secondary-light);
+  border: 1px solid var(--brand-secondary-border);
+  border-radius: 8px;
+}
+
+.import-fallback__title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--fg);
+  margin: 0 0 4px;
+}
+
+.import-fallback__text {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.55;
+  margin: 0 0 12px;
+}
+
+.import-fallback__label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--fg);
+  margin: 0 0 4px;
+}
+
+.import-fallback__textarea {
+  width: 100%;
+  min-height: 110px;
+  padding: 9px 12px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--fg);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  resize: vertical;
+  margin-bottom: 8px;
+}
+
+.import-fallback__file {
+  display: block;
+  max-width: 100%;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.import-fallback__status {
+  margin: 12px 0 0;
+  padding: 8px 10px;
+  font-size: 13px;
+  line-height: 1.5;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.import-fallback__status--ok {
+  color: var(--success);
+  border-color: var(--success-border);
+  background: var(--success-bg);
+}
+
+.import-fallback__status--warn {
+  color: var(--fg);
+}
+
+.import-fallback__status--error {
+  color: var(--danger, #b42828);
+  border-color: var(--danger-border, rgba(180, 40, 40, 0.25));
+  background: var(--danger-bg, rgba(180, 40, 40, 0.08));
+}
+
+.analysis-field-required {
+  color: var(--brand);
+  font-weight: 700;
+}
+
+.analysis-manual-link {
+  margin-top: 12px;
+  padding: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--brand);
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+}
+
+.analysis-manual-link:hover {
+  text-decoration: underline;
+}

@@ -5,9 +5,10 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { trackEvent } from "@/lib/analytics";
 import { CTA_START_ANALYSIS } from "@/lib/brand";
 import type { BrokerScrapeResponse, FieldFillStatus, ScrapeFieldKey } from "@/lib/broker-scrape-types";
-import { SCRAPE_FIELD_KEYS } from "@/lib/broker-scrape-types";
+import { ESSENTIAL_FIELD_KEYS, SCRAPE_FIELD_KEYS } from "@/lib/broker-scrape-types";
 import { AnalyzingScreen } from "@/components/AnalyzingScreen";
 import { ScrapeProgress } from "@/components/ScrapeProgress";
+import { ImportFallback, type ImportedText } from "@/components/ImportFallback";
 
 type FormData = {
   title: string;
@@ -45,7 +46,7 @@ type FormData = {
 };
 
 const INITIAL: FormData = {
-  title: "", address: "", area: "", city: "Stockholm",
+  title: "", address: "", area: "", city: "",
   askingPrice: "", currentBid: "", monthlyFee: "",
   livingAreaSqm: "", rooms: "", floor: "", totalFloors: "",
   hasBalcony: false, balconyDirection: "", hasElevator: false, hasFireplace: false,
@@ -90,6 +91,20 @@ function formatValidationError(data: {
   return parts.length > 0 ? parts.join(" ") : (data.error ?? "Valideringsfel.");
 }
 
+/** Lenient number parsing for Swedish input: "4 950 000 kr" → 4950000, "54,5" → 54.5. */
+export function parseFormNumber(raw: string): number | null {
+  const cleaned = raw
+    .replace(/\u00a0|\u202f/g, " ")
+    .replace(/kr|kvm|m²|m2|rok|rum|:-/gi, "")
+    .trim();
+  if (!cleaned) return null;
+  const normalized = /^\d{1,3}([ .]\d{3})+([.,]\d+)?$/.test(cleaned)
+    ? cleaned.replace(/[ .](?=\d{3}\b)/g, "").replace(",", ".")
+    : cleaned.replace(/\s/g, "").replace(",", ".");
+  const n = Number(normalized);
+  return Number.isFinite(n) ? n : null;
+}
+
 const RISK_OPTIONS = [
   { id: "stambyte", label: "Planerat stambyte" },
   { id: "tomtratt", label: "Tomträtt" },
@@ -110,13 +125,14 @@ const SCRAPE_FIELD_CONFIG: Array<{
   kind: "input" | "textarea";
   placeholder?: string;
   minHeight?: number;
+  inputMode?: "numeric" | "decimal";
 }> = [
   { key: "address", label: "Adress", section: "objekt", kind: "input" },
   { key: "area", label: "Område", section: "objekt", kind: "input" },
   { key: "city", label: "Stad", section: "objekt", kind: "input" },
-  { key: "askingPrice", label: "Utgångspris (kr)", section: "objekt", kind: "input" },
-  { key: "monthlyFee", label: "Månadsavgift (kr)", section: "objekt", kind: "input" },
-  { key: "livingAreaSqm", label: "Boyta (kvm)", section: "objekt", kind: "input" },
+  { key: "askingPrice", label: "Utgångspris (kr)", section: "objekt", kind: "input", placeholder: "t.ex. 4 950 000", inputMode: "numeric" },
+  { key: "monthlyFee", label: "Månadsavgift (kr)", section: "objekt", kind: "input", placeholder: "t.ex. 3 200", inputMode: "numeric" },
+  { key: "livingAreaSqm", label: "Boyta (kvm)", section: "objekt", kind: "input", placeholder: "t.ex. 54", inputMode: "decimal" },
   { key: "rooms", label: "Antal rum", section: "objekt", kind: "input" },
   { key: "floor", label: "Våning", section: "objekt", kind: "input", placeholder: "t.ex. 3" },
   {
@@ -170,16 +186,19 @@ function FieldLabel({
   children,
   status,
   optional,
+  required,
 }: {
   children: React.ReactNode;
   status?: FieldFillStatus;
   optional?: boolean;
+  required?: boolean;
 }) {
   return (
     <div className="analysis-field-label">
       <label className="analysis-field-label-text">
         {children}
         {optional && <span className="analysis-field-optional">Valfritt</span>}
+        {required && <span className="analysis-field-optional analysis-field-required">Krävs</span>}
       </label>
       <FillStatus status={status} />
     </div>
@@ -250,9 +269,10 @@ function ScrapeField({
       ? { ...inputStyle, minHeight: `${config.minHeight ?? 100}px`, resize: "vertical" as const, lineHeight: 1.6 }
       : inputStyle;
 
+  const required = (ESSENTIAL_FIELD_KEYS as readonly string[]).includes(config.key);
   return (
     <div className={config.kind === "textarea" ? "analysis-field-full" : undefined}>
-      <FieldLabel status={status}>{config.label}</FieldLabel>
+      <FieldLabel status={status} required={required}>{config.label}</FieldLabel>
       {config.kind === "textarea" ? (
         <textarea
           style={fieldStyle}
@@ -266,6 +286,8 @@ function ScrapeField({
           value={value}
           onChange={(e) => onChange(e.target.value)}
           placeholder={config.placeholder}
+          inputMode={config.inputMode}
+          aria-required={required || undefined}
         />
       )}
       {config.kind === "textarea" && value.trim() && (
@@ -291,6 +313,8 @@ export default function NewAnalysisFlow() {
   const [analyzing, setAnalyzing] = useState(false);
   const [analyzeTitle, setAnalyzeTitle] = useState("");
   const [error, setError] = useState<string | null>(null);
+  /** Shown on step 3 when automatic import could not read everything. */
+  const [importNotice, setImportNotice] = useState<{ headline: string; message: string } | null>(null);
   const flowTopRef = useRef<HTMLDivElement>(null);
   const queryUrlRef = useRef<string | null>(null);
   const pendingAutoStartRef = useRef(false);
@@ -361,13 +385,40 @@ export default function NewAnalysisFlow() {
       setScrapeResult(result);
       setForm(applyScrape(form, result));
       setFieldStatus(result.fieldStatus);
+      trackEvent("listing_import_result", {
+        source: result.source ?? "broker",
+        blocked: !!result.blocked,
+        complete: result.ok,
+        found: countFound(result.fieldStatus),
+      });
+      setImportNotice(
+        result.missingEssentials?.length
+          ? {
+              headline: result.blocked
+                ? "Automatisk hämtning gick inte hela vägen"
+                : "Några viktiga uppgifter saknas",
+              message:
+                (result.blocked
+                  ? `${result.source === "booli" ? "Booli" : result.source === "hemnet" ? "Hemnet" : "Sidan"} tillåter inte att annonsen hämtas automatiskt. `
+                  : "") +
+                "För en meningsfull budanalys behöver vi minst utgångspris och boarea — gärna även månadsavgift.",
+            }
+          : null
+      );
       setScraping(false);
       setTimeout(() => setStep(3), 800);
     } catch (err) {
       if (err instanceof DOMException && err.name === "AbortError") return;
-      setError(err instanceof Error ? err.message : "Kunde inte hämta sidan.");
-      setStep(1);
+      // Import failure is never a dead end — continue with manual input.
+      trackEvent("listing_import_result", { source: "unknown", blocked: false, complete: false, found: 0 });
+      setImportNotice({
+        headline: "Vi kunde inte hämta annonsen automatiskt",
+        message:
+          (err instanceof Error && err.message ? `${err.message} ` : "") +
+          "Du kan fortsätta ändå — vi behöver minst utgångspris och boarea.",
+      });
       setScraping(false);
+      setStep(3);
     }
   }
 
@@ -383,7 +434,76 @@ export default function NewAnalysisFlow() {
     scrapeAbortRef.current?.abort();
     scrapeAbortRef.current = null;
     setScraping(false);
+    setImportNotice({
+      headline: "Fyll i uppgifterna själv",
+      message: "Klistra in annonstexten eller fyll i minst utgångspris och boarea — gärna även månadsavgift.",
+    });
     setStep(3);
+  }
+
+  function startManual() {
+    setError(null);
+    setScrapeResult(null);
+    setImportNotice({
+      headline: "Ingen länk? Inga problem",
+      message: "Klistra in annonstexten, ladda upp prospektet eller fyll i minst utgångspris och boarea.",
+    });
+    setStep(3);
+  }
+
+  /** Fills only empty fields from pasted/uploaded text; the text itself is kept as analysis input. */
+  function applyImportedText({ extract, text, kind }: ImportedText): string[] {
+    const filled: string[] = [];
+    const next = { ...form };
+    for (const [key, value] of Object.entries(extract.fields) as [ScrapeFieldKey, string][]) {
+      if (key === "listingText" || key === "annualReportText") continue;
+      if (value && !next[key].trim()) {
+        next[key] = value;
+        filled.push(key);
+      }
+    }
+    if (extract.hasBalcony !== undefined && !next.hasBalcony) next.hasBalcony = extract.hasBalcony;
+    if (extract.hasElevator !== undefined && !next.hasElevator) next.hasElevator = extract.hasElevator;
+    const target = kind === "annual_report" ? "annualReportText" : "listingText";
+    next[target] = [next[target].trim(), text].filter(Boolean).join("\n\n").slice(0, 80_000);
+    setForm(next);
+    setFieldStatus((prev) => {
+      const updated = { ...prev };
+      for (const key of [...filled, target] as ScrapeFieldKey[]) updated[key] = "found";
+      return updated;
+    });
+    return filled;
+  }
+
+  function validateEssentials(): string | null {
+    const missing: string[] = [];
+    const invalid: string[] = [];
+    const price = parseFormNumber(form.askingPrice);
+    const sqm = parseFormNumber(form.livingAreaSqm);
+    if (!form.askingPrice.trim()) missing.push("utgångspris");
+    else if (!price || price < 100_000) invalid.push("utgångspris (ange hela kronor, t.ex. 4 950 000)");
+    if (!form.livingAreaSqm.trim()) missing.push("boarea");
+    else if (!sqm || sqm < 5 || sqm > 1000) invalid.push("boarea (antal kvm, t.ex. 54)");
+    for (const key of ["monthlyFee", "rooms", "floor", "totalFloors"] as const) {
+      if (form[key].trim() && parseFormNumber(form[key]) == null) {
+        invalid.push(VALIDATION_FIELD_LABELS[key].toLowerCase());
+      }
+    }
+    if (missing.length) {
+      return `Fyll i ${missing.join(" och ")} för att fortsätta — utan dem kan vi inte räkna pris/kvm eller rimliga budnivåer.`;
+    }
+    if (invalid.length) return `Kontrollera ${invalid.join(", ")}.`;
+    return null;
+  }
+
+  function continueFromDetails() {
+    const problem = validateEssentials();
+    if (problem) {
+      setError(problem);
+      return;
+    }
+    setError(null);
+    setStep(4);
   }
 
   function buildTitle() {
@@ -416,11 +536,11 @@ export default function NewAnalysisFlow() {
       userNotes: form.userNotes || undefined,
     };
 
+    const integerFields = new Set(["askingPrice", "currentBid", "monthlyFee", "totalFloors", "userMaxBudget", "userDownPayment", "userMonthlyComfortLimit"]);
     for (const field of numericFields) {
-      const val = form[field] as string;
-      if (!val) { delete payload[field]; continue; }
-      const n = Number(val);
-      payload[field] = isNaN(n) ? undefined : n;
+      const n = parseFormNumber(form[field] as string);
+      if (n == null) { delete payload[field]; continue; }
+      payload[field] = integerFields.has(field) ? Math.round(n) : n;
     }
 
     for (const key of Object.keys(payload)) {
@@ -431,8 +551,17 @@ export default function NewAnalysisFlow() {
 
   async function handleAnalyze() {
     if (loading) return;
-    if (!form.listingUrl.trim() && !form.address.trim() && !form.listingText.trim()) {
-      setError("Lägg till minst en länk, adress eller annonstext.");
+    const essentialsProblem = validateEssentials();
+    if (essentialsProblem) {
+      setError(essentialsProblem);
+      setStep(3);
+      return;
+    }
+    const badMoney = (["currentBid", "userMaxBudget", "userDownPayment", "userMonthlyComfortLimit"] as const).find(
+      (key) => form[key].trim() && parseFormNumber(form[key]) == null
+    );
+    if (badMoney) {
+      setError("Kontrollera beloppen — skriv hela kronor, t.ex. 5 200 000.");
       return;
     }
 
@@ -486,8 +615,8 @@ export default function NewAnalysisFlow() {
             Ny analys
           </h1>
           <p style={{ fontSize: "13px", color: "var(--muted)", lineHeight: 1.55, maxWidth: "520px" }}>
-            Klistra in länken till objektet på mäklarens hemsida — vi hämtar annons, dokument och
-            årsredovisning om de finns. Komplettera sedan det som saknas.
+            Klistra in länken till objektet — helst mäklarens egen sida. Vi hämtar det vi kan och du
+            kompletterar det som saknas.
           </p>
         </div>
 
@@ -500,7 +629,7 @@ export default function NewAnalysisFlow() {
 
           {step === 1 && (
             <div className="analysis-step-body">
-              <FieldLabel>Länk till mäklarens objektsida</FieldLabel>
+              <FieldLabel>Länk till objektet</FieldLabel>
               <input
                 type="url"
                 value={form.listingUrl}
@@ -509,10 +638,14 @@ export default function NewAnalysisFlow() {
                 style={inputStyle}
               />
               <p className="analysis-hint">
-                Fungerar med Fastighetsbyrån, Länsförsäkringar, Bjurfors, Svensk Fast, Erik Olsson
-                och de flesta andra mäklarsidor. Vi letar efter pris, avgift, förening och PDF:er
-                som årsredovisning.
+                Bäst resultat med mäklarens egen sida (Fastighetsbyrån, Länsförsäkringar, Bjurfors,
+                Svensk Fast, Erik Olsson m.fl.) — där hittar vi ofta även årsredovisningen. Hemnet och
+                Booli tillåter inte automatisk hämtning, så med de länkarna får vi oftast bara adress
+                och rum och du klistrar in resten.
               </p>
+              <button type="button" className="analysis-manual-link" onClick={startManual}>
+                Har du ingen länk? Fyll i uppgifterna själv →
+              </button>
             </div>
           )}
 
@@ -526,6 +659,13 @@ export default function NewAnalysisFlow() {
 
           {step === 3 && (
             <div className="analysis-step-body">
+              {importNotice && (
+                <ImportFallback
+                  headline={importNotice.headline}
+                  message={importNotice.message}
+                  onImport={applyImportedText}
+                />
+              )}
               <div className="scrape-summary">
                 {foundCount === SCRAPE_FIELD_KEYS.length ? (
                   <>
@@ -574,6 +714,26 @@ export default function NewAnalysisFlow() {
                   </div>
                 );
               })}
+
+              <p className="analysis-section-title">Bekvämligheter</p>
+              <div className="analysis-risk-grid">
+                <label className="analysis-risk-check">
+                  <input
+                    type="checkbox"
+                    checked={form.hasBalcony}
+                    onChange={(e) => set("hasBalcony", e.target.checked)}
+                  />
+                  Balkong / uteplats
+                </label>
+                <label className="analysis-risk-check">
+                  <input
+                    type="checkbox"
+                    checked={form.hasElevator}
+                    onChange={(e) => set("hasElevator", e.target.checked)}
+                  />
+                  Hiss
+                </label>
+              </div>
 
               <p className="analysis-section-title">Risker</p>
               <div className="analysis-risk-grid">
@@ -645,7 +805,15 @@ export default function NewAnalysisFlow() {
 
           <div className="analysis-nav">
             {step > 1 && step !== 2 ? (
-              <button type="button" className="analysis-nav-back" onClick={() => setStep((s) => s - 1)}>
+              <button
+                type="button"
+                className="analysis-nav-back"
+                onClick={() => {
+                  setError(null);
+                  // Step 2 is the import progress screen; going back lands on the link step.
+                  setStep((s) => (s === 3 ? 1 : s - 1));
+                }}
+              >
                 ← Tillbaka
               </button>
             ) : (
@@ -658,7 +826,7 @@ export default function NewAnalysisFlow() {
                 </button>
               )}
               {step === 3 && (
-                <button type="button" className="analysis-nav-next" onClick={() => { setError(null); setStep(4); }}>
+                <button type="button" className="analysis-nav-next" onClick={continueFromDetails}>
                   Fortsätt →
                 </button>
               )}

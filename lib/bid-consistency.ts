@@ -97,7 +97,8 @@ function syncWalkAwayText(text: string, walkAway: number): string {
  */
 export function alignBidConsistency(
   bidStrategy: Scorecard["bidStrategy"],
-  bidIntervals: Scorecard["bidIntervals"]
+  bidIntervals: Scorecard["bidIntervals"],
+  opts: { preferLevels?: boolean } = {}
 ): { bidStrategy: Scorecard["bidStrategy"]; bidIntervals: Scorecard["bidIntervals"] } {
   const ceiling = bidIntervals.recommendedCeiling;
   const textWalkAway = parseWalkAwayFromText(bidStrategy.walkAwayPoint);
@@ -110,7 +111,10 @@ export function alignBidConsistency(
     (ceiling ? ceiling + 150_000 : null);
 
   // Om strukturerat walk-away är lägre än text (eller öppningsbud redan över nivån) — lita på texten.
-  if (textWalkAway && levelWalkAway && textWalkAway !== levelWalkAway) {
+  // Utom när nivåerna redan är normaliserade kring utgångspriset: då synkas texten till nivån.
+  if (opts.preferLevels && levelWalkAway) {
+    walkAway = levelWalkAway;
+  } else if (textWalkAway && levelWalkAway && textWalkAway !== levelWalkAway) {
     if (textWalkAway > levelWalkAway || (opening && opening >= levelWalkAway)) {
       walkAway = textWalkAway;
     }

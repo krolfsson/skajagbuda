@@ -93,7 +93,10 @@ Du MÅSTE skilja på:
 
 ### 7. Prisbild och jämförelse (priceAnalysis + comparisonObjects)
 - Fyll priceAnalysis med konkret prisanalys: utgångspris, pris/kvm, bedömd rimlig nivå, områdesjämförelse, slutsats (Rimligt/Pressat/Överprisat/Osäkert).
+- verdict betyder: "Rimligt" = utgångspriset ligger i nivå med underlaget; "Pressat" = utgångspriset ligger lågt mot underlaget (lockpris, slutpriset blir sannolikt högre); "Överprisat" = utgångspriset ligger högt; "Osäkert" = underlaget räcker inte för en bedömning.
+- Om utgångspris saknas: sätt maxBidSuggestion och alla bidIntervals-belopp till null, skriv inga budbelopp i bidStrategy och förklara att utgångspris behövs.
 - Om jämförpriser finns i underlaget: strukturera minst 2–3 i comparisonObjects med adress, datum, storlek, slutpris, pris/kvm, relevans och kommentar.
+- comparisonObjects får BARA innehålla sålda objekt som står i underlaget. Hitta aldrig på adresser eller slutpriser — lämna listan tom hellre.
 - Om objekt på samma adress finns: sätt isSameAddress: true och lyft i priorSalesNote — det väger tungt.
 - Om bekräftade jämförelseobjekt saknas: skriv i missingComparablesNote att "Vi saknar bekräftade jämförelseobjekt i underlaget. Därför bör prisbedömningen ses som mer osäker." — men resonera ändå utifrån pris/kvm, område och objektdata.
 
@@ -300,7 +303,7 @@ export function buildUserPrompt(
   );
 
   sections.push(
-    `## Bostadens egenskaper\n- Boarea: ${fmt(analysis.livingAreaSqm, " kvm")}\n- Rum: ${fmt(analysis.rooms)}\n- Våning: ${floorStr}\n- Bekvämligheter: ${amenities.length > 0 ? amenities.join(", ") : "Inga noterade"}\n- Balkongläge: ${fmt(analysis.balconyDirection)}`
+    `## Bostadens egenskaper\n- Boarea: ${fmt(analysis.livingAreaSqm, " kvm")}\n- Rum: ${fmt(analysis.rooms)}\n- Våning: ${floorStr}\n- Bekvämligheter: ${amenities.length > 0 ? amenities.join(", ") : "Ej angivet i formuläret (kontrollera annonstexten)"}\n- Balkongläge: ${fmt(analysis.balconyDirection)}`
   );
 
   sections.push(

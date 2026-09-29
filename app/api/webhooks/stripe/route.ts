@@ -24,23 +24,39 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Invalid signature." }, { status: 400 });
   }
 
-  if (event.type === "checkout.session.completed") {
+  if (
+    event.type === "checkout.session.completed" ||
+    event.type === "checkout.session.async_payment_succeeded"
+  ) {
     const session = event.data.object;
     const analysisId = session.metadata?.analysisId;
 
-    if (analysisId) {
+    // Delayed payment methods complete the session before the money arrives; they unlock
+    // on async_payment_succeeded instead.
+    if (analysisId && session.payment_status === "paid") {
+      // Idempotent: repeated deliveries write the same values. fullAnalysisStatus is left
+      // alone — the report the customer paid for is the one already generated.
       await prisma.propertyAnalysis.updateMany({
         where: { id: analysisId },
         data: {
           paymentStatus: "PAID",
           analysisUnlocked: true,
-          fullAnalysisStatus: "LOCKED",
           stripeCheckoutSessionId: session.id,
           stripePaymentIntentId:
             typeof session.payment_intent === "string"
               ? session.payment_intent
               : session.payment_intent?.id ?? null,
         },
+      });
+    }
+  }
+
+  if (event.type === "checkout.session.async_payment_failed") {
+    const analysisId = event.data.object.metadata?.analysisId;
+    if (analysisId) {
+      await prisma.propertyAnalysis.updateMany({
+        where: { id: analysisId, paymentStatus: { not: "PAID" } },
+        data: { paymentStatus: "FAILED" },
       });
     }
   }

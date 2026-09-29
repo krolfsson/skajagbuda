@@ -50,6 +50,14 @@ export function AnalysisLoader({
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [active, setActive] = useState(!manual && !passive);
+  const [attempt, setAttempt] = useState(0);
+
+  // Passive: another request is already running the analysis — poll until it lands.
+  useEffect(() => {
+    if (!passive) return;
+    const timer = setInterval(() => router.refresh(), 5000);
+    return () => clearInterval(timer);
+  }, [passive, router]);
 
   useEffect(() => {
     if (!active || passive) return;
@@ -76,7 +84,7 @@ export function AnalysisLoader({
     return () => {
       cancelled = true;
     };
-  }, [analysisId, router, active, passive]);
+  }, [analysisId, router, active, passive, attempt]);
 
   if (manual && !active) {
     return (
@@ -97,7 +105,7 @@ export function AnalysisLoader({
       <p style={{ fontSize: "13px", color: "var(--muted)", maxWidth: "360px", margin: "0 auto" }}>
         {error ?? "Det tar cirka 30–60 sekunder. Sidan uppdateras automatiskt."}
       </p>
-      {error && manual && (
+      {error && (
         <div style={{ marginTop: "20px" }}>
         <button
           type="button"
@@ -105,6 +113,7 @@ export function AnalysisLoader({
           onClick={() => {
             setError(null);
             setActive(true);
+            setAttempt((n) => n + 1);
           }}
         >
           Försök igen
