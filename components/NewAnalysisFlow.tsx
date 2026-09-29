@@ -629,7 +629,7 @@ export default function NewAnalysisFlow() {
 
           {step === 1 && (
             <div className="analysis-step-body">
-              <FieldLabel>Länk till objektet</FieldLabel>
+              <FieldLabel>Länk från mäklarens hemsida</FieldLabel>
               <input
                 type="url"
                 value={form.listingUrl}
@@ -637,6 +637,13 @@ export default function NewAnalysisFlow() {
                 placeholder="https://www.fastighetsbyran.com/… eller lansfast.se, erikolsson.se m.fl."
                 style={inputStyle}
               />
+              {/(^|\/\/|\.)(hemnet|booli)\.se/i.test(form.listingUrl) && (
+                <p className="home-hero-portal-warning" role="status">
+                  <strong>Det här är en {/hemnet/i.test(form.listingUrl) ? "Hemnet" : "Booli"}-länk.</strong>{" "}
+                  Då får vi bara med adress och antal rum. Byt gärna till mäklarens länk (finns i
+                  annonsen) — eller fortsätt och klistra in annonstexten i nästa steg.
+                </p>
+              )}
               <p className="analysis-hint">
                 Bäst resultat med mäklarens egen sida (Fastighetsbyrån, Länsförsäkringar, Bjurfors,
                 Svensk Fast, Erik Olsson m.fl.) — där hittar vi ofta även årsredovisningen. Hemnet och

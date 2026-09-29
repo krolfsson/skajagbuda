@@ -19,7 +19,7 @@ export function LandingExampleReport() {
             Så ser en objektspecifik analys ut
           </h2>
           <p className="home-section-kicker">
-            Ett riktigt objekt — med slutsats, prisbild, föreningsrisk och budintervall. Inte en
+            Ett exempelobjekt — med slutsats, prisbild, föreningsrisk och budintervall. Inte en
             generell guide.
           </p>
         </header>

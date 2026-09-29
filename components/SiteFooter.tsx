@@ -4,7 +4,6 @@ import {
   CTA_START_ANALYSIS,
   FOOTER_DISCLAIMER,
   PRODUCT_DOMAIN,
-  TRUST_PAYMENT_LINE,
   TRUST_PRICE_LINE_FOOTER,
 } from "@/lib/brand";
 
@@ -36,7 +35,6 @@ export function SiteFooter() {
             Beslutsstöd för bostadsköpare som vill få bättre underlag innan de budar.
           </p>
           <p className="site-footer-trust">{TRUST_PRICE_LINE_FOOTER}</p>
-          <p className="site-footer-payment">{TRUST_PAYMENT_LINE}</p>
         </div>
 
         <nav className="site-footer-nav" aria-label="Produkt">

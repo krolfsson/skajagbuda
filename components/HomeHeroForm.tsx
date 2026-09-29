@@ -4,15 +4,30 @@ import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import { trackEvent } from "@/lib/analytics";
 import { TestimonialStrip } from "@/components/TestimonialStrip";
+import { BetaPriceTag } from "@/components/BetaPriceTag";
+
+/** Hemnet/Booli block automatic reading — the broker's own page is what works. */
+function portalName(value: string): "Hemnet" | "Booli" | null {
+  if (/(^|\/\/|\.)hemnet\.se/i.test(value)) return "Hemnet";
+  if (/(^|\/\/|\.)booli\.se/i.test(value)) return "Booli";
+  return null;
+}
 
 export function HomeHeroForm({ id, variant = "full" }: { id?: string; variant?: "full" | "compact" }) {
   const [url, setUrl] = useState("");
+  const [portalWarned, setPortalWarned] = useState(false);
   const router = useRouter();
+  const portal = portalName(url.trim());
 
   function handleSubmit(event: FormEvent) {
     event.preventDefault();
     const trimmed = url.trim();
     if (!trimmed) return;
+    // First submit of a Hemnet/Booli link: explain instead of navigating. Second submit continues.
+    if (portal && !portalWarned) {
+      setPortalWarned(true);
+      return;
+    }
 
     trackEvent("hero_analysis_started");
     trackEvent("click_start_analysis", { source: id ?? "hero" });
@@ -33,9 +48,13 @@ export function HomeHeroForm({ id, variant = "full" }: { id?: string; variant?: 
             type="url"
             name="listingUrl"
             value={url}
-            onChange={(event) => setUrl(event.target.value)}
+            onChange={(event) => {
+              setUrl(event.target.value);
+              setPortalWarned(false);
+            }}
             onFocus={() => trackEvent("hero_input_focus")}
-            placeholder="Klistra in länk till mäklarens objekt"
+            placeholder="Länk från mäklarens hemsida"
+            aria-describedby={id ? `${id}-hint` : undefined}
             className="home-hero-input"
             autoComplete="url"
             enterKeyHint="go"
@@ -43,15 +62,31 @@ export function HomeHeroForm({ id, variant = "full" }: { id?: string; variant?: 
           />
         </div>
         <button type="submit" className="home-btn-primary home-hero-submit">
-          Analysera objekt gratis →
+          {portal && portalWarned ? `Fortsätt ändå med ${portal}-länken →` : "Analysera objekt gratis →"}
         </button>
       </div>
+
+      {portal && portalWarned ? (
+        <p className="home-hero-portal-warning" role="alert">
+          <strong>Det här är en {portal}-länk.</strong> {portal} tillåter inte att vi läser annonsen,
+          så pris och avgift kommer inte med automatiskt. Öppna annonsen, klicka dig vidare till
+          mäklarens hemsida och klistra in den länken i stället — eller fortsätt och klistra in
+          annonstexten i nästa steg.
+        </p>
+      ) : (
+        <p id={id ? `${id}-hint` : undefined} className="home-hero-link-hint">
+          Använd länken från mäklarens egen sida (t.ex. Fastighetsbyrån, Svensk Fast, Länsförsäkringar)
+          — inte Hemnet eller Booli.
+        </p>
+      )}
+
+      {variant === "full" && <BetaPriceTag className="beta-price-tag--hero" />}
 
       {variant === "full" && (
         <ul className="home-hero-trust" aria-label="Trygghetsinformation">
           <li>
             <CheckCircleIcon />
-            Gratis under beta
+            Inget kort krävs
           </li>
           <li>
             <LockIcon />
@@ -78,7 +113,10 @@ export function HomeHeroForm({ id, variant = "full" }: { id?: string; variant?: 
       )}
 
       {variant === "compact" && (
-        <p className="home-hero-beta-line">Gratis under beta · Ingen inloggning · Tar cirka 1 minut</p>
+        <>
+          <BetaPriceTag className="beta-price-tag--compact" />
+          <p className="home-hero-beta-line">Ingen inloggning · Inget kort krävs · Tar cirka 1 minut</p>
+        </>
       )}
 
       {variant === "full" && (

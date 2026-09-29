@@ -7,8 +7,8 @@ export function GuideInlineCta({ compact = false }: { compact?: boolean }) {
     <div className={`guide-inline-cta${compact ? " guide-inline-cta--compact" : ""}`}>
       <h2>Vill du kontrollera ett konkret objekt?</h2>
       <p>
-        Klistra in objektlänken. Vi hämtar underlaget där det går och strukturerar pris, förening
-        och risk så att du kan jämföra mot ditt eget budtak.
+        Klistra in länken från mäklarens hemsida. Vi hämtar underlaget där det går och strukturerar
+        pris, förening och risk så att du kan jämföra mot ditt eget budtak. Just nu gratis under betan.
       </p>
       <div className="guide-cta-actions">
         <GuideCtaButton href="/new" event="guide_cta_click" label={CTA_START_ANALYSIS_ARROW} primary />
@@ -25,7 +25,8 @@ export function GuideIndexCta() {
     <div className="guide-inline-cta guide-index-mid-cta">
       <h2>Har du redan hittat ett objekt?</h2>
       <p>
-        Klistra in objektlänken och få en preliminär risknivå gratis innan du budar.
+        Klistra in länken från mäklarens hemsida och få en analys innan du budar — just nu gratis
+        under betan.
       </p>
       <div className="guide-cta-actions">
         <GuideCtaButton href="/new" event="guide_cta_click" label={CTA_START_ANALYSIS_ARROW} primary />

@@ -46,7 +46,7 @@ export function buildLlmsTxt() {
     "",
     section("Produkt och analys", [
       linkItem("Startsida", "/", OG_DESCRIPTION),
-      linkItem("Starta gratis analys", "/new", "Interaktivt flöde: klistra in objektlänk eller fyll i manuellt. Preliminär risknivå utan kostnad."),
+      linkItem("Starta gratis analys", "/new", "Interaktivt flöde: klistra in länken från mäklarens hemsida, klistra in annonstexten eller fyll i manuellt. Just nu gratis under betan."),
       linkItem("Exempelanalys", "/exempel", "Fullständig exempelrapport som visar score, maxbud, styrkor, svagheter, röda flaggor och budstrategi."),
       linkItem("Gratisverktyg", "/verktyg", "Index över kalkylatorer för boendekostnad, maxbud och BRF-skuld per kvm."),
     ]),

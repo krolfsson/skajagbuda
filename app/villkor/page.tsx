@@ -18,8 +18,7 @@ export default function VillkorPage() {
       <InfoSection title="Vad tjänsten är">
         <p>
           {PRODUCT_DOMAIN} är ett beslutsstöd för bostadsköpare. Tjänsten strukturerar information du
-          matar in och ger en preliminär risknivå gratis. Full analys kan låsas upp mot
-          engångsbetalning.
+          matar in och ger en analys av pris, förening, risker och budnivåer.
         </p>
         <p>
           Tjänsten är inte finansiell, juridisk eller ekonomisk rådgivning. Analysen kan vara
@@ -30,13 +29,13 @@ export default function VillkorPage() {
 
       <InfoSection title="Pris och betalning">
         <p>
-          Full analys kostar {FULL_ANALYSIS_PRICE_SEK} kr som engångsbetalning. Det finns ingen
-          prenumeration. Betalning sker via Stripe med kort, Apple Pay eller Google Pay där det
-          stöds.
+          Tjänsten är i beta och just nu gratis — du betalar ingenting och behöver inte ange
+          kortuppgifter.
         </p>
         <p>
-          Efter genomförd betalning låses hela analysen upp direkt. Återbetalningsregler kan
-          kompletteras vid behov — kontakta oss om något inte fungerar som förväntat.
+          När betaperioden är slut planerar vi att ta {FULL_ANALYSIS_PRICE_SEK} kr per analys som
+          engångsbetalning, utan prenumeration, via Stripe. Det framgår alltid tydligt innan du
+          betalar något.
         </p>
       </InfoSection>
 

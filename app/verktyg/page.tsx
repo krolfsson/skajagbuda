@@ -54,7 +54,7 @@ export default function VerktygIndexPage() {
 
       <div className="guide-cta guide-cta--tools">
         <h2>Nästa steg: analysera objektet</h2>
-        <p>Klistra in objektlänken och få en preliminär risknivå gratis.</p>
+        <p>Klistra in länken från mäklarens hemsida och få en full analys — just nu gratis under betan.</p>
         <Link href="/new" className="guide-cta-primary">{CTA_START_ANALYSIS_ARROW}</Link>
       </div>
     </div>

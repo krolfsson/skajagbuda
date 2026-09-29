@@ -28,16 +28,16 @@ export default function IntegritetPage() {
 
       <InfoSection title="Betalning">
         <p>
-          Betalning för full analys hanteras av Stripe. {PRODUCT_DOMAIN} lagrar inte dina
-          kortuppgifter. Stripe behandlar betalningsinformation enligt sina egna villkor och
+          Under betan är tjänsten gratis och vi tar inte emot några betalningar. När betalning
+          införs hanteras den av Stripe, och {PRODUCT_DOMAIN} lagrar aldrig dina kortuppgifter. Stripe behandlar betalningsinformation enligt sina egna villkor och
           säkerhetsrutiner.
         </p>
       </InfoSection>
 
       <InfoSection title="Lagring och användning">
         <p>
-          Analysunderlag och resultat lagras för att du ska kunna gå tillbaka till din analys och
-          låsa upp full analys efter betalning. Vi säljer inte dina uppgifter till tredje part.
+          Analysunderlag och resultat lagras för att du ska kunna gå tillbaka till din analys via
+          dess länk. Vi säljer inte dina uppgifter till tredje part.
         </p>
         <p>
           En mer detaljerad integritetspolicy kan kompletteras vid behov. Kontakta oss om du har

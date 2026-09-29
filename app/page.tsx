@@ -7,11 +7,11 @@ import { BETA_TRUST_EXTENDED } from "@/lib/brand";
 const ANSWER_ITEMS = [
   {
     title: "Verkar priset rimligt?",
-    desc: "Jämförelse mot utgångspris, pris/kvm och liknande objekt i området.",
+    desc: "Utgångspris och pris/kvm vägt mot underlaget — och tydligt besked när jämförelser saknas.",
   },
   {
     title: "Finns risker i föreningen?",
-    desc: "Skuld, avgift, stambyte och andra varningssignaler i årsredovisningen.",
+    desc: "Skuld, avgift, stambyte och varningssignaler — från årsredovisningen på mäklarsidan eller som du laddar upp.",
   },
   {
     title: "Vad bör du fråga mäklaren?",
@@ -88,8 +88,8 @@ export default function HomePage() {
               Osäker på om du ska <span className="home-h1-accent">buda?</span>
             </h1>
             <p className="home-lead">
-              Klistra in objektlänken och få en genomgång av pris, förening, risker och rimligt
-              budintervall — innan du höjer.
+              Klistra in länken till bostaden på mäklarens hemsida och få en genomgång av pris,
+              förening, risker och rimligt budintervall — innan du höjer.
             </p>
             <HomeHeroForm id="hero-analys" />
           </div>
@@ -179,7 +179,8 @@ export default function HomePage() {
             Har du objektet framför dig?
           </h2>
           <p className="home-bottom-cta-lead">
-            Klistra in länken nu — analysen tar cirka en minut och kräver ingen inloggning.
+            Klistra in länken från mäklarens hemsida — analysen tar cirka en minut och kräver
+            ingen inloggning.
           </p>
           <HomeHeroForm id="bottom-analys" variant="compact" />
         </div>

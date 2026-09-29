@@ -15,10 +15,13 @@ export const CTA_START_ANALYSIS = "Analysera objekt gratis";
 /** Same CTA with forward arrow for flow-start buttons. */
 export const CTA_START_ANALYSIS_ARROW = `${CTA_START_ANALYSIS} →`;
 
-/** Homepage beta trust copy — no pricing. */
-export const BETA_TRUST_LINE = "Gratis under beta · Ingen inloggning · Tar cirka 1 minut";
+/**
+ * Beta copy — the full analysis is free while PAYWALL_DISABLED=true. When payments are turned
+ * on, update these lines, BetaPriceTag and the Villkor/Integritet pages together.
+ */
+export const BETA_TRUST_LINE = "Just nu gratis (beta) · Ingen inloggning · Tar cirka 1 minut";
 export const BETA_TRUST_EXTENDED =
-  "Gratis under beta · Ingen inloggning · Inget kort krävs · Byggd för att testas och förbättras med feedback";
+  "Tjänsten är i beta och just nu gratis — ingen inloggning, inget kort. Vi förbättrar den löpande utifrån din feedback.";
 
 /** Public contact email (NEXT_PUBLIC_CONTACT_EMAIL). */
 export const CONTACT_EMAIL =
@@ -26,7 +29,7 @@ export const CONTACT_EMAIL =
 
 /** Trust copy — price and payment (Stripe Checkout: card, Apple Pay, Google Pay where supported). */
 export const TRUST_PRICE_LINE = `Full analys ${FULL_ANALYSIS_PRICE_SEK} kr · Engångsbetalning · Ingen prenumeration`;
-export const TRUST_PRICE_LINE_FOOTER = `Full analys ${FULL_ANALYSIS_PRICE_SEK} kr. Engångsbetalning. Ingen prenumeration.`;
+export const TRUST_PRICE_LINE_FOOTER = `Beta: just nu gratis. Ordinarie pris ${FULL_ANALYSIS_PRICE_SEK} kr per analys — ingen prenumeration.`;
 export const TRUST_PAYMENT_LINE =
   "Säker betalning via Stripe med kort, Apple Pay eller Google Pay där det stöds.";
 export const TRUST_PAYMENT_LINE_PAYWALL =
