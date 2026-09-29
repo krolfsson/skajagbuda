@@ -676,13 +676,13 @@ export default function NewAnalysisFlow() {
               <div className="scrape-summary">
                 {foundCount === SCRAPE_FIELD_KEYS.length ? (
                   <>
-                    Alla <strong>{SCRAPE_FIELD_KEYS.length}</strong> nyckeluppgifter hittades automatiskt.
+                    Alla <strong>{SCRAPE_FIELD_KEYS.length}</strong> nyckeluppgifter är ifyllda.
                     Kontrollera att allt stämmer innan du går vidare.
                   </>
                 ) : (
                   <>
-                    <strong>{foundCount}</strong> av {SCRAPE_FIELD_KEYS.length} nyckeluppgifter hittades automatiskt.
-                    Fyll i det som saknas innan du går vidare.
+                    <strong>{foundCount}</strong> av {SCRAPE_FIELD_KEYS.length} nyckeluppgifter är ifyllda.
+                    Kontrollera dem och fyll i det som saknas innan du går vidare.
                   </>
                 )}
               </div>

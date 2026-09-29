@@ -39,6 +39,7 @@ export function ImportFallback({
 }) {
   const [pasted, setPasted] = useState("");
   const [status, setStatus] = useState<{ tone: "ok" | "warn" | "error"; text: string } | null>(null);
+  const [fileName, setFileName] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
@@ -119,37 +120,44 @@ export function ImportFallback({
         className="import-fallback__textarea"
         value={pasted}
         onChange={(e) => setPasted(e.target.value)}
-        placeholder={"Utgångspris\n4 950 000 kr\nAvgift\n3 200 kr/mån\nBoarea\n54 m²\n…"}
+        placeholder="Klistra in annonstexten här…"
       />
       <button type="button" className="btn-secondary-sm btn-secondary-sm--brand" onClick={handlePaste}>
         Läs av texten
       </button>
-
-      <p className="import-fallback__label" style={{ marginTop: "14px" }}>
-        2. Eller ladda upp prospekt / årsredovisning (PDF)
-      </p>
-      <input
-        ref={fileRef}
-        type="file"
-        accept="application/pdf,.pdf,text/plain,.txt"
-        disabled={uploading}
-        onChange={(e) => {
-          const file = e.target.files?.[0];
-          if (file) void handleFile(file);
-        }}
-        className="import-fallback__file"
-      />
-      {uploading && <p className="analysis-hint">Läser dokumentet…</p>}
-
-      <p className="import-fallback__label" style={{ marginTop: "14px" }}>
-        3. Eller fyll i uppgifterna direkt nedan
-      </p>
 
       {status && (
         <p className={`import-fallback__status import-fallback__status--${status.tone}`} role="status">
           {status.text}
         </p>
       )}
+
+      <p className="import-fallback__label" style={{ marginTop: "14px" }}>
+        2. Eller ladda upp prospekt / årsredovisning (PDF)
+      </p>
+      <label className={`btn-secondary-sm import-fallback__file-button${uploading ? " is-busy" : ""}`}>
+        <input
+          ref={fileRef}
+          type="file"
+          accept="application/pdf,.pdf,text/plain,.txt"
+          disabled={uploading}
+          onChange={(e) => {
+            const file = e.target.files?.[0];
+            if (file) {
+              setFileName(file.name);
+              void handleFile(file);
+            }
+          }}
+          className="import-fallback__file"
+        />
+        {uploading ? "Läser dokumentet…" : "Välj PDF-fil"}
+      </label>
+      {fileName && !uploading && <p className="analysis-hint">{fileName}</p>}
+      <p className="analysis-hint">Max 4 MB. Är filen större — kopiera texten och klistra in ovan.</p>
+
+      <p className="import-fallback__label" style={{ marginTop: "14px", marginBottom: 0 }}>
+        3. Eller fyll i uppgifterna direkt nedan
+      </p>
     </div>
   );
 }

@@ -8883,3 +8883,32 @@ h1.analysis-preview__title {
     white-space: normal;
   }
 }
+
+.import-fallback__file-button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.import-fallback__file-button.is-busy {
+  opacity: 0.7;
+  cursor: progress;
+}
+
+.import-fallback__file-button .import-fallback__file {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.import-fallback__file-button:focus-within {
+  outline: 2px solid var(--brand-secondary);
+  outline-offset: 2px;
+}
+
+.import-fallback .import-fallback__status {
+  margin-bottom: 4px;
+}
