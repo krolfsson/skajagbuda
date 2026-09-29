@@ -24,6 +24,9 @@ export const PRIORITY_GUIDE_SLUGS = [
   "vad-ska-man-fraga-maklaren-innan-bud",
   "checklista-innan-budgivning",
   "analysera-brf-arsredovisning",
+  "budstrategi-bostadsratt",
+  "kassa-i-bostadsrattsforening",
+  "for-lag-avgift-bostadsratt",
   "vad-ar-hog-skuld-per-kvm-brf",
   "stambyte-bostadsratt-risk",
   "tomtratt-bostadsratt",
@@ -40,7 +43,7 @@ export const GUIDE_SEO_PATCHES: Record<string, GuideSeoPatch> = {
     title: "Ska jag buda på bostadsrätt?",
     metaTitle: "Ska jag buda på bostadsrätt? Så kontrollerar du objektet | skajagbuda.se",
     metaDescription:
-      "Ska jag buda på bostadsrätt? Läs vad du bör kontrollera om pris, BRF, avgift och risk innan budgivning. Klistra in objektlänken och få preliminär risknivå gratis.",
+      "Ska jag buda på bostadsrätt? Läs vad du bör kontrollera om pris, BRF, avgift och risk innan budgivning. Klistra in länken från mäklarens hemsida och få en gratis analys.",
     intro:
       "Du bör inte buda på en bostadsrätt förrän du har kontrollerat priset, föreningens ekonomi, avgiften, planerat underhåll och din egen maxgräns. En snabb kontroll kan hjälpa dig se om objektet verkar rimligt, riskabelt eller för dyrt innan du går vidare i budgivningen.",
     quickAnswer: [
@@ -67,7 +70,7 @@ export const GUIDE_SEO_PATCHES: Record<string, GuideSeoPatch> = {
     faq: [
       {
         q: "Är det bindande att lägga bud på bostadsrätt?",
-        a: "Ett accepterat bud är bindande enligt budgivningsreglerna. Lägg därför bara bud när du kontrollerat pris, förening och din egen maxgräns.",
+        a: "Nej. Varken bud eller ett accepterat bud är juridiskt bindande – affären blir bindande först när köpekontraktet är undertecknat. Lägg ändå bara bud du står för, och först när du kontrollerat pris, förening och din egen maxgräns.",
       },
       {
         q: "Hur mycket ska man höja i en budgivning?",
@@ -121,42 +124,6 @@ export const GUIDE_SEO_PATCHES: Record<string, GuideSeoPatch> = {
       {
         q: "När ska man sluta buda?",
         a: "Vid ditt walk-away-belopp eller när slutprisnivån i området inte längre motiverar mer.",
-      },
-    ],
-  },
-
-  "vad-ar-rimligt-maxbud": {
-    title: "Rimligt maxbud för bostadsrätt",
-    metaTitle: "Rimligt maxbud bostadsrätt – så sätter du en gräns | skajagbuda.se",
-    metaDescription:
-      "Vad är rimligt maxbud för bostadsrätt? Sätt gränsen utifrån slutpriser, BRF-risk och boendekostnad — inte känsla i budgivningen. Testa maxbud-kalkylatorn gratis.",
-    intro:
-      "Ett rimligt maxbud för bostadsrätt bygger på slutpriser i området, föreningens ekonomi och vad du faktiskt har råd med varje månad — inte på utgångspriset eller budgivningens tempo. Utan en tydlig gräns styrs du av konkurrensen, inte av din budget.",
-    quickAnswer: [
-      "Utgå från slutpriser för liknande objekt — inte utgångspris.",
-      "Justera ned för hög skuld/kvm, stambyte och osäker avgiftsutveckling.",
-      "Räkna hela boendekostnaden, inte bara köpeskillingen.",
-      "Bestäm maxbudet innan budgivningen — inte under den.",
-    ],
-    firstSectionHeading: "Rimligt maxbud: utgå från slutpriser",
-    internalLinks: [
-      { href: "/guider/hur-mycket-ska-man-buda-over-utgangspris", anchor: "hur mycket ska man buda över utgångspris" },
-      { href: "/guider/budstrategi-bostadsratt", anchor: "budstrategi bostadsrätt" },
-      { href: "/verktyg/maxbud", anchor: "maxbud-kalkylator" },
-      ANALYSIS_LINK,
-    ],
-    faq: [
-      {
-        q: "Vad är ett rimligt maxbud för bostadsrätt?",
-        a: "Det lägsta av: vad liknande objekt sålts för, vad BRF-risken motiverar och vad din månadsbudget tillåter.",
-      },
-      {
-        q: "Ska maxbudet vara hemligt?",
-        a: "Ja, för dig själv. Att dela det med mäklaren ger ingen fördel.",
-      },
-      {
-        q: "Kan bankens lånelöfte bli mitt maxbud?",
-        a: "Nej. Banken säger vad du får låna — inte vad köpet är klokt.",
       },
     ],
   },
@@ -226,43 +193,6 @@ export const GUIDE_SEO_PATCHES: Record<string, GuideSeoPatch> = {
       {
         q: "Vad är viktigast att kolla först?",
         a: "Slutpriser, årsredovisning och boendekostnad. Saknas årsredovisning — pausa.",
-      },
-    ],
-  },
-
-  "analysera-brf-arsredovisning": {
-    title: "Analysera BRF-årsredovisning",
-    metaTitle: "Analysera BRF-årsredovisning innan bud | skajagbuda.se",
-    metaDescription:
-      "Analysera BRF-årsredovisning innan bud: skuld/kvm, avgift, kassa och planerat underhåll. Så läser du det viktigaste utan att drunkna i siffror. Starta gratis analys.",
-    intro:
-      "När du analyserar BRF-årsredovisning innan bud ska du fokusera på skuld per kvm, avgiftsutveckling, kassa och planerade underhållsåtgärder. Dokumentet visar mer om risken än visningen — och mer än mäklarens sammanfattning.",
-    quickAnswer: [
-      "Läs minst två till tre års redovisningar för att se trender.",
-      "Kontrollera skuld/kvm, avgift/kvm och kassa.",
-      "Koppla underhållsplanen till föreningens ekonomi.",
-      "Leta efter tomträtt, lokaler och stora kommande projekt i noterna.",
-    ],
-    firstSectionHeading: "Analysera BRF-årsredovisning: börja här",
-    internalLinks: [
-      { href: "/guider/vad-ar-hog-skuld-per-kvm-brf", anchor: "hög skuld per kvm i BRF" },
-      { href: "/guider/avgiftshojning-brf", anchor: "avgiftshöjning i BRF" },
-      { href: "/guider/stambyte-bostadsratt-risk", anchor: "stambyte i bostadsrätt" },
-      { href: "/verktyg/brf-skuld-per-kvm", anchor: "BRF-skuld per kvm-kalkylator" },
-      ANALYSIS_LINK,
-    ],
-    faq: [
-      {
-        q: "Hur ser man om en BRF har dålig ekonomi?",
-        a: "Hög och stigande skuld/kvm, låg kassa, upprepade underskott och stora planerade projekt utan finansiering.",
-      },
-      {
-        q: "Räcker ett års årsredovisning?",
-        a: "Nej. Titta på trender över minst två till tre år.",
-      },
-      {
-        q: "Var hittar jag årsredovisningen?",
-        a: "Via mäklaren, föreningen eller Alla Bolag. Begär den innan bud.",
       },
     ],
   },

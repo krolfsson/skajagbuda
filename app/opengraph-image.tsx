@@ -35,7 +35,7 @@ export default function OpenGraphImage() {
         </div>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <p style={{ fontSize: 34, fontWeight: 700, margin: 0 }}>{PRODUCT_DOMAIN}</p>
-          <p style={{ fontSize: 24, color: "#505050", margin: 0 }}>Preliminär risknivå gratis</p>
+          <p style={{ fontSize: 24, color: "#505050", margin: 0 }}>Just nu gratis · Beta</p>
         </div>
       </div>
     ),

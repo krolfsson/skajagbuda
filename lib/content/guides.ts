@@ -125,7 +125,7 @@ export const GUIDES: Guide[] = [
         id: "nar-sluta",
         heading: "När ska du sluta följa med?",
         paragraphs: [
-          "Sätt ett maxbud innan budgivningen och håll fast vid det. Varje extra krona över ditt max är en förlust, inte en investering.",
+          "Sätt ett maxbud innan budgivningen och håll fast vid det. Varje extra krona över ditt max är en förlust, inte en investering. Hur du lägger upp öppningsbud, budsteg och stopp beskrivs i guiden om [budstrategi vid bostadsköp](/guider/budstrategi-bostadsratt).",
           "Om budgivningen redan ligger över vad liknande lägenheter sålts för är det ofta bättre att dra sig ur än att rationalisera ett högre pris.",
         ],
         callout:
@@ -159,152 +159,267 @@ export const GUIDES: Guide[] = [
   },
   {
     slug: "vad-ar-rimligt-maxbud",
-    title: "Vad är ett rimligt maxbud?",
-    metaTitle: "Vad är ett rimligt maxbud? | skajagbuda.se",
+    title: "Vad är ett rimligt maxbud? Så sätter du maxbud på bostadsrätt",
+    metaTitle: "Rimligt maxbud – så sätter du maxbud på bostadsrätt | skajagbuda.se",
     metaDescription:
-      "Ett maxbud ska baseras på jämförelsepriser, BRF-risk och din faktiska boendekostnad – inte på känsla under budgivning. Så sätter du en gräns som håller.",
+      "Ett rimligt maxbud är det lägsta av tre siffror: vad liknande bostäder sålts för, vad föreningens ekonomi motiverar och vad din månadsbudget klarar. Så räknar du, steg för steg.",
     intro:
-      "Ditt maxbud är den högsta summa du är villig att betala innan budgivningen börjar – inte det du hoppas få lägenheten för. Ett rimligt maxbud bygger på slutpriser i området, föreningens ekonomi och vad du faktiskt har råd med varje månad. Utan den gränsen styrs du av konkurrensen, inte av din budget.",
+      "Ett rimligt maxbud är det högsta belopp du är beredd att betala, bestämt innan budgivningen börjar. Det bygger på tre saker: vad liknande bostäder faktiskt sålts för, vad föreningens ekonomi och bostadens skick motiverar, och vad du har råd med varje månad. Det lägsta av de tre är ditt maxbud – inte utgångspriset och inte bankens lånelöfte.",
+    quickAnswer: [
+      "Utgå från slutpriser för liknande bostäder – inte från utgångspriset.",
+      "Justera för föreningens ekonomi: skuld, sparande, kommande underhåll och avgift.",
+      "Räkna hela månadskostnaden med marginal för högre ränta och avgift.",
+      "Maxbudet är det lägsta av marknadsvärde, BRF-justerat värde och din budget.",
+      "Bestäm det innan budgivningen – och skriv ner varför.",
+    ],
+    internalLinks: [
+      { href: "/verktyg/maxbud", anchor: "maxbud-kalkylator" },
+      { href: "/guider/budstrategi-bostadsratt", anchor: "budstrategi vid bostadsköp" },
+      { href: "/guider/pris-per-kvm-bostadsratt", anchor: "pris per kvm" },
+      { href: "/guider/analysera-brf-arsredovisning", anchor: "analysera årsredovisning i BRF" },
+    ],
     sections: [
       {
-        id: "jamforelsepriser",
-        heading: "Utgå från jämförelsepriser, inte utgångspris",
+        id: "vad-ar-maxbud",
+        heading: "Vad är ett maxbud – och vad är det inte?",
         paragraphs: [
-          "Titta på vad liknande lägenheter faktiskt sålts för – inte vad de annonserades för. Samma antal rum, ungefär samma storlek och liknande standard ger bäst underlag.",
-          "Om objektet du tittar på har tydliga fördelar eller nackdelar jämfört med dessa, justera maxbudet upp eller ner med en konkret siffra – inte en känsla.",
+          "Maxbudet är din egen gräns. Det är inte det du hoppas få bostaden för, och det är inte samma sak som lånelöftet. Banken säger hur mycket du får låna; maxbudet svarar på vad köpet är värt för dig och vad du klarar att bo i utan att ekonomin blir pressad.",
+          "Maxbudet är också något annat än budstrategin. Strategin handlar om hur du lägger buden – öppningsbud, budsteg och tempo – och beskrivs i guiden om [budstrategi vid bostadsköp](/guider/budstrategi-bostadsratt). Maxbudet är siffran strategin vilar på.",
         ],
       },
       {
-        id: "brf-paverkan",
-        heading: "Låt BRF:ens ekonomi påverka maxbudet",
+        id: "steg-1",
+        heading: "Steg 1: Vad har liknande bostäder sålts för?",
         paragraphs: [
-          "Hög skuld per kvm, planerade stambyten eller osäker avgiftsutveckling motiverar ett lägre maxbud. Du betalar inte bara för lägenheten utan för din andel av föreningens förpliktelser.",
-          "En lägenhet i en svag förening kan se billig ut men bli dyr över tid genom avgiftshöjningar och särskilda uttag.",
+          "Leta upp slutpriser – inte utgångspriser – för bostäder med samma antal rum, ungefär samma storlek och läge, sålda det senaste året. Räkna om dem till [pris per kvm](/guider/pris-per-kvm-bostadsratt) för att kunna jämföra, och justera för skillnader i våningsplan, balkong, skick och avgift.",
+          "Resultatet är ett spann för vad marknaden brukar betala – ditt marknadsvärde. Utgångspriset är ofta satt för att locka budgivare och säger mindre än slutpriserna.",
+        ],
+      },
+      {
+        id: "steg-2",
+        heading: "Steg 2: Justera för föreningens ekonomi och skick",
+        paragraphs: [
+          "Två likadana lägenheter är inte värda lika mycket om föreningarna skiljer sig åt. Ett planerat stambyte utan finansiering, hög skuld per kvm, lågt sparande eller en avgift som troligen måste höjas betyder kostnader du tar över. Låt dem sänka ditt värde med en konkret summa.",
+          "Omvänt kan ett nyss genomfört och finansierat stambyte eller en stark förening motivera att du ligger i den övre delen av spannet. Hur du läser av detta går vi igenom i [Analysera årsredovisning i BRF](/guider/analysera-brf-arsredovisning).",
         ],
         bullets: [
-          "Kolla skuld per kvm",
-          "Läs underhållsplanen",
-          "Räkna med möjliga avgiftshöjningar",
+          "Skuld per kvm och räntekänslighet",
+          "Sparande per kvm och kassa",
+          "Stora projekt i underhållsplanen och hur de finansieras",
+          "Avgiftens nivå och historik – se [för låg avgift i bostadsrätt](/guider/for-lag-avgift-bostadsratt)",
         ],
       },
       {
-        id: "boendekostnad-grans",
-        heading: "Räkna boendekostnad, inte bara köpeskilling",
+        id: "steg-3",
+        heading: "Steg 3: Vad klarar din månadsbudget?",
         paragraphs: [
-          "Två lägenheter till samma pris kan kosta olika mycket per månad beroende på avgift, ränta och skick. Ditt maxbud ska passa din månadsbudget – inte bara bankens lånetak.",
-          "Räkna konservativt med ränta och amortering. Om marginalen är tunn vid dagens ränta är maxbudet troligen för högt.",
+          "Räkna fram hela boendekostnaden: ränta, amortering, avgift och drift. Räkna med en ränta som är högre än dagens och med att avgiften kan höjas. Om marginalen redan är tunn vid dagens nivåer är beloppet för högt.",
+          "Tänk också på kontantinsatsen och bankens krav på amortering och belåningsgrad. [Maxbud-kalkylatorn](/verktyg/maxbud) ger en snabb uppskattning utifrån kontantinsats, ränta och månadskostnad.",
         ],
       },
       {
-        id: "satt-gransen",
-        heading: "Så sätter du gränsen i praktiken",
+        id: "steg-4",
+        heading: "Steg 4: Välj det lägsta beloppet – och skriv ner det",
         paragraphs: [
-          "Skriv ner tre siffror: vad liknande lägenheter sålts för, vad BRF:en motiverar i justering och vad din budget tillåter. Det lägsta av dessa blir utgångspunkt för maxbudet.",
-          "Bestäm maxbudet innan visningen eller senast innan första budet. Under budgivning är det för sent att tänka klart.",
+          "Nu har du tre belopp: marknadsvärdet, det BRF-justerade värdet och det din budget klarar. Ditt maxbud är det lägsta av dem. Skriv ner beloppet och varför du landade där – det gör det mycket lättare att hålla gränsen när budgivningen drar iväg.",
         ],
-        callout:
-          "Maxbudet är ett löfte till dig själv – inte ett mål att nå.",
+        callout: {
+          type: "remember",
+          text: "Maxbudet är ett löfte till dig själv, inte ett mål att nå. Att sluta vid gränsen är att följa planen, inte att förlora.",
+        },
+      },
+      {
+        id: "exempel",
+        heading: "Räkneexempel",
+        paragraphs: [
+          "Exemplet är påhittat och förenklat, men visar hur stegen fungerar. En tvåa på 60 kvm har utgångspris 4 400 000 kr. Liknande tvåor i området har sålts för 75 000–80 000 kr per kvm, alltså ungefär 4 500 000–4 800 000 kr. Det är marknadsvärdet.",
+          "Föreningen planerar stambyte om tre år och har inte sparat till det. Du bedömer att det motsvarar ungefär 100 000 kr i framtida kostnader för lägenheten, och sänker därför det övre värdet till 4 700 000 kr.",
+          "Din egen kalkyl, med marginal för högre ränta och avgift, visar att du klarar ett köp på upp till 4 650 000 kr. Maxbudet blir därför 4 650 000 kr – budgeten är den lägsta av de tre siffrorna.",
+        ],
       },
       {
         id: "hall-fast",
         heading: "Håll fast vid maxbudet",
         paragraphs: [
-          "Om budgivningen passerar ditt maxbud är det inte ett misslyckande – det är information om att marknaden värderar lägenheten högre än du.",
-          "Att höja maxbudet i stunden för att 'inte missa' är det vanligaste misstaget. Skriv ner varför du satt gränsen – det hjälper dig hålla den.",
+          "Om budgivningen passerar ditt maxbud är det information om att någon annan värderar bostaden högre – inte ett misstag från din sida. Att höja gränsen i stunden för att inte missa är det vanligaste misstaget.",
+          "Det enda goda skälet att ompröva maxbudet är ny information om bostaden eller föreningen. Gör det i så fall medvetet, inte mitt i ett budsteg.",
         ],
       },
     ],
     faq: [
       {
-        q: "Ska maxbudet vara hemligt?",
-        a: "Ja, för dig själv och eventuellt en betrodd person. Att dela det med mäklaren eller andra budgivare ger dig ingen fördel.",
+        q: "Vad är ett rimligt maxbud för bostadsrätt?",
+        a: "Det lägsta av tre belopp: vad liknande bostäder sålts för, vad föreningens ekonomi och bostadens skick motiverar, och vad din månadsbudget klarar med marginal.",
       },
       {
-        q: "Kan jag höja maxbudet om jag får mer lån?",
-        a: "Tekniskt ja, men fråga dig varför du behöver låna mer. Om gränsen baserades på boendekostnad snarare än banktak bör den inte ändras.",
+        q: "Hur sätter man maxbud?",
+        a: "Ta fram slutpriser för jämförbara bostäder, justera för föreningens ekonomi, räkna din månadskostnad med marginal och välj det lägsta beloppet. Gör det innan budgivningen börjar.",
+      },
+      {
+        q: "Kan lånelöftet vara mitt maxbud?",
+        a: "Nej. Lånelöftet visar hur mycket banken är beredd att låna ut, inte vad bostaden är värd eller vad du bekvämt klarar varje månad.",
+      },
+      {
+        q: "Ska man berätta sitt maxbud för mäklaren?",
+        a: "Nej. Mäklaren arbetar för säljaren. Att avslöja ditt maxbud ger dig ingen fördel.",
       },
     ],
     relatedSlugs: [
-      "hur-mycket-ska-man-buda-over-utgangspris",
       "budstrategi-bostadsratt",
-      "checklista-innan-budgivning",
+      "hur-mycket-ska-man-buda-over-utgangspris",
+      "pris-per-kvm-bostadsratt",
     ],
-    relatedToolSlugs: ["maxbud"],
+    relatedToolSlugs: ["maxbud", "boendekostnad"],
+    updated: "2026-09-29",
+    cta: {
+      title: "Få ett rekommenderat budtak för ditt objekt",
+      text: "Klistra in länken från mäklarens hemsida så räknar vi fram rimligt värde, budtak och walk-away utifrån objektet och föreningens ekonomi. Just nu gratis under betan.",
+    },
   },
   {
     slug: "budstrategi-bostadsratt",
-    title: "Budstrategi för bostadsrätt",
-    metaTitle:
-      "Budstrategi för bostadsrätt – öppningsbud, nästa bud och gräns | skajagbuda.se",
+    title: "Budstrategi vid bostadsköp – så lägger du bud och håller din gräns",
+    metaTitle: "Budstrategi vid bostadsköp – öppningsbud, budsteg och maxbud | skajagbuda.se",
     metaDescription:
-      "Öppningsbud, budsteg och maxgräns – en enkel budstrategi för bostadsrätt som minskar risken att du betalar mer än du planerat under het budgivning.",
+      "En budstrategi i fyra delar: maxbud innan budgivningen, ett genomtänkt öppningsbud, planerade budsteg och en tydlig punkt där du slutar. Plus vanliga taktiker och misstag.",
     intro:
-      "Budgivning är ofta stressig och utformad för att få dig att agera snabbt. En enkel strategi i förväg – öppningsbud, hur du höjer och var du stoppar – gör att du fattar beslut innan pressen sätter in. Det handlar inte om att 'vinna' budgivningen utan om att inte betala mer än lägenheten är värd för dig.",
+      "En bra budstrategi bestäms innan budgivningen börjar: du vet ditt maxbud, hur du öppnar, hur mycket du höjer åt gången och när du slutar. Budgivningen är byggd för att få dig att agera snabbt – med en plan fattar du besluten i lugn och ro i stället för i stunden. Målet är inte att vinna till varje pris, utan att inte betala mer än bostaden är värd för dig.",
+    quickAnswer: [
+      "Bestäm ditt maxbud innan första budet – utifrån slutpriser, föreningens ekonomi och din månadskostnad.",
+      "Öppna med ett seriöst bud, men aldrig med ditt maxbud.",
+      "Höj i planerade steg och ta tid att tänka mellan buden.",
+      "Sluta när du når maxbudet – att förlora en budgivning är inte ett misslyckande.",
+      "Kom ihåg att inget är bindande förrän köpekontraktet är undertecknat.",
+    ],
+    internalLinks: [
+      { href: "/guider/vad-ar-rimligt-maxbud", anchor: "vad är ett rimligt maxbud" },
+      { href: "/verktyg/maxbud", anchor: "maxbud-kalkylator" },
+      { href: "/guider/hur-mycket-ska-man-buda-over-utgangspris", anchor: "hur mycket över utgångspris" },
+      { href: "/guider/pris-per-kvm-bostadsratt", anchor: "pris per kvm" },
+    ],
     sections: [
       {
-        id: "forberedelse",
-        heading: "Förberedelse innan första budet",
+        id: "sa-fungerar",
+        heading: "Så fungerar en budgivning",
         paragraphs: [
-          "Ha maxbud, jämförelsepriser och BRF-analys klara innan budgivningen. Utan det reagerar du på andras bud istället för att följa din plan.",
-          "Bestäm också hur du budar – via mäklare, skriftligt och med tydliga belopp. Missförstånd i budgivningen kan bli dyrt.",
+          "Budgivningen sköts av mäklaren, som tar emot buden och meddelar övriga spekulanter. Säljaren bestämmer själv vem hen säljer till och när – det behöver inte vara den som lagt högst bud, och säljaren kan avbryta försäljningen.",
+          "Ett bud är inte juridiskt bindande, varken för dig eller säljaren. Affären blir bindande först när ni skrivit under köpekontraktet. Mäklaren ska föra en lista över buden och lämna den till både köpare och säljare när affären är klar.",
+          "Det gör att budgivningen bygger på förtroende och tempo snarare än på regler. Lägg därför bara bud du står för – men låt inte tempot bestämma beloppen.",
+        ],
+      },
+      {
+        id: "fore-budgivningen",
+        heading: "Före budgivningen: det här ska vara klart",
+        paragraphs: [
+          "Det mesta av strategin görs innan första budet. Har du inte gjort det här blir du reaktiv och följer andras bud i stället för din plan.",
+        ],
+        bullets: [
+          "Ett [rimligt maxbud](/guider/vad-ar-rimligt-maxbud) utifrån slutpriser, föreningens ekonomi och din boendekostnad.",
+          "Lånelöfte som täcker maxbudet – och en egen kalkyl med marginal för högre ränta och avgift.",
+          "Genomläst årsredovisning och underhållsplan. Se [Analysera årsredovisning i BRF](/guider/analysera-brf-arsredovisning).",
+          "Frågor till mäklaren om budläge, villkor och föreningen – se [frågor att ställa mäklaren](/guider/vad-ska-man-fraga-maklaren-innan-bud).",
+          "Ett beslut om hur stora budsteg du tänker lägga och var du slutar.",
         ],
       },
       {
         id: "oppningsbud",
-        heading: "Öppningsbud: signalera utan att avslöja allt",
+        heading: "Öppningsbudet: seriöst, men inte ditt max",
         paragraphs: [
-          "Ett öppningsbud nära utgångspriset eller strax under jämförelseprisens nedre del visar att du är seriös. Att börja för lågt kan få säljaren att prioritera andra.",
-          "Avslöja aldrig ditt maxbud i öppningsbudet. Du behöver utrymme att höja stegvis.",
+          "Öppningsbudet ska visa att du är en seriös köpare. Ett bud nära utgångspriset, eller i nedre delen av vad jämförbara bostäder sålts för, brukar fungera. Ett bud långt under utgångspriset kan göra att säljaren prioriterar andra spekulanter.",
+          "Öppna aldrig med ditt maxbud. Då har du inget utrymme kvar, och du signalerar att du är slutbudad. Tänk också på att [utgångspriset](/guider/hur-mycket-ska-man-buda-over-utgangspris) inte säger vad bostaden kommer att säljas för – slutpriser för liknande objekt gör det.",
         ],
       },
       {
         id: "budsteg",
-        heading: "Hur stora ska budstegen vara?",
+        heading: "Budsteg och tempo",
         paragraphs: [
-          "I en het budgivning höjer många med 50 000–100 000 kr i taget beroende på prisnivå. Mindre steg kan fungera om få budgivare finns.",
-          "Håll jämna steg tills du närmar dig maxbudet. Spara de sista pengarna till slutet – inte till början.",
+          "Hur stora budstegen är beror på prisnivån och hur många som budar. I en livlig budgivning är steg om några tiotusentals kronor vanliga; när det bara är två kvar blir stegen ofta mindre. Bestäm i förväg hur du höjer, så att du inte bränner av marginalen i början.",
+          "Du behöver inte svara direkt när någon annan budar. Ta den tid du behöver för att se om nästa bud fortfarande ryms inom din plan. Några minuter spelar sällan roll – ett felaktigt belopp gör det.",
+        ],
+      },
+      {
+        id: "taktiker",
+        heading: "Vanliga budtaktiker – och när de fungerar",
+        paragraphs: [
+          "Taktiker kan hjälpa i rätt läge, men ingen av dem ersätter ett genomtänkt maxbud.",
         ],
         bullets: [
-          "Börja inte med maxbud",
-          "Höj i planerade steg",
-          "Sista budet ska vara ditt max – inte över",
+          "Ett större hopp: ett tydligt högre bud kan få andra budgivare att ge upp. Fungerar bäst när du fortfarande har marginal kvar under ditt maxbud.",
+          "Små, snabba steg: kan hålla budgivningen igång utan att du betalar mer än nödvändigt, men kan också driva upp priset i onödan.",
+          "Vänta in: att inte svara direkt ger dig tid att tänka och visar att du inte agerar på impuls.",
+          "Bud före visning eller med kort svarstid: kan ibland få säljaren att avsluta tidigt, men kräver att du redan har gått igenom föreningen och ditt maxbud.",
+          "Villkorade bud, till exempel med förbehåll för besiktning eller lån: minskar din risk men kan göra budet mindre attraktivt för säljaren.",
         ],
       },
       {
-        id: "maxgrans",
-        heading: "Maxgränsen är inte förhandlingsbar",
+        id: "sluta-buda",
+        heading: "När ska du sluta buda?",
         paragraphs: [
-          "När du når maxbudet stoppar du. Att lägga 'ett sista bud' utan ny information är sällan motiverat.",
-          "Om du förlorar budgivningen till någon som betalade mer vet du att marknaden värderade högre – inte att du gjorde fel.",
+          "När du når ditt maxbud. Det är hela poängen med att ha ett. Att lägga ett sista bud över gränsen utan ny information är det vanligaste misstaget i budgivningar.",
+          "Det kan finnas skäl att ompröva gränsen – till exempel om du fått ny information om föreningens ekonomi eller om ett avgörande fel – men gör det medvetet och i lugn och ro, inte mitt i ett budsteg. Förlorar du budgivningen vet du att någon annan värderade bostaden högre, inte att du gjorde fel.",
         ],
-        callout:
-          "Budstrategi handlar om disciplin, inte om psykologiska trick.",
+        callout: {
+          type: "remember",
+          text: "Budstrategi handlar om disciplin, inte om psykologiska trick. Den viktigaste siffran är den du bestämt innan budgivningen började.",
+        },
       },
       {
-        id: "efter-budgivning",
-        heading: "Efter budgivningen",
+        id: "efter",
+        heading: "Efter accepterat bud",
         paragraphs: [
-          "Om du vann: kontrollera att budet accepterades korrekt och att inga villkor saknas. Om du förlorade: analysera om maxbudet var rimligt, inte om du 'borde budat mer'.",
-          "Varje budgivning ger dig data om marknaden. Använd den till nästa objekt.",
+          "När säljaren accepterat ditt bud är affären inte klar förrän köpekontraktet är undertecknat. Läs kontraktet noga innan du skriver under: tillträdesdag, handpenning och eventuella villkor, till exempel om besiktning.",
+          "Om du förlorade: använd det du lärt dig om prisnivån till nästa objekt. Varje budgivning ger information om marknaden.",
+        ],
+      },
+      {
+        id: "misstag",
+        heading: "Vanliga misstag i budgivningen",
+        paragraphs: ["De flesta dyra misstag görs under tidspress."],
+        bullets: [
+          "Att bestämma maxbudet under budgivningen i stället för innan.",
+          "Att låta lånelöftet bli maxbudet – banken säger vad du får låna, inte vad köpet är värt.",
+          "Att jämföra med utgångspriset i stället för med slutpriser och [pris per kvm](/guider/pris-per-kvm-bostadsratt) för liknande bostäder.",
+          "Att hoppa över årsredovisningen för att budgivningen går fort.",
+          "Att höja maxbudet för att inte förlora mot en annan budgivare.",
         ],
       },
     ],
     faq: [
       {
-        q: "Ska jag buda direkt när någon annan budar?",
-        a: "Nej, om du inte har tänkt igenom nästa steg. Ta tid att räkna – minuter spelar sällan roll jämfört med fel belopp.",
+        q: "Är ett bud på en bostad bindande?",
+        a: "Nej. Varken köpare eller säljare är bundna av bud. Affären blir bindande först när köpekontraktet är undertecknat av båda.",
       },
       {
-        q: "Fungerar det att buda exakt maxbud direkt?",
-        a: "Sällan klokt. Du lämnar inget utrymme och signalerar att du inte kan höja mer – vilket kan göra att säljaren väljer en budgivare med mer marginal.",
+        q: "Hur mycket ska man höja i en budgivning?",
+        a: "Det beror på prisnivå och antal budgivare. Bestäm stegen i förväg och låt dem rymmas inom ditt maxbud, så att du inte bränner marginalen tidigt.",
+      },
+      {
+        q: "Måste säljaren välja det högsta budet?",
+        a: "Nej. Säljaren väljer själv köpare och kan till exempel prioritera en köpare med färre villkor eller en viss tillträdesdag.",
+      },
+      {
+        q: "Ska man lägga bud före visning?",
+        a: "Bara om du redan har kontrollerat föreningens ekonomi och bestämt ditt maxbud. Annars riskerar du att binda upp dig känslomässigt vid ett pris du inte har underlag för.",
       },
     ],
     relatedSlugs: [
       "vad-ar-rimligt-maxbud",
       "hur-mycket-ska-man-buda-over-utgangspris",
+      "budgivning-stockholm",
       "checklista-innan-budgivning",
     ],
     relatedToolSlugs: ["maxbud"],
+    sources: [
+      {
+        label: "Konsumentverket – budgivning vid köp av bostad",
+        href: "https://www.konsumentverket.se/varor-och-tjanster/budgivning-vid-kop-av-bostad/",
+      },
+    ],
+    updated: "2026-09-29",
+    cta: {
+      title: "Se vad du borde buda på just det här objektet",
+      text: "Klistra in länken från mäklarens hemsida så får du ett rimligt värde, ett rekommenderat budtak och en walk-away-nivå utifrån objektet och föreningens ekonomi. Just nu gratis under betan.",
+    },
   },
   {
     slug: "vad-ska-man-fraga-maklaren-innan-bud",
@@ -382,77 +497,216 @@ export const GUIDES: Guide[] = [
   },
   {
     slug: "analysera-brf-arsredovisning",
-    title: "Analysera BRF-årsredovisning innan köp",
-    metaTitle: "Analysera BRF-årsredovisning innan köp | skajagbuda.se",
+    title: "Analysera årsredovisning i BRF – så bedömer du föreningens ekonomi",
+    metaTitle: "Analysera årsredovisning BRF – så bedömer du ekonomin | skajagbuda.se",
     metaDescription:
-      "Årsredovisningen avslöjar mer än visningen. Lär dig vad du ska titta på – skuld, avgifter, kassa och underhåll – innan du lägger bud på bostadsrätt.",
+      "Så läser du en BRF:s årsredovisning innan köp: skuld per kvm, räntekänslighet, sparande, avgift, kassa och underhållsplan – med varningssignaler och checklista.",
     intro:
-      "Årsredovisningen är den viktigaste dokumentet du läser innan bud – inte annonsen och inte visningen. Den visar föreningens ekonomi, skulder, avgiftsutveckling och planerade underhåll. Att hoppa över den är att köpa en andel i en förening du inte känner till.",
+      "Årsredovisningen är det bästa underlaget du har för att bedöma en bostadsrättsförenings ekonomi innan du budar. Börja med de sju nyckeltal som alla föreningar numera måste redovisa, läs dem över flera år och koppla dem till underhållsplanen och föreningens lån. Ingen enskild siffra avgör om ekonomin är bra – det är helheten och trenden som gör det.",
+    quickAnswer: [
+      "Läs de senaste två–tre årsredovisningarna och jämför nyckeltalen över tid.",
+      "Skuld per kvm och räntekänslighet visar hur sårbar avgiften är för räntor.",
+      "Sparande per kvm säger mer än årets resultat, som ofta är negativt på grund av avskrivningar.",
+      "Koppla stora planerade projekt i underhållsplanen till kassa, lån och sparande.",
+      "Saknas svar på något av detta – fråga mäklaren eller styrelsen innan du budar.",
+    ],
+    internalLinks: [
+      { href: "/guider/kassa-i-bostadsrattsforening", anchor: "kassa i bostadsrättsförening" },
+      { href: "/ordlista/renoveringsfond", anchor: "renoveringsfond i BRF" },
+      { href: "/guider/for-lag-avgift-bostadsratt", anchor: "för låg avgift i bostadsrätt" },
+      { href: "/guider/vad-ar-hog-skuld-per-kvm-brf", anchor: "hög skuld per kvm i BRF" },
+      { href: "/guider/underhallsplan-brf", anchor: "underhållsplan i BRF" },
+    ],
     sections: [
       {
-        id: "var-hittar-du",
-        heading: "Var hittar du årsredovisningen?",
+        id: "god-ekonomi",
+        heading: "Hur vet man om en bostadsrättsförening har god ekonomi?",
         paragraphs: [
-          "Mäklaren ska tillhandahålla den. Du kan också begära den direkt från föreningen eller hitta den via Alla Bolag och liknande tjänster.",
-          "Läs de senaste två till tre årens redovisningar – en enskild bra rapport kan dölja en negativ trend.",
-        ],
-      },
-      {
-        id: "skuld-och-avgift",
-        heading: "Skuld per kvm och avgiftsutveckling",
-        paragraphs: [
-          "Jämför skulden per kvm med liknande föreningar i området. Hög skuld utan tydlig plan för avbetalning ökar risken för framtida avgiftshöjningar.",
-          "Titta på hur avgiften utvecklats de senaste fem åren. Stadigt stigande avgifter utan motsvarande förbättringar i fastigheten är en varningssignal.",
+          "En förening med god ekonomi har en skuldsättning den klarar även om räntorna stiger, sparar tillräckligt till kommande underhåll, har pengar eller lånemöjligheter för det som planeras och en avgift som täcker kostnaderna utan att hållas konstlat låg. Du hittar underlaget för allt det i årsredovisningen.",
+          "Det finns ingen enskild siffra som avgör saken. En hög skuld kan vara rimlig i en nybyggd förening som knappt behöver underhåll, medan en låg skuld kan vara ett problem om huset står inför ett stambyte som ingen sparat till. Titta därför på nyckeltalen tillsammans – och på hur de har utvecklats.",
         ],
         bullets: [
-          "Skuld per kvm",
-          "Avgift per kvm",
-          "Trend över flera år",
+          "Skulden per kvm är stabil eller minskar, och föreningen amorterar.",
+          "Räntekänsligheten är måttlig – en räntehöjning kräver ingen dramatisk avgiftshöjning.",
+          "Föreningen sparar till underhåll varje år (sparande per kvm är positivt).",
+          "Underhållsplanen är aktuell och stora projekt har en finansieringsplan.",
+          "Avgiften har höjts i jämn takt snarare än i plötsliga språng.",
         ],
       },
       {
-        id: "resultat-kassa",
-        heading: "Resultat, kassa och soliditet",
+        id: "var-hittar-du",
+        heading: "Var hittar du årsredovisningen och vad innehåller den?",
         paragraphs: [
-          "Föreningen ska gå plus eller i värsta fall break-even över tid. Upprepade underskott utan förklaring är problematiskt.",
-          "Kassa och likviditet visar om föreningen klarar oförutsedda utgifter utan särskilt uttag eller lån.",
+          "Be mäklaren om de senaste årsredovisningarna – de ingår normalt i objektsbeskrivningen. Du kan också fråga föreningens styrelse; många föreningar publicerar dem på sin webbplats. Årsredovisningen är föreningens bokslut för räkenskapsåret, fastställd på föreningsstämman.",
+          "Läs gärna i den här ordningen: förvaltningsberättelsen (med flerårsöversikt och nyckeltal), resultaträkningen, balansräkningen och noterna. I noterna står detaljerna om lånen, fastighetens värde och fonderna – det är ofta där de viktigaste uppgifterna finns.",
+        ],
+        bullets: [
+          "Förvaltningsberättelse: årets händelser, genomfört och planerat underhåll, avgiftsändringar och nyckeltal för flera år.",
+          "Resultaträkning: intäkter (främst årsavgifter) och kostnader, inklusive räntor och avskrivningar.",
+          "Balansräkning: fastigheten, kassa och bank, eget kapital (där fonden för yttre underhåll ingår) och skulder.",
+          "Noter: lånens räntor och villkorsändringsdagar, underhållsfond, eventuella tvister och händelser efter årets slut.",
         ],
       },
       {
-        id: "underhall-planer",
-        heading: "Underhåll och planerade projekt",
+        id: "nyckeltal",
+        heading: "Börja med de sju obligatoriska nyckeltalen",
         paragraphs: [
-          "Läs underhållsplanen tillsammans med årsredovisningen. Stora kommande projekt – stambyte, fasad, tak – ska ha finansiering eller tydlig plan.",
-          "Om underhållsplanen saknas eller är föråldrad vet föreningen troligen inte vad som behöver göras – det blir ditt problem som andelsägare.",
+          "Sedan räkenskapsåret 2023 ska alla bostadsrättsföreningar redovisa samma sju nyckeltal, beräknade på samma sätt enligt årsredovisningslagen och Bokföringsnämndens regler. Det gör det betydligt lättare att jämföra föreningar och år. Nyckeltalen står i förvaltningsberättelsen, ofta i en flerårsöversikt.",
         ],
-        callout:
-          "Planerat stambyte utan buffert i kassan betyder troligen högre avgift eller särskilt uttag.",
+        bullets: [
+          "Årsavgift per kvm upplåten med bostadsrätt – vad medlemmarna i snitt betalar per kvadratmeter och år.",
+          "Årsavgifternas andel av totala rörelseintäkter – hur beroende föreningen är av avgifterna jämfört med t.ex. hyror från lokaler.",
+          "Skuldsättning per kvm – föreningens räntebärande skulder delat med hela fastighetens yta.",
+          "Skuldsättning per kvm upplåten med bostadsrätt – samma skuld fördelad på bostadsrättsytan, alltså det som bärs av medlemmarna.",
+          "Sparande per kvm – hur mycket föreningen sparar till framtida underhåll och amortering.",
+          "Räntekänslighet – hur mycket avgifterna skulle behöva höjas om räntan steg med en procentenhet.",
+          "Energikostnad per kvm – kostnader för värme, el och vatten.",
+        ],
+        callout: {
+          type: "tip",
+          text: "Äldre årsredovisningar (före 2023) saknar ofta dessa nyckeltal eller räknar dem på olika sätt. Jämför därför helst nyckeltal från 2023 och framåt med varandra.",
+        },
+      },
+      {
+        id: "skuld-per-kvm",
+        heading: "Skuld per kvm: vad siffran säger – och inte säger",
+        paragraphs: [
+          "[Skuld per kvm](/ordlista/skuld-per-kvm) visar hur stora lån föreningen har i förhållande till ytan. Titta särskilt på skulden per kvm upplåten med bostadsrätt, eftersom det är den som i praktiken bärs av medlemmarnas avgifter.",
+          "Siffran behöver sättas i sammanhang: byggår, genomförda renoveringar, om föreningen äger marken eller har tomträtt och vad som väntar i underhållsplanen. En förening som nyss lånat till ett stambyte kan ha hög skuld men låg framtida risk – en förening med låg skuld och eftersatt underhåll kan vara tvärtom. Läs mer i guiden om [hög skuld per kvm i BRF](/guider/vad-ar-hog-skuld-per-kvm-brf).",
+        ],
+      },
+      {
+        id: "rantekanslighet",
+        heading: "Räntekänslighet och lånens villkor",
+        paragraphs: [
+          "Räntekänsligheten räknas som föreningens räntebärande skulder delat med årsavgifterna. Är den till exempel 10 procent innebär det att avgifterna skulle behöva höjas med ungefär 10 procent om föreningens genomsnittsränta steg med en procentenhet – allt annat lika.",
+          "Läs också noten om fastighetslån: vilken ränta lånen har och när de ska villkorsändras eller omsättas. Om en stor del av lånen ska omförhandlas under det närmaste året påverkar nästa ränteläge avgiften snabbt. Lån som förfaller inom tolv månader redovisas ofta som kortfristiga skulder, vilket kan få likviditeten att se svagare ut än den är – det är en omsättning av lån, inte nödvändigtvis ett problem.",
+          "Se också om föreningen amorterar. Stadiga amorteringar minskar räntekänsligheten över tid; en förening som aldrig amorterar skjuter skulden framåt till framtida medlemmar. Mer om detta i [belåning i BRF](/ordlista/belaning-brf).",
+        ],
+      },
+      {
+        id: "avgift",
+        heading: "Årsavgift per kvm och avgiftens utveckling",
+        paragraphs: [
+          "Jämför årsavgiften per kvm med liknande föreningar i samma område och kontrollera vad som ingår – värme, vatten, bredband eller kabel-tv gör stor skillnad. Titta sedan på historiken i flerårsöversikten: har avgiften höjts i jämn takt, stått still länge eller höjts kraftigt på en gång?",
+          "En låg avgift är inte automatiskt bra. Hålls den nere genom att föreningen skjuter upp underhåll eller inte sparar, kommer kostnaden senare – ofta som en kraftig höjning. Läs mer om [för låg avgift i bostadsrätt](/guider/for-lag-avgift-bostadsratt) och om vad en [avgiftshöjning i BRF](/guider/avgiftshojning-brf) betyder för dig.",
+        ],
+      },
+      {
+        id: "resultat-sparande",
+        heading: "Resultat, sparande och kassaflöde",
+        paragraphs: [
+          "Många bostadsrättsföreningar redovisar ett negativt resultat år efter år, och det behöver inte vara ett problem. Avskrivningar på byggnaden är en stor kostnad i resultaträkningen men inga pengar som lämnar föreningen. Därför är resultatet ett dåligt mått på om föreningen klarar sig.",
+          "Titta i stället på sparande per kvm och, om det finns, kassaflödesanalysen. Frågan är enkel: går föreningens löpande verksamhet ihop med pengar över till amortering och framtida underhåll? Ett sparande som är lågt eller negativt flera år i rad betyder att någon – ofta framtida medlemmar – får betala senare.",
+        ],
+      },
+      {
+        id: "kassa-fonder",
+        heading: "Kassa, likviditet och underhållsfond",
+        paragraphs: [
+          "Kassan visar vilken buffert föreningen har för oväntade kostnader. Läs den tillsammans med kommande underhåll och lånens förfallodagar – en stor kassa kan vara öronmärkt för ett projekt som redan är beslutat. Mer i guiden [kassa i bostadsrättsförening](/guider/kassa-i-bostadsrattsforening).",
+          "Fonden för yttre underhåll – ofta kallad [renoveringsfond](/ordlista/renoveringsfond) – är en post i det egna kapitalet, inte ett bankkonto. En stor fond betyder alltså inte automatiskt att pengarna finns på banken. Kontrollera de faktiska likvida medlen i balansräkningen och nyckeltal som [kassalikviditet](/ordlista/kassalikviditet) och [soliditet](/ordlista/soliditet).",
+        ],
+      },
+      {
+        id: "underhall",
+        heading: "Underhållsplan och kommande stora projekt",
+        paragraphs: [
+          "Årsredovisningen berättar vad som har hänt; [underhållsplanen](/guider/underhallsplan-brf) berättar vad som väntar. Be om den och jämför: vilka stora åtgärder ligger de närmaste fem–tio åren, vad beräknas de kosta och hur ska de finansieras – med sparade medel, nya lån eller höjd avgift?",
+          "Var extra uppmärksam på stambyte, tak, fasad, fönster och hissar i äldre hus. Ett planerat [stambyte](/guider/stambyte-bostadsratt-risk) utan finansieringsplan är en av de vanligaste orsakerna till kraftiga avgiftshöjningar eller [kapitaltillskott](/ordlista/kapitaltillskott).",
+        ],
+        callout: {
+          type: "red-flag",
+          text: "Stort planerat underhåll + lågt sparande + lite i kassan är den kombination som oftast leder till kraftigt höjd avgift inom några år.",
+        },
       },
       {
         id: "lokaler-tomtratt",
-        heading: "Lokaler, tomträtt och övriga risker",
+        heading: "Lokaler, tomträtt och andra poster som kan ändras",
         paragraphs: [
-          "Notera intäkter från lokaler, tomträttsavgäld och andra poster som kan förändras. Dessa påverkar föreningens långsiktiga ekonomi.",
-          "Läs noterna i årsredovisningen – där finns ofta detaljer om tvister, skadestånd och osäkra fordringar.",
+          "Intäkter från lokaler kan hålla nere avgiften, men gör föreningen beroende av hyresgästerna. Andelen årsavgifter av de totala intäkterna visar hur stort beroendet är. Läs mer om [lokalfastigheter i BRF](/guider/lokalfastigheter-brf-risk).",
+          "Har föreningen [tomträtt](/guider/tomtratt-bostadsratt) betalar den en avgäld till kommunen som omprövas med jämna mellanrum, ofta vart tionde eller tjugonde år. Kontrollera när nästa omprövning sker och vad avgälden är i dag.",
+        ],
+      },
+      {
+        id: "varningssignaler",
+        heading: "Vanliga varningssignaler i årsredovisningen",
+        paragraphs: [
+          "Ingen av punkterna nedan betyder automatiskt att du ska avstå – men var och en är ett skäl att fråga mer innan du budar.",
+        ],
+        bullets: [
+          "Sparandet är lågt eller negativt flera år i rad.",
+          "Skulden per kvm ökar utan att det finns ett tydligt genomfört projekt bakom.",
+          "Hög räntekänslighet i kombination med att stora lån ska omsättas snart.",
+          "Stora projekt i underhållsplanen utan beslutad finansiering.",
+          "Underhållsplanen saknas eller har inte uppdaterats på länge.",
+          "Avgiften har legat still länge och sedan höjts kraftigt – eller sänkts nära en försäljning.",
+          "Stort beroende av en enskild lokalhyresgäst, eller en tomträttsavgäld som snart omprövas.",
+          "Revisorn har en anmärkning, eller noterna nämner tvister och oklara fordringar.",
+        ],
+      },
+      {
+        id: "checklista",
+        heading: "Checklista: kontrollera BRF innan köp",
+        paragraphs: [
+          "Använd listan när du har årsredovisningen framför dig. Hittar du inte svaret – be mäklaren eller styrelsen om det skriftligt innan du lägger bud. Fler punkter om själva budgivningen finns i [checklistan inför budgivning](/guider/checklista-innan-budgivning).",
+        ],
+        bullets: [
+          "Har jag läst minst två–tre årsredovisningar och jämfört nyckeltalen?",
+          "Hur har skuld per kvm och räntekänslighet utvecklats?",
+          "När ska lånen villkorsändras, och till vilken ränta ligger de i dag?",
+          "Är sparandet per kvm positivt och stabilt?",
+          "Vad säger underhållsplanen om de närmaste fem–tio åren, och hur finansieras det?",
+          "Hur har avgiften utvecklats, och finns beslutade eller planerade höjningar?",
+          "Finns tomträtt, stora lokaler eller andra särskilda risker?",
+          "Hur påverkar allt detta min månadskostnad och mitt [rimliga maxbud](/guider/vad-ar-rimligt-maxbud)?",
         ],
       },
     ],
     faq: [
       {
-        q: "Räcker ett års årsredovisning?",
-        a: "Nej, titta på minst två till tre år för att se trender. Ett bra år kan vara undantag.",
+        q: "Hur vet man om en bostadsrättsförening har god ekonomi?",
+        a: "Titta på helheten i årsredovisningen: en skuld som föreningen klarar även vid högre räntor, ett positivt sparande till underhåll, en aktuell underhållsplan med finansiering och en avgift som höjts i jämn takt. Ingen enskild siffra räcker.",
       },
       {
-        q: "Vad gör jag om årsredovisningen är svår att förstå?",
-        a: "Fokusera på skuld per kvm, avgiftstrend, kassa och planerade underhåll. Resten kan du fråga om eller konsultera någon med erfarenhet.",
+        q: "Vilken skuld per kvm är bra?",
+        a: "Det finns ingen gräns som gäller alla föreningar. Samma skuld kan vara rimlig i ett nybyggt hus och riskabel i ett äldre hus som står inför stora renoveringar. Jämför med liknande föreningar och se hur skulden utvecklas över tid.",
+      },
+      {
+        q: "Varför går föreningen med förlust?",
+        a: "Ofta beror det på avskrivningar, som är en bokföringsmässig kostnad och inte pengar som lämnar föreningen. Titta på sparande per kvm och kassaflödet för att se om föreningen faktiskt går ihop.",
+      },
+      {
+        q: "Räcker det att läsa en årsredovisning?",
+        a: "Nej. Läs två–tre år för att se trender – ett enskilt år kan påverkas av en engångshändelse.",
+      },
+      {
+        q: "Vad är skillnaden mellan årsredovisning och bokslut i en BRF?",
+        a: "Bokslutet är avslutningen av räkenskapsåret. Årsredovisningen är dokumentet där bokslutet presenteras, tillsammans med förvaltningsberättelse, nyckeltal och noter – det är den du ska läsa som köpare.",
       },
     ],
     relatedSlugs: [
+      "kassa-i-bostadsrattsforening",
       "vad-ar-hog-skuld-per-kvm-brf",
       "underhallsplan-brf",
-      "kassa-i-bostadsrattsforening",
+      "for-lag-avgift-bostadsratt",
     ],
     relatedToolSlugs: ["brf-skuld-per-kvm"],
+    sources: [
+      {
+        label: "Bokföringsnämnden – vägledning om årsredovisning för bostadsrättsföreningar",
+        href: "https://www.bfn.se/wp-content/uploads/vl23-1-brf.pdf",
+      },
+      {
+        label: "Riksbyggen – sju nyckeltal för bostadsrättsföreningen",
+        href: "https://www.riksbyggen.se/kunskapsbanken/lagar-och-regler/sju-nyckeltal/",
+      },
+    ],
+    updated: "2026-09-29",
+    cta: {
+      title: "Låt oss läsa årsredovisningen med dig",
+      text: "Klistra in länken från mäklarens hemsida – vi hämtar årsredovisningen om den finns där – eller ladda upp PDF:en i nästa steg. Du får en genomgång av föreningens ekonomi, risker och ett rimligt budintervall. Just nu gratis under betan.",
+    },
   },
   {
     slug: "vad-ar-hog-skuld-per-kvm-brf",
@@ -467,7 +721,7 @@ export const GUIDES: Guide[] = [
         id: "vad-ar-siffran",
         heading: "Vad mäter skuld per kvm?",
         paragraphs: [
-          "Skuld per kvm är föreningens totala räntebärande skulder dividerat med den totala boytan. Den visar belåningsgraden per kvadratmeter bostadsyta.",
+          "[Skuld per kvm](/ordlista/skuld-per-kvm) är föreningens räntebärande skulder dividerat med ytan. Sedan räkenskapsåret 2023 redovisar alla föreningar två varianter: skuldsättning per kvm för hela fastigheten och per kvm upplåten med bostadsrätt – den senare visar vad som bärs av medlemmarnas avgifter.",
           "Siffran säger inget om lägenhetens skick men mycket om föreningens finansiella utrymme framåt.",
         ],
       },
@@ -476,7 +730,7 @@ export const GUIDES: Guide[] = [
         heading: "Hur jämför du med andra föreningar?",
         paragraphs: [
           "Jämför med föreningar i samma område och ungefär samma byggår. Nyare hus har ofta högre skuld efter nyproduktion; äldre kan ha lägre skuld eller stora kommande lån för renovering.",
-          "En skuld på 8 000 kr/kvm kan vara normal i ett nybyggt område men hög i en äldre förening utan planerade investeringar.",
+          "En skuld på 8 000 kr/kvm kan vara normal i ett nybyggt område men hög i en äldre förening utan planerade investeringar. Läs skulden tillsammans med räntekänsligheten och sparandet – hur du gör det beskrivs i [Analysera årsredovisning i BRF](/guider/analysera-brf-arsredovisning).",
         ],
         bullets: [
           "Jämför med liknande föreningar",
@@ -624,7 +878,7 @@ export const GUIDES: Guide[] = [
         id: "las-trenden",
         heading: "Läs trenden i årsredovisningen",
         paragraphs: [
-          "Jämför avgiften per kvm över minst fem år. En stadig ökning på 3–5 % per år utan motsvarande förbättringar i fastigheten är oroväckande.",
+          "Jämför avgiften per kvm över minst fem år. Löpande höjningar i takt med kostnaderna är normalt; det som bör få dig att fråga mer är återkommande kraftiga höjningar utan förklaring, eller en avgift som stått still länge och sedan höjts mycket på en gång.",
           "Kolla om höjningar motiveras i styrelseberättelsen eller om de bara 'händer'.",
         ],
         bullets: [
@@ -684,7 +938,18 @@ export const GUIDES: Guide[] = [
     metaDescription:
       "Underhållsplanen visar vad BRF:en måste göra och när. Så läser du den, kopplar till kostnader och avgör om föreningen har koll innan du budar.",
     intro:
-      "Underhållsplanen är föreningens karta över framtida renoveringar och reparationer. Utan en aktuell plan vet föreningen inte vad som behöver göras – och du vet inte vad du kan få betala för. Den hör till standardkollen innan bud.",
+      "Underhållsplanen är föreningens karta över framtida renoveringar och reparationer: vad som behöver göras, när och ungefär vad det kostar. Som köpare använder du den för att se vilka stora kostnader som väntar och om föreningen har en plan för att betala dem. Utan en aktuell plan vet föreningen inte vad som behöver göras – och du vet inte vad du kan få betala för.",
+    quickAnswer: [
+      "Be mäklaren eller styrelsen om underhållsplanen – den ingår sällan i annonsen.",
+      "Titta på de närmaste fem–tio åren: stambyte, tak, fasad, fönster och hissar.",
+      "Kontrollera hur de stora projekten ska finansieras: sparande, lån eller höjd avgift.",
+      "Jämför med årsredovisningens sparande, kassa och fond för yttre underhåll.",
+    ],
+    internalLinks: [
+      { href: "/guider/analysera-brf-arsredovisning", anchor: "analysera årsredovisning i BRF" },
+      { href: "/ordlista/renoveringsfond", anchor: "renoveringsfond i BRF" },
+      { href: "/guider/stambyte-bostadsratt-risk", anchor: "stambyte i bostadsrätt" },
+    ],
     sections: [
       {
         id: "vad-ingar",
@@ -721,8 +986,8 @@ export const GUIDES: Guide[] = [
         id: "koppling-avgift",
         heading: "Koppling till avgift och skuld",
         paragraphs: [
-          "Stora planerade åtgärder utan buffert i kassan leder nästan alltid till lån eller särskilda uttag – och högre avgift.",
-          "Läs planen tillsammans med skuld per kvm och kassa för att få helheten.",
+          "Stora planerade åtgärder utan buffert i kassan leder nästan alltid till lån eller kapitaltillskott – och högre avgift.",
+          "Läs planen tillsammans med skuld per kvm, [kassan](/guider/kassa-i-bostadsrattsforening) och avsättningen till [renoveringsfonden](/ordlista/renoveringsfond) för att få helheten. Hur du hittar siffrorna beskrivs i [Analysera årsredovisning i BRF](/guider/analysera-brf-arsredovisning).",
         ],
       },
       {
@@ -757,16 +1022,29 @@ export const GUIDES: Guide[] = [
     metaTitle:
       "Kassa i bostadsrättsförening – hur mycket är tillräckligt? | skajagbuda.se",
     metaDescription:
-      "Föreningens kassa avslöjar om den klarar oväntade utgifter. Så bedömer du likviditet, buffert och risken för särskilt uttag innan du köper bostadsrätt.",
+      "Hur mycket pengar bör en BRF ha i kassan? Så läser du kassa och likviditet i årsredovisningen, varför fonden inte är pengar på banken och när en låg kassa är en risk.",
     intro:
-      "Kassan visar om föreningen har pengar att ta av när något går sönder – utan att höja avgiften eller ta nya lån direkt. En stark årsredovisning med hög skuld kan ändå vara riskfylld om kassan är tom. Det här är en av de mest förbisedda siffrorna vid bostadsköp.",
+      "Kassan visar om föreningen har pengar att ta av när något går sönder – utan att höja avgiften eller ta nya lån direkt. Det finns ingen fast siffra för hur mycket som räcker: kassan ska bedömas mot föreningens storlek, kommande underhåll och när lånen ska omsättas. En stark årsredovisning kan ändå vara riskfylld om kassan är tom och stora projekt väntar.",
+    quickAnswer: [
+      "Kassa och bank hittar du i balansräkningen, under omsättningstillgångar.",
+      "Det finns ingen fast gräns – jämför kassan med underhållsplanen och årsavgifterna.",
+      "Fonden för yttre underhåll är inte pengar på banken, bara en post i eget kapital.",
+      "Låg kassalikviditet kan bero på lån som ska omsättas inom ett år – kontrollera noterna.",
+      "Tom kassa + planerat stambyte = hög risk för avgiftshöjning eller kapitaltillskott.",
+    ],
+    internalLinks: [
+      { href: "/guider/analysera-brf-arsredovisning", anchor: "analysera årsredovisning i BRF" },
+      { href: "/ordlista/renoveringsfond", anchor: "renoveringsfond i BRF" },
+      { href: "/ordlista/kassalikviditet", anchor: "kassalikviditet" },
+      { href: "/guider/underhallsplan-brf", anchor: "underhållsplan i BRF" },
+    ],
     sections: [
       {
         id: "vad-ar-kassa",
         heading: "Vad menas med kassa i BRF?",
         paragraphs: [
           "Kassa och bankmedel i årsredovisningen visar föreningens likvida medel. Det inkluderar inte fastighetens värde – bara pengar som kan användas direkt.",
-          "Jämför kassan med planerade utgifter i underhållsplanen för att se om bufferten räcker.",
+          "Jämför kassan med planerade utgifter i [underhållsplanen](/guider/underhallsplan-brf) för att se om bufferten räcker.",
         ],
       },
       {
@@ -774,6 +1052,7 @@ export const GUIDES: Guide[] = [
         heading: "Hur mycket är tillräckligt?",
         paragraphs: [
           "Det finns ingen fast regel, men en förening bör ha buffert för oförutsedda utgifter och pågående underhåll. Om kassan är nära noll samtidigt som stora projekt planeras är risken hög.",
+          "Ett enkelt sätt att få perspektiv är att jämföra kassan med föreningens årsavgifter: hur många månaders avgifter motsvarar den? Det är ingen officiell norm, men gör det lättare att jämföra föreningar och se om bufferten krymper år för år.",
           "Jämför med liknande föreningar i området och med föreningens egna underhållsplan.",
         ],
         bullets: [
@@ -786,17 +1065,26 @@ export const GUIDES: Guide[] = [
         id: "lag-kassa",
         heading: "Låg kassa – vad händer då?",
         paragraphs: [
-          "Låg kassa leder ofta till särskilt uttag (engångsbelopp från varje ägare), nya lån eller kraftiga avgiftshöjningar vid oförutsedda händelser.",
+          "Låg kassa leder ofta till [kapitaltillskott](/ordlista/kapitaltillskott) (engångsbelopp från varje ägare), nya lån eller kraftiga [avgiftshöjningar](/guider/avgiftshojning-brf) vid oförutsedda händelser.",
           "Du som ny ägare kan få en faktura kort efter tillträde om föreningen inte har marginal.",
         ],
         callout:
           "Tom kassa + planerat stambyte = hög risk för plötslig kostnad.",
       },
       {
+        id: "kassa-fond-sparande",
+        heading: "Kassa, underhållsfond och sparande – tre olika saker",
+        paragraphs: [
+          "Kassan är de pengar som faktiskt finns. [Renoveringsfonden](/ordlista/renoveringsfond) – fonden för yttre underhåll – är en reservering i föreningens egna kapital och behöver inte motsvaras av pengar på banken. Sparande per kvm är ett nyckeltal som visar hur mycket föreningen lägger undan varje år.",
+          "Titta på alla tre. En stor fond med tom kassa betyder att pengarna redan använts, till exempel till amortering. En liten kassa i en förening med stabilt sparande och ett nyss genomfört stambyte kan vara helt rimligt.",
+          "Tänk också på att lån som ska omsättas inom tolv månader redovisas som kortfristiga skulder. Det kan få [kassalikviditeten](/ordlista/kassalikviditet) att se mycket låg ut trots att det bara handlar om en planerad omförhandling av lånet.",
+        ],
+      },
+      {
         id: "las-tillsammans",
         heading: "Läs kassa tillsammans med skuld",
         paragraphs: [
-          "Hög skuld och låg kassa är en svag kombination. Hög skuld med god kassa och tydlig amorteringsplan kan vara hanterbart.",
+          "Hög skuld och låg kassa är en svag kombination. Hög skuld med god kassa och tydlig amorteringsplan kan vara hanterbart. Läs mer om hur du bedömer [skuld per kvm i BRF](/guider/vad-ar-hog-skuld-per-kvm-brf).",
           "Titta också på om föreningen har uppskjutit underhåll för att hålla kassan och avgiften artificiellt låga.",
         ],
       },
@@ -818,6 +1106,10 @@ export const GUIDES: Guide[] = [
         q: "Kan kassan vara för hög?",
         a: "En stor kassa utan plan kan tyda på dålig avkastning, men är sällan ett problem för dig som köpare. Det värre är för lite.",
       },
+      {
+        q: "Hur vet man om en bostadsrättsförening har god ekonomi?",
+        a: "Kassan är en del av svaret. Läs den tillsammans med skuld per kvm, räntekänslighet, sparande och underhållsplan – se guiden [Analysera årsredovisning i BRF](/guider/analysera-brf-arsredovisning).",
+      },
     ],
     relatedSlugs: [
       "analysera-brf-arsredovisning",
@@ -825,14 +1117,14 @@ export const GUIDES: Guide[] = [
       "avgiftshojning-brf",
     ],
     relatedToolSlugs: ["boendekostnad"],
+    updated: "2026-09-29",
   },
   {
     slug: "pris-per-kvm-bostadsratt",
-    title: "Pris per kvm",
-    metaTitle:
-      "Pris per kvm – så använder du det utan att bli lurad | skajagbuda.se",
+    title: "Pris per kvm – så jämför du bostadspriser rätt",
+    metaTitle: "Pris per kvm (kvm-pris) – så jämför du bostadspriser rätt | skajagbuda.se",
     metaDescription:
-      "Pris per kvm är ett verktyg – inte en sanning. Så jämför du rätt, undviker fällor och sätter ett rimligt maxbud utan att låta kvadratmetersiffran styra.",
+      "Kvm-priset är köpeskillingen delat med boytan. Så räknar du, jämför slutpriser på rätt sätt, undviker vanliga fällor och använder siffran när du sätter maxbud.",
     intro:
       "Pris per kvm används överallt i bostadsannonser – men siffran säger bara något om du jämför likvärdiga objekt på rätt sätt. Fel jämförelser ger falsk trygghet och kan få dig att betala för mycket. Här är hur du använder måttet utan att bli lurad.",
     sections: [
@@ -840,8 +1132,8 @@ export const GUIDES: Guide[] = [
         id: "vad-sager-siffran",
         heading: "Vad säger pris per kvm?",
         paragraphs: [
-          "Pris per kvm är köpeskillingen dividerad med bostadsytan. Det underlättar jämförelse mellan lägenheter av olika storlek i samma område.",
-          "Det säger inget om föreningens ekonomi, läge i huset eller skick – bara om prisnivån per ytenhet.",
+          "Pris per kvm är köpeskillingen dividerad med boytan. En lägenhet på 60 kvm som säljs för 4 500 000 kr har alltså ett kvm-pris på 75 000 kr. Det underlättar jämförelse mellan lägenheter av olika storlek i samma område.",
+          "Det säger inget om föreningens ekonomi, läge i huset eller skick – bara om prisnivån per ytenhet. Två lägenheter med samma kvm-pris kan vara olika bra köp om den ena föreningen har hög skuld eller ett stambyte framför sig; se [Analysera årsredovisning i BRF](/guider/analysera-brf-arsredovisning).",
         ],
       },
       {
@@ -880,7 +1172,7 @@ export const GUIDES: Guide[] = [
         heading: "Praktisk användning inför bud",
         paragraphs: [
           "Sätt ett intervall för rimligt pris per kvm baserat på slutpriser. Om objektet ligger över intervallet, kräv en tydlig motivering.",
-          "Använd siffran som kontroll – inte som facit på att lägenheten är bra.",
+          "Använd siffran som kontroll – inte som facit på att lägenheten är bra. Multiplicera intervallet med lägenhetens boyta för att få ett marknadsvärde, och använd det som första steg när du sätter ett [rimligt maxbud](/guider/vad-ar-rimligt-maxbud).",
         ],
       },
     ],
@@ -895,11 +1187,13 @@ export const GUIDES: Guide[] = [
       },
     ],
     relatedSlugs: [
-      "hur-mycket-ska-man-buda-over-utgangspris",
       "vad-ar-rimligt-maxbud",
+      "budstrategi-bostadsratt",
+      "hur-mycket-ska-man-buda-over-utgangspris",
       "kopa-bostadsratt-stockholm",
     ],
-    relatedToolSlugs: ["boendekostnad"],
+    relatedToolSlugs: ["maxbud"],
+    updated: "2026-09-29",
   },
   {
     slug: "kopa-bostadsratt-stockholm",
@@ -998,7 +1292,7 @@ export const GUIDES: Guide[] = [
         id: "maxbud-innan",
         heading: "Maxbud innan – inte under",
         paragraphs: [
-          "Bestäm maxbud baserat på slutpriser och BRF-analys innan budgivningen. I Stockholm tenderar känslan att säga 'lite till' vid varje steg.",
+          "Bestäm [maxbud](/guider/vad-ar-rimligt-maxbud) baserat på slutpriser och BRF-analys innan budgivningen. I Stockholm tenderar känslan att säga 'lite till' vid varje steg – en genomtänkt [budstrategi](/guider/budstrategi-bostadsratt) med planerade budsteg hjälper dig hålla emot.",
           "Skriv ner maxbudet och visa det inte för någon. Det är din gräns.",
         ],
         bullets: [
@@ -1127,78 +1421,121 @@ export const GUIDES: Guide[] = [
   },
   {
     slug: "for-lag-avgift-bostadsratt",
-    title: "För låg avgift i bostadsrätt",
-    metaTitle:
-      "För låg avgift i bostadsrätt – kan det vara en varningssignal? | skajagbuda.se",
+    title: "För låg avgift i bostadsrätt – fördel eller varningssignal?",
+    metaTitle: "För låg avgift i bostadsrätt – fördel eller varningssignal? | skajagbuda.se",
     metaDescription:
-      "En avgift under snittet lockar – men kan dölja uppskjutet underhåll. Så avgör du om låg månadsavgift är en fördel eller en varningssignal vid köp.",
+      "Låg månadsavgift kan vara ett tecken på god ekonomi – eller på uppskjutet underhåll. Så jämför du avgiften rätt, vilka nyckeltal som avslöjar skillnaden och vad du bör fråga.",
     intro:
-      "En låg månadsavgift ser attraktiv ut i annonsen – men den kan vara låg av fel anledning. Föreningar som skjuter upp underhåll för att hålla avgiften nere skapar framtida kostnader som du som ny ägare får ta. Det är värt att gräva innan du tolkar låg avgift som en bonus.",
+      "En låg avgift är bara en fördel om den är låg av rätt skäl: låg skuld, god förvaltning eller intäkter som är stabila. Är den låg för att föreningen inte sparar eller skjuter upp underhåll, flyttas kostnaden till framtiden – och då är det du som ny ägare som betalar. Du avgör skillnaden med några nyckeltal i årsredovisningen och underhållsplanen.",
+    quickAnswer: [
+      "Jämför årsavgift per kvm med liknande föreningar – och kontrollera vad som ingår.",
+      "Titta på sparande per kvm: sparar föreningen till framtida underhåll?",
+      "Läs underhållsplanen – stora projekt utan finansiering betyder framtida höjningar.",
+      "Se över avgiftshistoriken: har avgiften stått still länge eller sänkts nära en försäljning?",
+      "Räkna med en högre avgift i din kalkyl om den låga nivån inte har en tydlig förklaring.",
+    ],
+    internalLinks: [
+      { href: "/guider/analysera-brf-arsredovisning", anchor: "analysera årsredovisning i BRF" },
+      { href: "/guider/avgiftshojning-brf", anchor: "avgiftshöjning i BRF" },
+      { href: "/ordlista/arsavgift", anchor: "årsavgift" },
+      { href: "/verktyg/boendekostnad", anchor: "räkna boendekostnad" },
+    ],
     sections: [
       {
         id: "varfor-lag",
         heading: "Varför kan avgiften vara låg?",
         paragraphs: [
-          "Goda skäl: nyligen genomfört underhåll, god kassa, låg skuld och effektiv förvaltning. Dåliga skäl: uppskjutet underhåll, underskott som inte redovisats tydligt eller artificiellt låg avgift inför försäljning.",
-          "Din uppgift är att avgöra vilket det är – inte att ta siffran för given.",
+          "Det finns både goda och dåliga förklaringar. Din uppgift är att avgöra vilken det är – inte att ta siffran i annonsen för given.",
+        ],
+        bullets: [
+          "Goda skäl: låg skuld, nyligen genomfört och finansierat underhåll, stabila intäkter från lokaler eller effektiv förvaltning.",
+          "Tveksamma skäl: föreningen sparar inte till underhåll, skjuter upp nödvändiga åtgärder eller har låga räntor som snart ska omförhandlas.",
+          "Tillfälliga skäl: nyproduktion där avgiften är satt lågt de första åren, eller en avgift som hållits oförändrad länge trots stigande kostnader.",
         ],
       },
       {
-        id: "jamfor-snitt",
-        heading: "Jämför med områdessnittet",
+        id: "jamfor-ratt",
+        heading: "Så jämför du avgiften rätt",
         paragraphs: [
-          "Kolla avgift per kvm i liknande föreningar i samma område. Ligger din förening 20–30 % under utan tydlig förklaring bör du vara skeptisk.",
-          "Fråga styrelsen varför avgiften är lägre och be om underlag.",
+          "Använd nyckeltalet årsavgift per kvm upplåten med bostadsrätt, som alla föreningar redovisar i årsredovisningen sedan räkenskapsåret 2023. Jämför med föreningar i samma område med liknande byggår och storlek – inte med snittet för hela staden.",
+          "Kontrollera sedan vad som ingår. Värme och vatten ingår ofta, men el, bredband och kabel-tv varierar. En avgift som ser låg ut kan i praktiken vara normal om du själv betalar värmen. Läs mer om vad som brukar ingå i [årsavgiften](/ordlista/arsavgift).",
+          "Det finns ingen procentgräns för när en avgift är för låg. En tydlig avvikelse från jämförbara föreningar utan förklaring är däremot skäl att gräva vidare.",
+        ],
+      },
+      {
+        id: "nyckeltal",
+        heading: "Nyckeltalen som avslöjar om avgiften håller",
+        paragraphs: [
+          "Avgiften ska täcka föreningens kostnader, räntor och ett sparande till framtida underhåll. Tre nyckeltal visar om den gör det:",
         ],
         bullets: [
-          "Avgift per kvm vs grannföreningar",
-          "Underhållsplanens status",
-          "Kassa och skuldtrend",
+          "Sparande per kvm: är det lågt eller negativt flera år i rad räcker avgiften troligen inte på sikt.",
+          "Räntekänslighet: visar hur mycket avgiften skulle behöva höjas om räntan steg en procentenhet.",
+          "Skuldsättning per kvm upplåten med bostadsrätt: hög skuld och låg avgift är en kombination som ofta leder till höjningar.",
         ],
+        callout: {
+          type: "tip",
+          text: "Hur du hittar och tolkar nyckeltalen går vi igenom steg för steg i guiden Analysera årsredovisning i BRF.",
+        },
       },
       {
         id: "uppskjutet-underhall",
         heading: "Tecken på uppskjutet underhåll",
         paragraphs: [
-          "Föråldrad underhållsplan, låg kassa, kända skador som inte åtgärdats och styrelseprotokoll som nämner 'avgiftsdisciplin' utan underhållsdiskussion.",
-          "Det här mönstret slutar nästan alltid med höjning eller särskilt uttag.",
+          "En [underhållsplan](/guider/underhallsplan-brf) som är gammal eller saknas, låg kassa, kända skador som inte åtgärdats och stämmoprotokoll där avgiften diskuteras men inte underhållet är typiska tecken.",
+          "Mönstret slutar ofta med en kraftig avgiftshöjning eller ett [kapitaltillskott](/ordlista/kapitaltillskott) när underhållet inte längre går att skjuta upp.",
         ],
-        callout:
-          "Låg avgift idag kan bli hög avgift imorgon – utan förvarning om du inte läst planen.",
+        callout: {
+          type: "red-flag",
+          text: "Låg avgift + lågt sparande + stort underhåll inom några år = räkna med höjd avgift.",
+        },
       },
       {
         id: "nyproduktion",
-        heading: "Nyproduktion och temporärt låga avgifter",
+        heading: "Nyproduktion och tillfälligt låga avgifter",
         paragraphs: [
-          "I nybyggda föreningar kan avgiften vara låg de första åren innan garantier löper ut och underhållsbehovet blir verklighet. Läs prognoser i årsredovisningen.",
-          "Hög skuld per kvm i nyproduktion kombinerat med låg avgift är en klassisk riskprofil.",
+          "I nybyggda föreningar sätts avgiften utifrån den ekonomiska planen och kan vara låg de första åren, medan räntor är bundna och underhållsbehovet litet. Läs planens prognos för avgiften kommande år och kontrollera när lånen ska villkorsändras.",
+          "Hög skuld per kvm i kombination med låg avgift är en vanlig riskprofil i nyproduktion. Läs mer om [hög skuld per kvm i BRF](/guider/vad-ar-hog-skuld-per-kvm-brf).",
+        ],
+      },
+      {
+        id: "rakneexempel",
+        heading: "Räkneexempel: vad en höjning betyder för dig",
+        paragraphs: [
+          "Exemplet är förenklat och bara till för att visa storleksordningen. Anta att avgiften för en lägenhet är 3 000 kr i månaden och föreningen höjer med 15 procent för att komma ikapp med sparandet. Då blir avgiften 3 450 kr – 450 kr mer i månaden och 5 400 kr mer om året, varje år framöver.",
+          "Den kostnaden är lika verklig som en högre ränta på ditt bolån. Lägg in en rimlig framtida avgift i din kalkyl – till exempel med [boendekostnadskalkylatorn](/verktyg/boendekostnad) – innan du bestämmer ditt maxbud.",
         ],
       },
       {
         id: "budbeslut",
         heading: "Hur det påverkar ditt bud",
         paragraphs: [
-          "Om låg avgift verkar misstänkt, räkna med framtida höjning i boendekostnaden och sänk maxbudet. Om den är låg av goda skäl – dokumenterat underhåll och god ekonomi – är det en fördel.",
-          "Låt underlaget styra, inte annonsens månadsavgift.",
+          "Om den låga avgiften har en tydlig och hållbar förklaring är den en fördel och kan motivera ett något högre bud. Om den inte har det, räkna med en högre framtida avgift och låt det sänka ditt [rimliga maxbud](/guider/vad-ar-rimligt-maxbud).",
+          "Låt underlaget styra – inte annonsens månadsavgift.",
         ],
       },
     ],
     faq: [
       {
-        q: "Hur låg är 'för låg' avgift?",
-        a: "Jämför med liknande föreningar. En tydlig avvikelse utan förklaring motiverar extra granskning.",
+        q: "Hur låg är för låg avgift?",
+        a: "Det finns ingen fast gräns. Jämför årsavgift per kvm med liknande föreningar i området och kontrollera vad som ingår. En tydlig avvikelse utan förklaring motiverar extra granskning.",
+      },
+      {
+        q: "Är låg avgift bra när man köper bostadsrätt?",
+        a: "Ja, om föreningen ändå sparar till underhåll och har en skuld den klarar. Nej, om avgiften är låg för att underhåll skjuts upp – då kommer höjningen senare.",
       },
       {
         q: "Kan mäklaren garantera att avgiften inte höjs?",
-        a: "Nej. Styrelsen och stämman beslutar. Du måste läsa historik och planer själv.",
+        a: "Nej. Styrelsen beslutar om avgiften. Du behöver läsa historik, nyckeltal och planer själv – eller fråga styrelsen om planerade höjningar.",
       },
     ],
     relatedSlugs: [
       "avgiftshojning-brf",
-      "underhallsplan-brf",
       "analysera-brf-arsredovisning",
+      "underhallsplan-brf",
     ],
     relatedToolSlugs: ["boendekostnad"],
+    updated: "2026-09-29",
   },
   {
     slug: "lokalfastigheter-brf-risk",

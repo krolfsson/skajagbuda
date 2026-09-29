@@ -1,10 +1,10 @@
 import type { MetadataRoute } from "next";
 import { SITE_URL } from "@/lib/brand";
 import { STATIC_INDEXABLE_PATHS } from "@/lib/seo";
-import { getAllGuideSlugs } from "@/lib/content/guides";
+import { getAllGuides } from "@/lib/content/guides";
 import { PRIORITY_GUIDE_SLUGS } from "@/lib/content/guide-seo";
 import { getAllToolSlugs } from "@/lib/content/tools";
-import { getAllGlossarySlugs } from "@/lib/content/glossary";
+import { GLOSSARY } from "@/lib/content/glossary";
 
 const PRIORITY: Record<string, number> = {
   "/": 1,
@@ -32,11 +32,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: PRIORITY[path] ?? 0.5,
   }));
 
-  const guides = getAllGuideSlugs().map((slug) => ({
-    url: `${SITE_URL}/guider/${slug}`,
-    lastModified: now,
+  // lastModified only where a real content update date is maintained — a build timestamp on
+  // every page is a signal search engines learn to ignore.
+  const guides = getAllGuides().map((guide) => ({
+    url: `${SITE_URL}/guider/${guide.slug}`,
+    ...(guide.updated ? { lastModified: new Date(guide.updated) } : {}),
     changeFrequency: "monthly" as const,
-    priority: (PRIORITY_GUIDE_SLUGS as readonly string[]).includes(slug) ? 0.85 : 0.8,
+    priority: (PRIORITY_GUIDE_SLUGS as readonly string[]).includes(guide.slug) ? 0.85 : 0.8,
   }));
 
   const tools = getAllToolSlugs().map((slug) => ({
@@ -46,9 +48,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.75,
   }));
 
-  const glossary = getAllGlossarySlugs().map((slug) => ({
-    url: `${SITE_URL}/ordlista/${slug}`,
-    lastModified: now,
+  const glossary = GLOSSARY.map((term) => ({
+    url: `${SITE_URL}/ordlista/${term.slug}`,
+    ...(term.updated ? { lastModified: new Date(term.updated) } : {}),
     changeFrequency: "monthly" as const,
     priority: 0.65,
   }));

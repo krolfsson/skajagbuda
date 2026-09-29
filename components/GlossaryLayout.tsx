@@ -5,18 +5,20 @@ import { getToolBySlug } from "@/lib/content/tools";
 import type { GlossaryTerm } from "@/lib/content/types";
 import { CTA_START_ANALYSIS } from "@/lib/brand";
 import { GuideCtaButton } from "@/components/GuideCtaButton";
+import { InlineText, formatUpdated, plainText } from "@/components/guides/InlineText";
+import { ContentSources } from "@/components/guides/ContentSources";
 
 export function GlossaryLayout({ term }: { term: GlossaryTerm }) {
   const url = `${SITE_URL}/ordlista/${term.slug}`;
   const relatedGuides = getGuidesBySlugs(term.relatedGuideSlugs ?? []);
   const relatedTools = (term.relatedToolSlugs ?? []).map((s) => getToolBySlug(s)).filter(Boolean);
 
-  const jsonLd = [
+  const jsonLd: object[] = [
     {
       "@context": "https://schema.org",
       "@type": "DefinedTerm",
       name: term.term,
-      description: term.definition,
+      description: plainText(term.definition),
       inDefinedTermSet: `${SITE_URL}/ordlista`,
     },
     {
@@ -29,6 +31,17 @@ export function GlossaryLayout({ term }: { term: GlossaryTerm }) {
       ],
     },
   ];
+  if (term.faq?.length) {
+    jsonLd.push({
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      mainEntity: term.faq.map((item) => ({
+        "@type": "Question",
+        name: item.q,
+        acceptedAnswer: { "@type": "Answer", text: plainText(item.a) },
+      })),
+    });
+  }
 
   return (
     <div className="guide-page">
@@ -41,24 +54,82 @@ export function GlossaryLayout({ term }: { term: GlossaryTerm }) {
       </nav>
 
       <p className="guide-eyebrow">Ordlista</p>
-      <h1 className="guide-h1">{term.term}</h1>
+      <h1 className="guide-h1">{term.h1 ?? term.term}</h1>
+      {term.updated && (
+        <p className="guide-updated">
+          Uppdaterad <time dateTime={term.updated}>{formatUpdated(term.updated)}</time>
+        </p>
+      )}
+
+      {term.shortAnswer && (
+        <aside className="guide-quick-answer" aria-label="Kort svar">
+          <p className="guide-quick-answer__title">Kort svar</p>
+          <p>
+            <InlineText text={term.shortAnswer} />
+          </p>
+        </aside>
+      )}
 
       <section className="guide-section">
         <h2 className="guide-h2">Definition</h2>
-        <p>{term.definition}</p>
+        <p>
+          <InlineText text={term.definition} />
+        </p>
       </section>
+
+      {term.sections?.map((section) => (
+        <section key={section.id} id={section.id} className="guide-section">
+          <h2 className="guide-h2">{section.heading}</h2>
+          {section.paragraphs.map((p) => (
+            <p key={p.slice(0, 40)}>
+              <InlineText text={p} />
+            </p>
+          ))}
+          {section.bullets && (
+            <ul className="guide-list">
+              {section.bullets.map((b) => (
+                <li key={b.slice(0, 50)}>
+                  <InlineText text={b} />
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+      ))}
 
       <section className="guide-section">
         <h2 className="guide-h2">Varför det spelar roll vid budgivning</h2>
-        <p>{term.whyItMatters}</p>
+        <p>
+          <InlineText text={term.whyItMatters} />
+        </p>
       </section>
 
       <section className="guide-section">
         <h2 className="guide-h2">Vad du bör kontrollera</h2>
         <ul className="guide-list">
-          {term.checkPoints.map((p) => <li key={p}>{p}</li>)}
+          {term.checkPoints.map((p) => (
+            <li key={p}>
+              <InlineText text={p} />
+            </li>
+          ))}
         </ul>
       </section>
+
+      {term.faq && term.faq.length > 0 && (
+        <section className="guide-section">
+          <h2 className="guide-h2">Vanliga frågor</h2>
+          {term.faq.map((item) => (
+            <div key={item.q} className="guide-faq-item">
+              <p className="guide-faq-q">{item.q}</p>
+              <p className="guide-faq-a">
+                <InlineText text={item.a} />
+              </p>
+            </div>
+          ))}
+        </section>
+      )}
+
+      {term.sources && <ContentSources sources={term.sources} />}
 
       <div className="guide-cta guide-cta--inline">
         <h2>Vill du se hur det påverkar ett konkret objekt?</h2>

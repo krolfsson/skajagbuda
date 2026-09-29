@@ -51,9 +51,9 @@ const TOPICS = [
     href: "/guider/vad-ar-rimligt-maxbud",
   },
   {
-    title: "Hög skuld per kvm i BRF",
-    desc: "Tolka skulden och vad som är riskabelt.",
-    href: "/guider/vad-ar-hog-skuld-per-kvm-brf",
+    title: "Analysera årsredovisning i BRF",
+    desc: "Så bedömer du föreningens ekonomi: skuld, sparande, kassa och underhåll.",
+    href: "/guider/analysera-brf-arsredovisning",
   },
   {
     title: "Frågor att ställa mäklaren",

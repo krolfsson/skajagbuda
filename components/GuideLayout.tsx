@@ -7,6 +7,8 @@ import { GuideCtaButton } from "@/components/GuideCtaButton";
 import { GuideQuickAnswer, GuideInternalLinks } from "@/components/guides/GuideSeoBlocks";
 import { GuideCalloutBox, normalizeGuideCallout } from "@/components/guides/GuideCalloutBox";
 import { GuideInlineCta, GuideSectionCta } from "@/components/guides/GuideInlineCta";
+import { InlineText, formatUpdated, plainText } from "@/components/guides/InlineText";
+import { ContentSources } from "@/components/guides/ContentSources";
 
 const INLINE_CALLOUT_TYPES = new Set<GuideCalloutType>(["red-flag", "remember", "ask-broker"]);
 
@@ -24,10 +26,11 @@ export function GuideLayout({ guide }: { guide: GuideWithMeta }) {
   const articleJsonLd = {
     "@context": "https://schema.org",
     "@type": "Article",
-    headline: guide.metaTitle,
+    headline: guide.title,
     description: guide.metaDescription,
     inLanguage: "sv-SE",
     mainEntityOfPage: url,
+    ...(guide.updated ? { dateModified: guide.updated } : {}),
     author: { "@type": "Organization", name: PRODUCT_DOMAIN },
     publisher: { "@type": "Organization", name: PRODUCT_DOMAIN },
   };
@@ -50,7 +53,7 @@ export function GuideLayout({ guide }: { guide: GuideWithMeta }) {
       mainEntity: guide.faq.map((item) => ({
         "@type": "Question",
         name: item.q,
-        acceptedAnswer: { "@type": "Answer", text: item.a },
+        acceptedAnswer: { "@type": "Answer", text: plainText(item.a) },
       })),
     });
   }
@@ -79,7 +82,14 @@ export function GuideLayout({ guide }: { guide: GuideWithMeta }) {
           )}
         </div>
         <h1 className="guide-h1">{guide.title}</h1>
-        <p className="guide-lead">{guide.intro}</p>
+        <p className="guide-lead">
+          <InlineText text={guide.intro} />
+        </p>
+        {guide.updated && (
+          <p className="guide-updated">
+            Uppdaterad <time dateTime={guide.updated}>{formatUpdated(guide.updated)}</time>
+          </p>
+        )}
       </div>
 
       {guide.quickAnswer && guide.quickAnswer.length > 0 && (
@@ -120,12 +130,16 @@ export function GuideLayout({ guide }: { guide: GuideWithMeta }) {
           <section key={section.id} id={sectionId(index, section.id)} className="guide-section">
             <h2 className="guide-h2">{section.heading}</h2>
             {section.paragraphs.map((p) => (
-              <p key={p.slice(0, 40)}>{p}</p>
+              <p key={p.slice(0, 40)}>
+                <InlineText text={p} />
+              </p>
             ))}
             {section.bullets && (
               <ul className="guide-list">
                 {section.bullets.map((b) => (
-                  <li key={b.slice(0, 50)}>{b}</li>
+                  <li key={b.slice(0, 50)}>
+                    <InlineText text={b} />
+                  </li>
                 ))}
               </ul>
             )}
@@ -141,11 +155,15 @@ export function GuideLayout({ guide }: { guide: GuideWithMeta }) {
           {guide.faq.map((item) => (
             <div key={item.q} className="guide-faq-item">
               <p className="guide-faq-q">{item.q}</p>
-              <p className="guide-faq-a">{item.a}</p>
+              <p className="guide-faq-a">
+                <InlineText text={item.a} />
+              </p>
             </div>
           ))}
         </section>
       )}
+
+      {guide.sources && <ContentSources sources={guide.sources} />}
 
       {(relatedGuides.length > 0 || relatedTools.length > 0) && (
         <section className="guide-related">
@@ -182,10 +200,10 @@ export function GuideLayout({ guide }: { guide: GuideWithMeta }) {
       )}
 
       <div className="guide-cta">
-        <h2>Nästa steg: analysera objektet</h2>
+        <h2>{guide.cta?.title ?? "Nästa steg: analysera objektet"}</h2>
         <p>
-          Guiderna hjälper dig förstå riskerna. När du har ett konkret objekt kan du få en
-          preliminär risknivå gratis.
+          {guide.cta?.text ??
+            "Guiderna hjälper dig förstå riskerna. När du har ett konkret objekt kan du klistra in länken från mäklarens hemsida och få en full analys — just nu gratis under betan."}
         </p>
         <div className="guide-cta-actions">
           <GuideCtaButton href="/new" event="guide_cta_click" label={CTA_START_ANALYSIS} primary />

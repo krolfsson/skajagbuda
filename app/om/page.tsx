@@ -18,11 +18,11 @@ export default function OmPage() {
     >
       <InfoSection title="Så fungerar det">
         <ol className="info-page-list info-page-list--ordered">
-          <li>Klistra in det du vet om bostaden.</li>
-          <li>Få en preliminär risknivå gratis.</li>
+          <li>Klistra in länken från mäklarens hemsida – eller annonstexten om du inte har en länk.</li>
+          <li>Kontrollera och komplettera uppgifterna, till exempel utgångspris och boarea.</li>
           <li>
-            Lås upp full analys om du vill se maxbud, budstrategi, röda flaggor och frågor att
-            ställa.
+            Få en analys med rimligt budintervall, föreningsrisk, röda flaggor och frågor att
+            ställa. Just nu gratis under betan.
           </li>
         </ol>
       </InfoSection>

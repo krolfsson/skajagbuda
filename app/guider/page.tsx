@@ -100,8 +100,8 @@ export default function GuiderIndexPage() {
       <div className="guide-cta guide-cta--tools">
         <h2>Nästa steg: analysera objektet</h2>
         <p>
-          Guiderna hjälper dig förstå riskerna. När du har ett konkret objekt kan du få en
-          preliminär risknivå gratis.
+          Guiderna hjälper dig förstå riskerna. När du har ett konkret objekt klistrar du in länken
+          från mäklarens hemsida och får en full analys — just nu gratis under betan.
         </p>
         <Link href="/new" className="guide-cta-primary">
           {CTA_START_ANALYSIS_ARROW}

@@ -585,8 +585,8 @@ export default function AttTankaPaPage() {
       <div className="guide-cta">
         <h2>Slipp läsa hela årsredovisningen själv</h2>
         <p>
-          Klistra in annons, budhistorik och årsredovisning så får du en preliminär risknivå gratis –
-          och en full analys med maxbud, budstrategi och röda flaggor.
+          Klistra in länken från mäklarens hemsida eller ladda upp årsredovisningen, så får du en
+          analys med maxbud, budstrategi och röda flaggor — just nu gratis under betan.
         </p>
         <Link href="/new" className="guide-cta-primary">
           {CTA_START_ANALYSIS_ARROW}

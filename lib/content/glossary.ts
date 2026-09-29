@@ -42,13 +42,14 @@ export const GLOSSARY: GlossaryTerm[] = [
     relatedGuideSlugs: [
       "avgiftshojning-brf",
       "for-lag-avgift-bostadsratt",
+      "analysera-brf-arsredovisning",
     ],
     relatedToolSlugs: ["boendekostnad"],
   },
   {
     slug: "underhallsplan",
     term: "Underhållsplan",
-    metaTitle: "Underhållsplan i BRF – varför den avgör din risk | skajagbuda.se",
+    metaTitle: "Vad är en underhållsplan? Förklaring för bostadsköpare | skajagbuda.se",
     metaDescription:
       "En underhållsplan visar vad föreningen planerar renovera och när. Lär dig läsa den och bedöma om planen är realistisk.",
     definition:
@@ -64,12 +65,13 @@ export const GLOSSARY: GlossaryTerm[] = [
     relatedGuideSlugs: [
       "underhallsplan-brf",
       "stambyte-bostadsratt-risk",
+      "analysera-brf-arsredovisning",
     ],
   },
   {
     slug: "stambyte",
     term: "Stambyte",
-    metaTitle: "Stambyte i bostadsrätt – kostnad, risk och vad du ska fråga | skajagbuda.se",
+    metaTitle: "Vad är stambyte? Förklaring för bostadsköpare | skajagbuda.se",
     metaDescription:
       "Stambyte innebär utbyte av rör och avlopp i en fastighet. Förstå vad det betyder för dig som köpare och hur föreningen finansierar det.",
     definition:
@@ -85,12 +87,13 @@ export const GLOSSARY: GlossaryTerm[] = [
     relatedGuideSlugs: [
       "stambyte-bostadsratt-risk",
       "underhallsplan-brf",
+      "analysera-brf-arsredovisning",
     ],
   },
   {
     slug: "tomtratt",
     term: "Tomträtt",
-    metaTitle: "Tomträtt i bostadsrätt – vad det innebär för din avgift | skajagbuda.se",
+    metaTitle: "Vad är tomträtt? Förklaring för bostadsköpare | skajagbuda.se",
     metaDescription:
       "Tomträtt innebär att föreningen hyr marken. Lär dig hur tomträttsavtalet påverkar avgift, risk och framtida kostnader.",
     definition:
@@ -103,7 +106,7 @@ export const GLOSSARY: GlossaryTerm[] = [
       "När löper avtalet ut och vad säger avtalet om förlängning?",
       "Ingår tomträttskostnaden i den ordinarie avgiften eller redovisas separat?",
     ],
-    relatedGuideSlugs: ["tomtratt-bostadsratt"],
+    relatedGuideSlugs: ["tomtratt-bostadsratt", "analysera-brf-arsredovisning"],
   },
   {
     slug: "andrahandsuthyrning",
@@ -139,7 +142,7 @@ export const GLOSSARY: GlossaryTerm[] = [
       "Finns det vakans eller planerade ombyggnationer av lokaler?",
       "Läs noter i årsredovisningen om hyresavtal och eventuella tvister.",
     ],
-    relatedGuideSlugs: ["lokalfastigheter-brf-risk"],
+    relatedGuideSlugs: ["lokalfastigheter-brf-risk", "analysera-brf-arsredovisning"],
   },
   {
     slug: "soliditet",
@@ -178,7 +181,7 @@ export const GLOSSARY: GlossaryTerm[] = [
       "Fråga om planerade utgifter som kan belasta likviditeten kommande år.",
       "Jämför med föreningens underhållsplan och renoveringsfond.",
     ],
-    relatedGuideSlugs: ["kassa-i-bostadsrattsforening"],
+    relatedGuideSlugs: ["kassa-i-bostadsrattsforening", "analysera-brf-arsredovisning"],
   },
   {
     slug: "belaning-brf",
@@ -199,6 +202,7 @@ export const GLOSSARY: GlossaryTerm[] = [
     relatedGuideSlugs: [
       "vad-ar-hog-skuld-per-kvm-brf",
       "avgiftshojning-brf",
+      "analysera-brf-arsredovisning",
     ],
     relatedToolSlugs: ["brf-skuld-per-kvm"],
   },
@@ -258,26 +262,100 @@ export const GLOSSARY: GlossaryTerm[] = [
     relatedGuideSlugs: [
       "stambyte-bostadsratt-risk",
       "avgiftshojning-brf",
+      "analysera-brf-arsredovisning",
     ],
   },
   {
     slug: "renoveringsfond",
     term: "Renoveringsfond",
-    metaTitle: "Renoveringsfond i BRF – sparande för framtida underhåll | skajagbuda.se",
+    h1: "Renoveringsfond i BRF – vad betyder den för dig som köpare?",
+    metaTitle: "Renoveringsfond i BRF – vad betyder den för dig som köpare? | skajagbuda.se",
     metaDescription:
-      "Renoveringsfonden avsätter medel för planerat underhåll. Lär dig bedöma om fonden räcker till kommande projekt.",
+      "Renoveringsfond kan betyda föreningens fond för yttre underhåll eller lägenhetens inre fond. Så läser du fonden i årsredovisningen – och varför den inte är pengar på banken.",
+    shortAnswer:
+      "Renoveringsfond är ett vardagligt namn på två olika saker: föreningens fond för yttre underhåll, som är en post i föreningens egna kapital, och den inre fonden, som tillhör en enskild lägenhet och följer med till köparen. Den yttre fonden visar hur mycket föreningen reserverat för underhåll i bokföringen – inte hur mycket pengar som finns på banken. Läs den därför alltid tillsammans med kassa, sparande och underhållsplan.",
     definition:
-      "Renoveringsfonden (ibland kallad underhållsfond) är en del av föreningens egna kapital som avsatts specifikt för framtida underhåll och renoveringar. Medel avsätts löpande via avgiften och används vid planerade projekt enligt underhållsplanen.",
-    whyItMatters:
-      "En välfylld renoveringsfond minskar risken att föreningen behöver ta nya lån eller höja avgiften kraftigt vid större projekt. En tom fond i kombination med planerat stambyte är en tydlig varningssignal.",
-    checkPoints: [
-      "Hur stor är renoveringsfonden – och hur har den utvecklats över tid?",
-      "Stämmer fondens storlek med kostnaderna i underhållsplanen?",
-      "Har fonden använts nyligen – och för vilka projekt?",
-      "Fråga om fonden räcker till nästa större renovering utan extra lån.",
+      "En renoveringsfond är pengar som reserveras för framtida renoveringar och underhåll. I en bostadsrättsförening avses oftast fonden för yttre underhåll – föreningens reservering för fastighetens gemensamma delar som tak, fasad och stammar. Ibland avses i stället den inre reparationsfonden, som är knuten till en viss lägenhet.",
+    sections: [
+      {
+        id: "tva-fonder",
+        heading: "Två olika fonder: yttre underhållsfond och inre fond",
+        paragraphs: [
+          "Fonden för yttre underhåll (även kallad underhållsfond eller yttre reparationsfond) gäller föreningens ansvar: byggnaden, gemensamma utrymmen och installationer. Hur mycket som ska avsättas varje år styrs av föreningens stadgar och bör följa underhållsplanen.",
+          "Den inre fonden (inre reparationsfond) finns bara i vissa föreningar. Den är kopplad till en specifik lägenhet och kan användas för renovering inne i den, till exempel kök eller badrum. När du köper lägenheten tar du över det som finns kvar i den inre fonden – fråga mäklaren om saldot, eftersom det i praktiken är pengar som följer med köpet.",
+        ],
+      },
+      {
+        id: "arsredovisningen",
+        heading: "Så syns renoveringsfonden i årsredovisningen",
+        paragraphs: [
+          "Fonden för yttre underhåll redovisas under eget kapital i balansräkningen, oftast som en del av det bundna egna kapitalet. I noten eller i förändringen av eget kapital ser du hur mycket som avsatts under året och hur mycket som tagits i anspråk för genomfört underhåll.",
+          "Från och med räkenskapsåret 2023 redovisar föreningarna också nyckeltalet sparande per kvm, som ofta säger mer om föreningens faktiska sparande än fondens storlek. Läs mer om nyckeltalen i guiden [Analysera årsredovisning i BRF](/guider/analysera-brf-arsredovisning).",
+        ],
+      },
+      {
+        id: "vad-den-sager",
+        heading: "Vad fonden säger – och inte säger",
+        paragraphs: [
+          "Fonden visar hur mycket av föreningens egna kapital som reserverats för underhåll. Den visar inte att pengarna finns på ett bankkonto. Föreningen kan ha använt likviderna till amortering eller investeringar, och då ligger värdet i fastigheten i stället för i kassan.",
+          "Den viktiga frågan är därför inte bara hur stor fonden är, utan om föreningen har pengar eller realistiska lånemöjligheter när underhållet ska göras. Svaret hittar du i kassan, i [kassalikviditeten](/ordlista/kassalikviditet) och i underhållsplanen.",
+        ],
+      },
+      {
+        id: "stor-eller-liten",
+        heading: "Stor eller liten fond – varför det inte är automatiskt bra eller dåligt",
+        paragraphs: [
+          "En stor fond kan betyda att föreningen länge avsatt enligt en god plan – men också att ett stort projekt snart ska genomföras, så att fonden strax tas i anspråk. En liten fond kan betyda att föreningen nyss genomfört ett stort projekt, att den finansierar underhåll med lån, eller att den helt enkelt inte sparar tillräckligt.",
+          "Jämför därför fonden med underhållsplanens kostnader för de närmaste åren och med hur fonden har utvecklats över tid. Det är trenden och kopplingen till planen som säger något – inte beloppet ensamt.",
+        ],
+      },
+      {
+        id: "underhallsplan",
+        heading: "Renoveringsfonden och underhållsplanen hör ihop",
+        paragraphs: [
+          "Avsättningen till fonden bör bygga på [underhållsplanen](/guider/underhallsplan-brf): vad som behöver göras, när och till vilken kostnad. Saknas en aktuell plan är det svårt att veta om avsättningen är rimlig.",
+          "Om planen visar ett stort projekt – till exempel ett [stambyte](/guider/stambyte-bostadsratt-risk) – inom några år, kontrollera hur det ska finansieras. Kommer pengarna från sparade medel, nya lån eller höjd avgift? Det påverkar din framtida månadskostnad direkt.",
+        ],
+      },
     ],
+    whyItMatters:
+      "Fonden påverkar inte priset direkt, men den hjälper dig bedöma om föreningen är förberedd på kommande underhåll. Är den liten samtidigt som stora projekt väntar och [kassan i föreningen](/guider/kassa-i-bostadsrattsforening) är tunn, är risken större för avgiftshöjningar eller kapitaltillskott – och då bör du räkna med det i ditt maxbud.",
+    checkPoints: [
+      "Hur stor är fonden för yttre underhåll – och hur har den förändrats de senaste åren?",
+      "Hur mycket avsätts per år, och följer avsättningen underhållsplanen?",
+      "Vad säger underhållsplanen om de närmaste fem–tio åren, och hur ska det finansieras?",
+      "Hur stor är kassan och hur ser sparande per kvm ut – fonden i sig är inte pengar på banken.",
+      "Finns en inre fond för lägenheten? Fråga mäklaren om saldot, eftersom den följer med till dig.",
+    ],
+    faq: [
+      {
+        q: "Är renoveringsfonden pengar på banken?",
+        a: "Inte nödvändigtvis. Fonden för yttre underhåll är en post i föreningens egna kapital. Hur mycket pengar som faktiskt finns ser du under kassa och bank i balansräkningen.",
+      },
+      {
+        q: "Vad är skillnaden mellan yttre och inre fond?",
+        a: "Den yttre fonden gäller föreningens gemensamma underhåll. Den inre fonden är knuten till en enskild lägenhet och kan användas för renovering inne i den.",
+      },
+      {
+        q: "Följer den inre fonden med när jag köper?",
+        a: "Ja, den inre fonden hör till lägenheten och tas över av köparen. Be mäklaren om aktuellt saldo innan du budar.",
+      },
+      {
+        q: "Är en stor renoveringsfond alltid bra?",
+        a: "Nej. Den kan vara stor för att ett dyrt projekt är på väg. Jämför alltid med underhållsplanen och föreningens kassa.",
+      },
+    ],
+    sources: [
+      {
+        label: "Bokföringsnämnden – vägledning om årsredovisning för bostadsrättsföreningar",
+        href: "https://www.bfn.se/wp-content/uploads/vl23-1-brf.pdf",
+      },
+    ],
+    updated: "2026-09-29",
     relatedGuideSlugs: [
+      "analysera-brf-arsredovisning",
       "underhallsplan-brf",
+      "kassa-i-bostadsrattsforening",
       "stambyte-bostadsratt-risk",
     ],
   },

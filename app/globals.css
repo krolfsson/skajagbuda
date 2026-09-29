@@ -8912,3 +8912,27 @@ h1.analysis-preview__title {
 .import-fallback .import-fallback__status {
   margin-bottom: 4px;
 }
+
+/* ─── Content: updated date, inline links in guide copy ─── */
+.guide-updated {
+  margin: 8px 0 0;
+  font-size: 12.5px;
+  color: var(--muted);
+}
+
+.guide-section p a,
+.guide-list a,
+.guide-lead a,
+.guide-faq-a a,
+.guide-quick-answer a {
+  color: var(--brand);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+}
+
+.guide-section p a:hover,
+.guide-list a:hover,
+.guide-faq-a a:hover {
+  text-decoration-thickness: 2px;
+}

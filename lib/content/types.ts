@@ -35,6 +35,12 @@ export type FaqItem = { q: string; a: string };
 
 export type GuideInternalLink = { href: string; anchor: string };
 
+/** External source shown under "Källor" (authoritative Swedish sources only). */
+export type ContentSource = { label: string; href: string };
+
+/** Page-specific closing call to action. */
+export type ContentCta = { title: string; text: string };
+
 export type Guide = {
   slug: string;
   title: string;
@@ -49,6 +55,10 @@ export type Guide = {
   faq?: FaqItem[];
   relatedSlugs: string[];
   relatedToolSlugs?: string[];
+  sources?: ContentSource[];
+  /** ISO date of the last substantive content update — shown and used as dateModified. */
+  updated?: string;
+  cta?: ContentCta;
 };
 
 /** Guide with index/card metadata merged in at runtime. */
@@ -69,6 +79,15 @@ export type GlossaryTerm = {
   checkPoints: string[];
   relatedGuideSlugs?: string[];
   relatedToolSlugs?: string[];
+  /** Optional H1 when it should differ from the term itself. */
+  h1?: string;
+  /** Direct answer shown above the definition. */
+  shortAnswer?: string;
+  /** Deeper sections for terms that need more than a definition. */
+  sections?: ContentSection[];
+  faq?: FaqItem[];
+  sources?: ContentSource[];
+  updated?: string;
 };
 
 export type ToolMeta = {

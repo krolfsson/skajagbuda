@@ -38,7 +38,7 @@ export function buildLlmsTxt() {
   const lines = [
     `# ${PRODUCT_DOMAIN}`,
     "",
-    `> ${PRODUCT_TAGLINE} för köpare av bostadsrätt i Sverige. Tjänsten strukturerar underlag från annons, budhistorik och årsredovisning och väger pris, förening och risk innan budgivning. Preliminär risknivå gratis; full analys ${FULL_ANALYSIS_PRICE_SEK} kr engångsbetalning.`,
+    `> ${PRODUCT_TAGLINE} för köpare av bostadsrätt i Sverige. Tjänsten strukturerar underlag från annons, budhistorik och årsredovisning och väger pris, förening och risk innan budgivning. Just nu gratis under betan (ordinarie pris ${FULL_ANALYSIS_PRICE_SEK} kr per analys).`,
     "",
     `${PRODUCT_NAME} (${PRODUCT_DOMAIN}) är en svensk webbtjänst riktad till privatpersoner som ska köpa bostadsrätt. Användaren klistrar in en objektlänk eller fyller i uppgifter manuellt och får en strukturerad bedömning med rekommendation, risknivå, styrkor, svagheter, röda flaggor, frågor att ställa och budstrategi.`,
     "",
