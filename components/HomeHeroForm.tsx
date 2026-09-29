@@ -3,7 +3,6 @@
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import { trackEvent } from "@/lib/analytics";
-import { TestimonialStrip } from "@/components/TestimonialStrip";
 import { BetaPriceTag } from "@/components/BetaPriceTag";
 
 /** Hemnet/Booli block automatic reading — the broker's own page is what works. */
@@ -98,8 +97,6 @@ export function HomeHeroForm({ id, variant = "full" }: { id?: string; variant?: 
           </li>
         </ul>
       )}
-
-      {variant === "full" && <TestimonialStrip className="testimonial-strip--hero" />}
 
       {variant === "full" && (
         <a
