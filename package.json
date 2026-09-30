@@ -10,7 +10,7 @@
     "test:brokers": "npx tsx scripts/test-broker-scrape.ts",
     "test:aggregator": "npx tsx --env-file=.env scripts/test-aggregator-scrape.ts",
     "test:full-analysis": "npx tsx --env-file=.env scripts/test-full-analysis.ts",
-    "test:unit": "npx tsx scripts/test-text-extract.ts && npx tsx scripts/test-bid-intervals.ts",
+    "test:unit": "npx tsx scripts/test-text-extract.ts && npx tsx scripts/test-bid-intervals.ts && npx tsx scripts/test-bid-position.ts",
     "test:listing-import": "npx tsx scripts/test-aggregator-import.ts",
     "postinstall": "prisma generate"
   },

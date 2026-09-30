@@ -144,7 +144,8 @@ export function deriveConclusion(sc: Scorecard): string {
   return `${sc.recommendation}. Granska prisbilden och frågorna till mäklaren innan slutbud.`;
 }
 
-export function deriveConclusionBox(sc: Scorecard): string {
+/** @param positionAction current-bid action from deriveBidPosition — takes precedence when set. */
+export function deriveConclusionBox(sc: Scorecard, positionAction?: string | null): string {
   const whyParts: string[] = [];
 
   if (sc.priceAnalysis.conclusion) {
@@ -165,7 +166,9 @@ export function deriveConclusionBox(sc: Scorecard): string {
   const walkAway = sc.bidIntervals.walkAwayLevel;
 
   let action = sc.bidStrategy.nextStep.trim();
-  if (ceiling && !/motiverar inte|budtak|walk-away|analys/i.test(action)) {
+  if (positionAction) {
+    action = positionAction;
+  } else if (ceiling && !/motiverar inte|budtak|walk-away|analys/i.test(action)) {
     action = `Analysens rekommenderade budtak är ${fmtMoney(normalizeBid(ceiling))}${walkAway ? ` — walk-away runt ${fmtMoney(normalizeBid(walkAway))}` : ""}. Höj bara om ny information motiverar det.`;
   } else if (!action) {
     action = "Kontrollera budhistorik, förenings ekonomi och jämförbara slutpriser innan du höjer.";
@@ -208,34 +211,8 @@ export function deriveDecisionSummary(sc: Scorecard): string {
   return parts.slice(0, 3).join(" ");
 }
 
-export function deriveBudgetNote(sc: Scorecard, userMaxBudget?: number | null): string {
-  const note = sc.budgetContext.budgetVsRecommendation.trim();
-  const budget = userMaxBudget ?? sc.budgetContext.userMaxBudget ?? null;
-  const ceiling = sc.bidIntervals.recommendedCeiling ?? sc.maxBidSuggestion;
-
-  if (note && !/^analysens budtak bygger på objektdata/i.test(note)) {
-    return note;
-  }
-
-  if (!budget || !ceiling) {
-    return note || "Analysens budtak bygger på objektdata och marknadsbedömning.";
-  }
-
-  const normalizedBudget = normalizeBid(budget);
-  const normalizedCeiling = normalizeBid(ceiling);
-
-  if (normalizedBudget === normalizedCeiling) {
-    return `Rekommenderat budtak sammanfaller med din angivna maxgräns (${fmtMoney(normalizedBudget)}), men inte på grund av budgeten i sig. Det stöds av pris/kvm, läget och jämförbara nivåer i underlaget — bekräfta med jämförelseobjekt innan slutbud.`;
-  }
-
-  if (normalizedBudget < normalizedCeiling) {
-    return `Du har angett ${fmtMoney(normalizedBudget)} som max. Analysen bedömer att objektet kan vara marknadsmässigt försvarbart upp till cirka ${fmtMoney(normalizedCeiling)}, men din personliga budget begränsar hur högt du bör gå utan att acceptera extra ekonomisk risk.`;
-  }
-
-  return `Du har angett ${fmtMoney(normalizedBudget)} som max, men analysens rekommenderade budtak är ${fmtMoney(normalizedCeiling)}. Prisbilden och föreningsrisken motiverar inte högre nivå utan ny information.`;
-}
-
-export function deriveNextSteps(sc: Scorecard): string[] {
+/** @param positionAction current-bid action from deriveBidPosition — listed first when set. */
+export function deriveNextSteps(sc: Scorecard, positionAction?: string | null): string[] {
   const steps: string[] = [];
   const seen = new Set<string>();
 
@@ -246,6 +223,8 @@ export function deriveNextSteps(sc: Scorecard): string[] {
       steps.push(step);
     }
   }
+
+  if (positionAction) add(positionAction);
 
   if (sc.priceAnalysis.missingComparablesNote || sc.comparisonObjects.length === 0) {
     add("Kräv jämförbara slutpriser för liknande objekt — underlaget är begränsat.");
@@ -270,7 +249,9 @@ export function deriveNextSteps(sc: Scorecard): string[] {
   }
 
   const ceiling = sc.bidIntervals.recommendedCeiling ?? sc.maxBidSuggestion;
-  if (ceiling) {
+  if (positionAction) {
+    // The current-bid action already states the ceiling in context.
+  } else if (ceiling) {
     add(`Nuvarande underlag motiverar inte bud över ${fmtMoney(normalizeBid(ceiling))} utan ny information.`);
   } else {
     add("Sätt ett budtak baserat på prisanalysen — inte bara på din budget — innan budgivningen.");

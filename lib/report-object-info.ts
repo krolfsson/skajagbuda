@@ -9,6 +9,8 @@ export type ReportObjectInfo = {
   associationName: string | null;
   askingPrice: number | null;
   monthlyFee: number | null;
+  /** Current highest bid as entered by the user. */
+  currentBid: number | null;
   userMaxBudget: number | null;
   associationDebtPerSqm: number | null;
   associationCash: number | null;
@@ -25,6 +27,7 @@ export function reportObjectInfoFromAnalysis(analysis: PropertyAnalysis): Report
     associationName: analysis.associationName,
     askingPrice: analysis.askingPrice,
     monthlyFee: analysis.monthlyFee,
+    currentBid: analysis.currentBid,
     userMaxBudget: analysis.userMaxBudget,
     associationDebtPerSqm: analysis.associationDebtPerSqm,
     associationCash: analysis.associationCash,

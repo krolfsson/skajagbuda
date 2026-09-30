@@ -39,7 +39,13 @@ export function FullScorecard({
           </Link>
           <div className="full-report-page__actions">
             <DownloadPdfButton title={analysis.title} />
-            <ExportReportButton title={analysis.title} meta={meta || null} scorecard={sc} />
+            <ExportReportButton
+              title={analysis.title}
+              meta={meta || null}
+              scorecard={sc}
+              currentBid={analysis.currentBid}
+              userMaxBudget={analysis.userMaxBudget}
+            />
             <ShareButton
               title={analysis.title}
               text={`Bostadsanalys: ${analysis.title} — ${sc.recommendation}, score ${sc.score}/100`}

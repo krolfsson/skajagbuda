@@ -5,8 +5,8 @@ import Link from "next/link";
 import { CTA_START_ANALYSIS_ARROW } from "@/lib/brand";
 import type { ReportObjectInfo } from "@/lib/report-object-info";
 import { formatObjectMeta } from "@/lib/report-object-info";
+import { deriveBidPosition } from "@/lib/bid-position";
 import {
-  deriveBudgetNote,
   deriveConclusionBox,
   deriveNextSteps,
   deriveRiskExplanation,
@@ -111,6 +111,7 @@ function BidScale({
   ceiling,
   budget,
   walkAway,
+  currentBid,
 }: {
   askingPrice: number | null;
   fairLow: number | null;
@@ -118,8 +119,9 @@ function BidScale({
   ceiling: number | null;
   budget: number | null;
   walkAway: number | null;
+  currentBid: number | null;
 }) {
-  const values = [askingPrice, fairLow, fairHigh, ceiling, budget, walkAway]
+  const values = [askingPrice, fairLow, fairHigh, ceiling, budget, walkAway, currentBid]
     .filter((v): v is number => v != null && v > 0)
     .map(normalizeBid);
   if (values.length < 2) return null;
@@ -129,8 +131,12 @@ function BidScale({
   const span = max - min || 1;
   const pos = (v: number | null) => (v ? `${Math.min(100, Math.max(0, ((normalizeBid(v) - min) / span) * 100))}%` : null);
 
+  // The middle zone ends at the recommended ceiling so the colour under a current-bid marker
+  // always matches the copy ("över vårt budtak" = red zone), even when the ceiling sits below
+  // the top of the fair-value range.
   const fairStart = fairLow ? pos(fairLow) : null;
-  const fairEnd = fairHigh ? pos(fairHigh) : fairStart;
+  const zoneEndValue = ceiling ?? fairHigh;
+  const fairEnd = zoneEndValue ? pos(zoneEndValue) : fairStart;
 
   return (
     <div className="far-bid-scale">
@@ -147,15 +153,27 @@ function BidScale({
         {ceiling && (
           <span className="far-bid-scale__marker far-bid-scale__marker--ceiling" style={{ left: pos(ceiling)! }} title="Rekommenderat budtak" />
         )}
+        {walkAway && (
+          <span className="far-bid-scale__marker far-bid-scale__marker--walkaway" style={{ left: pos(walkAway)! }} title="Walk-away" />
+        )}
         {budget && (
           <span className="far-bid-scale__marker far-bid-scale__marker--budget" style={{ left: pos(budget)! }} title="Din maxbudget" />
         )}
+        {currentBid && (
+          <span className="far-bid-scale__marker far-bid-scale__marker--current" style={{ left: pos(currentBid)! }} title="Aktuellt bud" />
+        )}
       </div>
       <div className="far-bid-scale__labels">
-        <span>Lägre bud</span>
-        <span>Rimligt intervall</span>
-        <span>Överpris</span>
+        <span>Under rimligt värde</span>
+        <span>Upp till budtak</span>
+        <span>Över budtak</span>
       </div>
+      <ul className="far-bid-scale__legend" aria-label="Markeringar">
+        {ceiling && <li><span className="far-bid-scale__key far-bid-scale__key--ceiling" />Budtak</li>}
+        {walkAway && <li><span className="far-bid-scale__key far-bid-scale__key--walkaway" />Walk-away</li>}
+        {currentBid && <li><span className="far-bid-scale__key far-bid-scale__key--current" />Aktuellt bud</li>}
+        {budget && <li><span className="far-bid-scale__key far-bid-scale__key--budget" />Din maxbudget</li>}
+      </ul>
     </div>
   );
 }
@@ -194,8 +212,12 @@ export function FullAnalysisReport({
   const stretch = intervals.stretchLevel;
   const walkAway = intervals.walkAwayLevel;
 
-  const conclusion = conclusionLine ?? deriveConclusionBox(sc);
-  const nextSteps = deriveNextSteps(sc);
+  const position = deriveBidPosition(sc, {
+    currentBid: objectInfo.currentBid,
+    userMaxBudget: budget,
+  });
+  const conclusion = conclusionLine ?? deriveConclusionBox(sc, position.action);
+  const nextSteps = deriveNextSteps(sc, position.action);
   const visibleSteps = showAllSteps ? nextSteps : nextSteps.slice(0, PREVIEW_LIMIT);
   const hasRedFlags = hasSeriousRedFlags(sc);
   const questionPoints =
@@ -205,7 +227,6 @@ export function FullAnalysisReport({
   const comps = sc.comparisonObjects;
   const visibleComps = showAllComps ? comps : comps.slice(0, PREVIEW_LIMIT);
   const visibleQuestions = showAllQuestions ? sc.questionsToAsk : sc.questionsToAsk.slice(0, PREVIEW_LIMIT);
-  const budgetNote = deriveBudgetNote(sc, budget);
   const walkAwayAmount = deriveWalkAwayAmount(sc);
   const uncertaintyNote = deriveUncertaintyExplanation(sc);
 
@@ -318,12 +339,22 @@ export function FullAnalysisReport({
                   ceiling={ceiling}
                   budget={budget}
                   walkAway={walkAway}
+                  currentBid={position.currentBid}
                 />
+
+                {position.currentBidText && (
+                  <div className={`far-current-bid far-current-bid--${position.currentBidTone}`} role="status">
+                    <p className="far-current-bid__label">
+                      Aktuellt bud {fmtMoney(position.currentBid)} · {position.currentBidLabel}
+                    </p>
+                    <p className="far-current-bid__text">{position.currentBidText}</p>
+                  </div>
+                )}
 
                 <p className="far-bid-footnote">
                   Rimligt värde är marknadsbedömningen. Rekommenderat budtak är det högsta försvarbara — inte samma spann.
                 </p>
-                {budget && <p className="far-budget-note">{budgetNote}</p>}
+                {position.budgetText && <p className="far-budget-note">{position.budgetText}</p>}
                 {sc.uncertaintyLevel && sc.uncertaintyLevel !== "Låg" && (
                   <p className="far-bid-uncertainty">
                     <strong>Osäkerhet i underlaget:</strong> {uncertaintyNote}

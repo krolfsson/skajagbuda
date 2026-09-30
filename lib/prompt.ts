@@ -69,6 +69,8 @@ Använd dessa riktvärden och referera till dem med siffror:
 - Om rekommenderat budtak sammanfaller med användarens maxbudget MÅSTE du explicit förklara varför oberoende faktorer (pris/kvm, läge, jämförelser) stödjer samma nivå — aldrig bara "du angav X".
 - Kontrollera att rekommenderat budtak ryms inom budget och kontantinsatskrav (typiskt 15%) — men sänk rekommendationen baserat på marknadsbedömning, inte bara spegla budgeten.
 - Beräkna total månadskostnad: avgift + ränta + amortering. Jämför mot månadskomfortgräns om angiven.
+- Användarens maxbudget får ALDRIG framställas som ett skäl att buda högre. Skriv aldrig formuleringar som "utrymme att buda inom budget", "du har utrymme att höja" eller liknande. Budgeten säger vad användaren har råd med – inte vad bostaden är värd.
+- Om ett aktuellt bud finns: jämför det uttryckligen med rimligt värde, rekommenderat budtak och walk-away. Ligger budet redan över ditt rekommenderade budtak ska bidStrategy säga att användaren redan betalar en premie jämfört med bedömningen och att fortsatta bud inte stöds av underlaget – bara om ny information stärker caset eller om användaren medvetet väljer att betala ett personligt överpris. Ligger budet på eller över walk-away ska du rekommendera att sluta buda.
 
 ### 6. Tre separata värden — obligatoriskt
 Du MÅSTE skilja på:

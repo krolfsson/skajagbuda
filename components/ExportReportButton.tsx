@@ -8,15 +8,19 @@ export function ExportReportButton({
   title,
   meta,
   scorecard,
+  currentBid,
+  userMaxBudget,
 }: {
   title: string;
   meta: string | null;
   scorecard: Scorecard;
+  currentBid?: number | null;
+  userMaxBudget?: number | null;
 }) {
   const [label, setLabel] = useState("Spara analys");
 
   function handleExport() {
-    const markdown = scorecardToMarkdown(title, meta, scorecard);
+    const markdown = scorecardToMarkdown(title, meta, scorecard, { currentBid, userMaxBudget });
     const blob = new Blob([markdown], { type: "text/markdown;charset=utf-8" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");

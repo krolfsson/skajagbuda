@@ -2,11 +2,11 @@ import type { ReactNode } from "react";
 import Link from "next/link";
 import { summaryToBullets } from "@/lib/format-summary";
 import { CTA_START_ANALYSIS_ARROW } from "@/lib/brand";
+import { deriveBidPosition } from "@/lib/bid-position";
 import {
   CATEGORY_HINTS,
   CATEGORY_LABELS,
   PRICE_VERDICT_COLORS,
-  deriveBudgetNote,
   deriveConclusion,
   deriveConclusionBox,
   deriveDecisionSummary,
@@ -118,7 +118,7 @@ export function AnalysisReport({
   const decisionSummary = deriveDecisionSummary(sc);
   const nextSteps = deriveNextSteps(sc);
   const walkAwayAmount = deriveWalkAwayAmount(sc);
-  const budgetNote = deriveBudgetNote(sc, userMaxBudget);
+  const budgetNote = deriveBidPosition(sc, { userMaxBudget }).budgetText ?? "";
   const hasRedFlags = sc.redFlags.length > 0;
   const listCap = compact ? 4 : 999;
   const lineCap = compact ? 88 : 999;

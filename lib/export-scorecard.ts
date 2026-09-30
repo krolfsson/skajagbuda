@@ -1,6 +1,7 @@
 import type { Scorecard } from "@/lib/schemas";
 import { PRODUCT_NAME } from "@/lib/brand";
 import { fmtMoney, fmtMoneyRange, normalizeBid } from "@/lib/report-ui";
+import { deriveBidPosition } from "@/lib/bid-position";
 
 const CAT_LABELS: Record<string, string> = {
   price: "Pris",
@@ -18,10 +19,12 @@ function bulletList(items: string[]) {
 export function scorecardToMarkdown(
   title: string,
   meta: string | null,
-  sc: Scorecard
+  sc: Scorecard,
+  context: { currentBid?: number | null; userMaxBudget?: number | null } = {}
 ): string {
   const intervals = sc.bidIntervals;
   const ceiling = intervals.recommendedCeiling ?? sc.maxBidSuggestion;
+  const position = deriveBidPosition(sc, context);
 
   const lines: string[] = [
     `# ${title}`,
@@ -37,7 +40,8 @@ export function scorecardToMarkdown(
     intervals.stretchLevel ? `- **Stretch:** ${fmtMoney(normalizeBid(intervals.stretchLevel))}` : "",
     intervals.walkAwayLevel ? `- **Walk-away:** över ${fmtMoney(normalizeBid(intervals.walkAwayLevel))}` : "",
     intervals.uncertaintyNote ? `- _${intervals.uncertaintyNote}_` : "",
-    sc.budgetContext.budgetVsRecommendation ? `- **Budget vs analys:** ${sc.budgetContext.budgetVsRecommendation}` : "",
+    position.currentBidText ? `- **Aktuellt bud (${position.currentBidLabel}):** ${position.currentBidText}` : "",
+    position.budgetText ? `- **Din budget:** ${position.budgetText}` : "",
     "",
     "## Prisbild och jämförelse",
     `- **Bedömning:** ${sc.priceAnalysis.verdict}`,

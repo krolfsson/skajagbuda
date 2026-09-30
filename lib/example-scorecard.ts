@@ -21,6 +21,7 @@ export const EXAMPLE_OBJECT_INFO: ReportObjectInfo = {
   associationName: "BRF Vasastan",
   askingPrice: 7_950_000,
   monthlyFee: 4_200,
+  currentBid: null,
   userMaxBudget: 8_500_000,
   associationDebtPerSqm: 6_500,
   associationCash: 2_500_000,
