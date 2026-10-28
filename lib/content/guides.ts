@@ -1118,6 +1118,18 @@ export const GUIDES: Guide[] = [
     ],
     relatedToolSlugs: ["boendekostnad"],
     updated: "2026-09-29",
+    inlineCta: {
+      title: "Har du årsredovisningen framför dig?",
+      text: "Ladda upp den så går vi igenom kassan, skulden och sparandet för just den föreningen – och vad det betyder för ditt bud. Gratis under betan.",
+      href: "/new?start=arsredovisning",
+      label: "Ladda upp årsredovisningen →",
+    },
+    cta: {
+      title: "Kolla kassan i just din förening",
+      text: "Ladda upp föreningens årsredovisning eller klistra in länken från mäklarens hemsida, så får du en genomgång av kassa, skuld, sparande och underhåll – och ett rimligt budintervall för bostaden. Gratis under betan.",
+      href: "/new?start=arsredovisning",
+      label: "Ladda upp årsredovisningen →",
+    },
   },
   {
     slug: "pris-per-kvm-bostadsratt",

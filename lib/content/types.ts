@@ -38,8 +38,8 @@ export type GuideInternalLink = { href: string; anchor: string };
 /** External source shown under "Källor" (authoritative Swedish sources only). */
 export type ContentSource = { label: string; href: string };
 
-/** Page-specific closing call to action. */
-export type ContentCta = { title: string; text: string };
+/** Page-specific call to action. href/label default to the standard analysis start. */
+export type ContentCta = { title: string; text: string; href?: string; label?: string };
 
 export type Guide = {
   slug: string;
@@ -59,6 +59,8 @@ export type Guide = {
   /** ISO date of the last substantive content update — shown and used as dateModified. */
   updated?: string;
   cta?: ContentCta;
+  /** Replaces the generic CTA box near the top of the guide. */
+  inlineCta?: ContentCta;
 };
 
 /** Guide with index/card metadata merged in at runtime. */

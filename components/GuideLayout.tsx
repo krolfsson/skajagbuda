@@ -96,7 +96,7 @@ export function GuideLayout({ guide }: { guide: GuideWithMeta }) {
         <GuideQuickAnswer items={guide.quickAnswer} />
       )}
 
-      <GuideInlineCta compact />
+      <GuideInlineCta compact cta={guide.inlineCta} />
 
       {guide.internalLinks && guide.internalLinks.length > 0 && (
         <GuideInternalLinks links={guide.internalLinks} />
@@ -206,7 +206,12 @@ export function GuideLayout({ guide }: { guide: GuideWithMeta }) {
             "Guiderna hjälper dig förstå riskerna. När du har ett konkret objekt kan du klistra in länken från mäklarens hemsida och få en full analys — just nu gratis under betan."}
         </p>
         <div className="guide-cta-actions">
-          <GuideCtaButton href="/new" event="guide_cta_click" label={CTA_START_ANALYSIS} primary />
+          <GuideCtaButton
+            href={guide.cta?.href ?? "/new"}
+            event="guide_cta_click"
+            label={guide.cta?.label ?? CTA_START_ANALYSIS}
+            primary
+          />
           <GuideCtaButton href="/exempel" event="guide_cta_click" label="Se exempelanalys" />
         </div>
       </div>

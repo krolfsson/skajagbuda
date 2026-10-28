@@ -307,14 +307,24 @@ export default function NewAnalysisFlow() {
   const [riskChecks, setRiskChecks] = useState<Record<RiskCheckId, boolean>>(() =>
     Object.fromEntries(RISK_OPTIONS.map((o) => [o.id, false])) as Record<RiskCheckId, boolean>
   );
-  const [step, setStep] = useState(1);
+  // Entry from guides that ask for the annual report: skip the link step.
+  const startWithReport = searchParams.get("start") === "arsredovisning";
+  const [step, setStep] = useState(startWithReport ? 3 : 1);
   const [scraping, setScraping] = useState(false);
   const [loading, setLoading] = useState(false);
   const [analyzing, setAnalyzing] = useState(false);
   const [analyzeTitle, setAnalyzeTitle] = useState("");
   const [error, setError] = useState<string | null>(null);
   /** Shown on step 3 when automatic import could not read everything. */
-  const [importNotice, setImportNotice] = useState<{ headline: string; message: string } | null>(null);
+  const [importNotice, setImportNotice] = useState<{ headline: string; message: string } | null>(() =>
+    startWithReport
+      ? {
+          headline: "Ladda upp årsredovisningen",
+          message:
+            "Välj PDF:en under punkt 2 – vi läser av den och sparar texten som underlag. Fyll sedan i utgångspris och boarea för bostaden du funderar på, så blir analysen komplett.",
+        }
+      : null
+  );
   const flowTopRef = useRef<HTMLDivElement>(null);
   const queryUrlRef = useRef<string | null>(null);
   const pendingAutoStartRef = useRef(false);
